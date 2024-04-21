@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios";
-import "./RegisterCustomerStep1.css";
+import '../../../../App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 function RegisterCustomerStep1() {
@@ -97,7 +97,7 @@ function RegisterCustomerStep1() {
     setShowPassword(!showPassword);
   };
   return (
-    <div className="registerCustomerStep1">
+    <div className="backgroundImg">
       <div className="w-1/3 m-auto bg-fourth rounded-2xl">
       <h1 className="text-primary py-3 font-bold text-center text-40">Đăng ký</h1>
       <div className="flex justify-center px-5 my-3">
@@ -206,7 +206,7 @@ function RegisterCustomerStep1() {
           onClick={handleNext}
           className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-2/3"
         >Đăng ký với google</button>
-        <p>Bạn đã có tài khoản? <a>Đăng nhập</a></p>
+        <p className="text-primary">Bạn đã có tài khoản? <Link className="text-third" to="/login">Đăng nhập</Link></p>
       </div>
       </div>
       

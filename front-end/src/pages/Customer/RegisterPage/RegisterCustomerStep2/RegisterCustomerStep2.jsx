@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import "./RegisterCustomerStep2.css";
+import '../../../../App.css';
 function RegisterCustomerStep2() {
   const [street, setStreet] = useState("");
   const [commune, setCommune] = useState("");
@@ -49,7 +49,7 @@ function RegisterCustomerStep2() {
   };
 
   return (
-    <div className="registerCustomerStep2">
+    <div className="backgroundImg">
       <div className="w-1/3 m-auto bg-fourth rounded-2xl">
         <h1 className="text-primary py-3 font-bold text-center text-40">
           Đăng ký
