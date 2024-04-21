@@ -5,3 +5,6 @@
     display: flex;
     align-items: center;
 }
+.placeholder-color::placeholder {
+    color: #CDE6CD;
+}

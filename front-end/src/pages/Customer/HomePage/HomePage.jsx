@@ -1,9 +1,9 @@
-// import React from 'react'
+import HeaderCustomer from "../../../components/HeaderCustomer/HeaderCustomer"
 
 function HomePage() {
     return (
         <div>
-        HomePage
+            <HeaderCustomer />
         </div>
     )
 }
