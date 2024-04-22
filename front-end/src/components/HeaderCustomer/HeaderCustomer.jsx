@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 export default function HeaderCustomer() {
   return (
     <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
-      <nav className="flex flex-col sm:flex-row justify-between">
+      <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
           <p className="cursor-pointer mx-1 sm:mx-2">Kênh nhà cung cấp</p>
           <p className="cursor-pointer mx-1 sm:mx-2">Trở thành nhà cung cấp</p>
@@ -26,7 +26,7 @@ export default function HeaderCustomer() {
           </div>
         </section>
       </nav>
-      <section className="flex flex-col sm:flex-row justify-between items-center space-x-2 sm:space-x-4 mt-2 sm:mt-4">
+      <section className="w-4/5 m-auto flex flex-col sm:flex-row justify-between items-center space-x-2 sm:space-x-4 mt-2 sm:mt-4">
         <h1 className="font-bold text-2xl sm:text-4xl mx-2 sm:mx-5">
           <Link to="/">AgriMart</Link>
         </h1>
