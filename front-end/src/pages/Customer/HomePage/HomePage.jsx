@@ -1,9 +1,10 @@
+import CategoryShow from "../../../components/CategoryShow/CategoryShow";
 import HeaderCustomer from "../../../components/HeaderCustomer/HeaderCustomer";
 import SlideShow from "../../../components/SlideShow/SlideShow";
 
 function HomePage() {
     return (
-        <div className="h-screen flex flex-col">
+        <div className="h-screen flex flex-col bg-fourth">
         <HeaderCustomer />
         <div className="flex justify-center my-10" >
             {" "}
@@ -23,6 +24,11 @@ function HomePage() {
                 </div>
                 
             </div>
+        </div>
+        <div className="w-3/5 m-auto bg-secondary px-9 py-4 rounded-lg">
+            <h1 className="text-4xl font-bold text-primary">Danh mục sản phẩm</h1>
+            <CategoryShow />
+
         </div>
         </div>
     );
