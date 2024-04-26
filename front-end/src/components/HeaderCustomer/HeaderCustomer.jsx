@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -6,8 +7,34 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../../App.css";
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+
 
 export default function HeaderCustomer() {
+  const [isOpen, setIsOpen] = useState(false);
+  const token = localStorage.getItem("token");
+  let username = null;
+  if (token) {
+    const decodedToken = jwtDecode(token);
+    username = decodedToken?.username;
+  }
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/auth/logout");
+      if (response.status === 200) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      } else {
+        alert("Đăng xuất thất bại");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+      alert("Đã có lỗi xảy ra!");
+    }
+  };
+
   return (
     <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
@@ -21,8 +48,62 @@ export default function HeaderCustomer() {
             <p>Thông báo</p>
           </div>
           <div className="flex space-x-1 sm:space-x-2">
-            <p className="cursor-pointer mx-1 sm:mx-2">Đăng nhập</p>
-            <p className="cursor-pointer mx-1 sm:mx-2">Đăng ký</p>
+            {username ? (
+              <div className="relative inline-block text-left">
+                <div>
+                  <p
+                    className="cursor-pointer mx-1 sm:mx-2"
+                    onClick={() => setIsOpen(!isOpen)}
+                  >
+                    {username}
+                  </p>
+                </div>
+
+                {isOpen && (
+                  <div className=" origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div
+                      className="py-1"
+                      style={{ zIndex: 9999 }} 
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="options-menu"
+                    >
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        role="menuitem"
+                      >
+                        Thay đổi thông tin
+                      </a>
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        role="menuitem"
+                      >
+                        Thay đổi mật khẩu
+                      </a>
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        role="menuitem"
+                        onClick={handleLogout}
+                      >
+                        Đăng xuất
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link to="/login">
+                  <p className="cursor-pointer mx-1 sm:mx-2">Đăng nhập</p>
+                </Link>
+                <Link to="/register/step1">
+                  <p className="cursor-pointer mx-1 sm:mx-2">Đăng ký</p>
+                </Link>
+              </>
+            )}
           </div>
         </section>
       </nav>
@@ -35,13 +116,14 @@ export default function HeaderCustomer() {
             type="text"
             placeholder="Tìm kiếm sản phẩm, thương hiệu và cửa hàng"
             className="w-full p-2 sm:p-3 border rounded-sm placeholder-color pr-5 sm:pr-10 text-primary"
+            style={{ zIndex: 500 }}
           />
           <button className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-4 py-1 sm:py-2 bg-green-500 text-white rounded-lg ">
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
         <button className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0">
-          <FontAwesomeIcon icon={faCartPlus} size="33" sm:size="66" />
+          <FontAwesomeIcon icon={faCartPlus} size="1x" />
         </button>
       </section>
     </header>

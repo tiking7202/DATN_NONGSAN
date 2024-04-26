@@ -15,7 +15,7 @@ function RegisterCustomerStep2() {
   const handleAvatarChange = (event) => {
     setAvatar(event.target.files[0]);
   };
-  console.log(userId);
+  
   const handleSubmit = async () => {
     try {
       const additionalData = {
@@ -29,15 +29,15 @@ function RegisterCustomerStep2() {
       };
       // const formData = new FormData();
       // formData.append("avatar", avatar);
-      // formData.append(JSON.stringify(additionalData));
-      console.log(avatar)
+      // formData.append("additionalData", JSON.stringify(additionalData));
+      // console.log(avatar)
       // Gửi yêu cầu API cho giai đoạn 2 (nhập thông tin phụ và upload avatar)
       await axios.put(
         `http://localhost:3000/api/auth/register/step2/${userId}`,
         additionalData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );

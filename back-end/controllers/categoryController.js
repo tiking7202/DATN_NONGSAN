@@ -1,6 +1,6 @@
 const pool = require('../config/dbConnect');
 
-
+// Đã dùng để gọi tất cả các category trên trang chủ
 exports.getCategories = async (req, res) => {
     try {
         const categories = await pool.query('SELECT * FROM category');

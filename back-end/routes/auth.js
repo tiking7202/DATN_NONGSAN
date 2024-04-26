@@ -12,4 +12,6 @@ router.get('/protected', authMiddlewares, (req, res) => {
     res.json({ message: 'This is a protected route' });
 });
 
+router.get('/logout', authController.logout);
+
 module.exports = router;

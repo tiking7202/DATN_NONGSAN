@@ -1,6 +1,6 @@
 const pool = require('../config/dbConnect');
 
-
+// lấy tất cả sản phẩm
 exports.getProducts = async (req, res) => {
     try {
         const products = await pool.query('SELECT * FROM product');
@@ -11,6 +11,21 @@ exports.getProducts = async (req, res) => {
     }
 };
 
+// Lấy sản phẩm có trong category
+exports.getProductsByCategoryId = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const products = await pool.query('SELECT * FROM product WHERE categoryid = $1', [id]);
+        res.json(products.rows);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
+// Lấy sản phẩm theo id
 exports.getProductById = async (req, res) => {
     const { id } = req.params;
     try {

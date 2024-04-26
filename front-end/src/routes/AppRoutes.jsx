@@ -4,6 +4,7 @@ import RegisterCustomerStep2 from "../pages/Customer/RegisterPage/RegisterCustom
 import HomePage from "../pages/Customer/HomePage/HomePage";
 import LoginCustomer from "../pages/Customer/LoginPage/LoginCustomer";
 import NotFound from "../pages/NotFound/NotFound";
+import CategoryPage from "../pages/Customer/CategoryPage/CategoryPage";
 export default function AppRoutes() {
     return (
         <div>
@@ -13,7 +14,7 @@ export default function AppRoutes() {
                 <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
                 <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
                 <Route path="/login" element={<LoginCustomer />} />
-                {/* <Route path="*" element={<NotFound />} /> */}
+                <Route path="/category/:id" element={<CategoryPage />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>

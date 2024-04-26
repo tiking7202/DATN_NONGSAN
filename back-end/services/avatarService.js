@@ -1,27 +1,17 @@
-const multer = require("multer");
-const { uploadImageToFirebase } = require("../config/firebase"); 
+const multer = require('multer');
 
 // Cấu hình multer
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage }).single("avatar");
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, '../uploads/avatar'); // Thư mục lưu trữ avatar
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // Tên file mới
+    }
+});
 
-const uploadAvatarToFirebase = (req, res, next) => {
-    upload(req, res, (err) => {
-        if (err) {
-        return res.status(400).send(err);
-        }
-        if (!req.file) {
-        return res.status(400).send("No file uploaded");
-        }
-        uploadImageToFirebase(req.file)
-        .then((url) => {
-            req.file.firebaseUrl = url;
-            next();
-        })
-        .catch((error) => res.status(400).send(error));
-    });
-};
+const uploadAvatar = multer({ storage: storage }).single('avatar');
 
 module.exports = {
-    uploadAvatarToFirebase,
+    uploadAvatar,
 };
