@@ -11,7 +11,7 @@ exports.getProducts = async (req, res) => {
     }
 };
 
-// Lấy sản phẩm có trong category
+// Lấy sản phẩm có trong category theo id
 exports.getProductsByCategoryId = async (req, res) => {
     const { id } = req.params;
     try {

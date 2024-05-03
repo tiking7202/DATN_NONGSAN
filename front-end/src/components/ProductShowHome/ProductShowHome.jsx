@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faTractor, faCartPlus } from '@fortawesome/free-solid-svg-icons';
-
+import { Link } from 'react-router-dom';
 export default function ProductShowHome() {
   const [products, setProducts] = useState([]);
 
@@ -31,11 +31,14 @@ export default function ProductShowHome() {
             key={product.productid}
             className="w-1/4 bg-fourth max-w-xs rounded overflow-hidden shadow-lg m-4 cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1"
           >
+          <Link to={`/product/${product.productid}`} key={product.productid}>
+
             <img
               className="w-full h-64 object-cover hover:opacity-80"
               src={product.productimage1}
               alt={product.productname}
             />
+            </Link>
             <div className="px-6 py-4 text-primary">
               <div className="font-bold text-center text-2xl mb-2 ">
                 {product.productname}
@@ -68,12 +71,15 @@ export default function ProductShowHome() {
                     <p className="ml-2">Green Farm</p>
                   </div>
                 </div>
+                
                 <button className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200">
                   <FontAwesomeIcon icon={faCartPlus} size="2x" />
                 </button>
               </div>
             </div>
+
           </div>
+          
         );
       })}
     </div>
