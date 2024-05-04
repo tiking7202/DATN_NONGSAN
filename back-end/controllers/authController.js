@@ -64,15 +64,17 @@ const login = async (req, res) => {
         [usernameOrEmail]
         );
         if (user.rows.length === 0) {
-        return res.status(400).send("Username or email is not exist");
+        return res.status(400).send("Tên đăng nhập hoặc email không tồn tại");
         }
         const validPassword = await bcrypt.compare(password, user.rows[0].password);
         if (!validPassword) {
             console.log(password, user.rows[0].password, validPassword);
-            return res.status(400).send("Password is incorrect");
+            return res.status(400).send("Mật khẩu không chính xác");
         }
-
-
+        const role = user.rows[0].role;
+        if (role !== "customer") {
+            return res.status(400).send("Đây không phải là tài khoản khách hàng");
+        }
         let secretKey = process.env.JWT_SECRET;
         let token = jwt.sign({ id: user.rows[0].id, username: user.rows[0].fullname }, secretKey, {
           expiresIn: "1h",
