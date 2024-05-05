@@ -1,5 +1,5 @@
 import FarmInfoShow from "../../../components/FarmInfoShow/FarmInfoShow";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,10 +15,13 @@ export default function ProductDetail() {
   useEffect(() => {
     axios
       .get(`http://localhost:3000/api/product/${id}`)
-      .then((response) => setProduct(response.data))
+      .then((response) => {
+        console.log(response.data); 
+        setProduct(response.data);
+      })
       .catch((error) => console.error(error));
   }, [id]);
-
+  
   const [currentImage, setCurrentImage] = useState("");
   const [isChanging, setIsChanging] = useState(false);
 

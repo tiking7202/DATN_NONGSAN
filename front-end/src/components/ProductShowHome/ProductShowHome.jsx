@@ -16,6 +16,7 @@ export default function ProductShowHome() {
       });
   }, []);
 
+
   return (
     <div className=" m-auto flex flex-wrap justify-center ">
       {products.map(product => {
