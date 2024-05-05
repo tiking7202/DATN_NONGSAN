@@ -76,7 +76,7 @@ const login = async (req, res) => {
             return res.status(400).send("Đây không phải là tài khoản khách hàng");
         }
         let secretKey = process.env.JWT_SECRET;
-        let token = jwt.sign({ id: user.rows[0].id, username: user.rows[0].fullname }, secretKey, {
+        let token = jwt.sign({ userid: user.rows[0].userid, username: user.rows[0].fullname }, secretKey, {
           expiresIn: "1h",
         });
 

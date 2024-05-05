@@ -7,17 +7,21 @@ import {
   faShoppingCart,
   faMoneyBillWave,
 } from "@fortawesome/free-solid-svg-icons";
+import { addToCart } from "../../../service/cartService";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ProductDetail() {
+  const navigate = useNavigate();
   let { id } = useParams();
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    console.log(id);
     axios
       .get(`http://localhost:3000/api/product/${id}`)
       .then((response) => {
-        console.log(response.data);
         setProduct(response.data);
       })
       .catch((error) => console.error(error));
@@ -32,6 +36,25 @@ export default function ProductDetail() {
       setCurrentImage(newImage);
       setIsChanging(false);
     }, 100);
+  };
+
+  const handleAddToCart = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Đăng nhập để thêm vào giỏ hàng!");
+      navigate("/login");
+    } else {
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userid;
+      addToCart(product.productid, userId)
+        .then((response) => {
+          console.log(response.data);
+          toast.success("Thêm vào giỏ hàng thành công!");
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    }
   };
 
   return (
@@ -97,7 +120,10 @@ export default function ProductDetail() {
                       </span>
                     </p>
                     <div className="">
-                      <button className="bg-primary text-white p-3 rounded-md mt-4">
+                      <button
+                        className="bg-primary text-white p-3 rounded-md mt-4"
+                        onClick={handleAddToCart}
+                      >
                         Thêm vào giỏ hàng
                         <FontAwesomeIcon
                           icon={faShoppingCart}
