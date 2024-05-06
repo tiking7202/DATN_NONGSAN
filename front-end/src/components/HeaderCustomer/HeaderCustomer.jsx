@@ -9,10 +9,11 @@ import "../../App.css";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 export default function HeaderCustomer() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   let username = null;
   if (token) {
@@ -25,7 +26,7 @@ export default function HeaderCustomer() {
       const response = await axios.get("http://localhost:3000/api/auth/logout");
       if (response.status === 200) {
         localStorage.removeItem("token");
-        window.location.href = "/login";
+        navigate("/login");
       } else {
         alert("Đăng xuất thất bại");
       }
@@ -34,6 +35,10 @@ export default function HeaderCustomer() {
       alert("Đã có lỗi xảy ra!");
     }
   };
+
+  const handleCartClick = () => {
+    token ? navigate("/cart") : navigate("/login");
+  }
 
   return (
     <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
@@ -122,7 +127,7 @@ export default function HeaderCustomer() {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
-        <button className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0">
+        <button className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0" onClick={handleCartClick}>
           <FontAwesomeIcon icon={faCartPlus} size="1x" />
         </button>
       </section>

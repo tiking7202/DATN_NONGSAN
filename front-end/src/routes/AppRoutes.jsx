@@ -6,6 +6,7 @@ import LoginCustomer from "../pages/Customer/LoginPage/LoginCustomer";
 import NotFound from "../pages/NotFound/NotFound";
 import CategoryPage from "../pages/Customer/CategoryPage/CategoryPage";
 import ProductDetailShow from "../pages/Customer/ProductDetail/ProductDetailShow";
+import CartPage from "../pages/Customer/CartPage/CartPage";
 export default function AppRoutes() {
     return (
         <div>
@@ -17,6 +18,7 @@ export default function AppRoutes() {
                 <Route path="/product/:id" element={<ProductDetailShow />} />
                 <Route path="/login" element={<LoginCustomer />} />
                 <Route path="/category/:id" element={<CategoryPage />} />
+                <Route path="cart" element={<CartPage />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>
