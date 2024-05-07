@@ -8,7 +8,7 @@ function HomePage() {
     return (
         <div className="h-screen flex flex-col bg-fourth">
         <HeaderCustomer />
-        <div className="flex justify-center my-10">
+        <div className="flex justify-center my-10 mt-44">
             {" "}
             {/* Add flex here */}
             <SlideShow className="w-3/5" />
@@ -33,7 +33,7 @@ function HomePage() {
             <h1 className="text-4xl font-bold text-primary">Danh mục sản phẩm</h1>
             <CategoryShow />
         </div>
-        <div className="w-4/5 m-auto">
+        <div className="w-full m-auto bg-fourth">
             <ProductShowHome />
         </div>
         <FooterCustomer />

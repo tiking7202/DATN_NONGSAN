@@ -7,19 +7,20 @@ import NotFound from "../pages/NotFound/NotFound";
 import CategoryPage from "../pages/Customer/CategoryPage/CategoryPage";
 import ProductDetailShow from "../pages/Customer/ProductDetail/ProductDetailShow";
 import CartPage from "../pages/Customer/CartPage/CartPage";
+
 export default function AppRoutes() {
     return (
         <div>
         <Router>
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
-                <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
-                <Route path="/product/:id" element={<ProductDetailShow />} />
-                <Route path="/login" element={<LoginCustomer />} />
-                <Route path="/category/:id" element={<CategoryPage />} />
-                <Route path="cart" element={<CartPage />} />
-                <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
+            <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
+            <Route path="/product/:id" element={<ProductDetailShow />} />
+            <Route path="/login" element={<LoginCustomer />} />
+            <Route path="/category/:id" element={<CategoryPage />} />
+            <Route path="cart" element={<CartPage />} />
+            <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>
         </div>

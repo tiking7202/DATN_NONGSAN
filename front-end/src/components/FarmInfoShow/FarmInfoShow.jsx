@@ -19,11 +19,11 @@ export default function FarmInfoShow() {
   // }, [farmId]);
 
   return (
-    <>
+    <div>
       <HeaderCustomer />
 
-      <div className="bg-fourth">
-        <div className="w-4/5 mx-auto bg-white p-3 rounded-md">
+      <div className="bg-fourth mt-32">
+        <div className="w-4/5 mx-auto bg-white px-3 pt-8 pb-5 rounded-md">
           <p className="font-bold text-2xl text-primary">
             Tên trang trại: <span className="ml-3 text-third">Green Farm</span>
           </p>
@@ -58,6 +58,6 @@ export default function FarmInfoShow() {
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }

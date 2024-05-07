@@ -27,7 +27,7 @@ function CategoryPage() {
   return (
     <>
       <HeaderCustomer />
-      <div className="w-4/5 m-auto flex flex-wrap justify-center ">
+      <div className="w-4/5 m-auto flex flex-wrap justify-center mt-32">
         {products.map((product) => {
           const currentDate = new Date();
           const expireDate = new Date(product.expirydate);

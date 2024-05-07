@@ -10,6 +10,9 @@ import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 
 export default function HeaderCustomer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,11 +31,15 @@ export default function HeaderCustomer() {
         localStorage.removeItem("token");
         navigate("/login");
       } else {
-        alert("Đăng xuất thất bại");
+        toast.error('Đăng xuất thất bại. Vui lòng thử lại.', {
+          position: 'top-right'
+        });
       }
     } catch (error) {
       console.error("Error during logout:", error);
-      alert("Đã có lỗi xảy ra!");
+      toast.error(error, {
+        position: 'top-right'
+      });
     }
   };
 
@@ -41,7 +48,7 @@ export default function HeaderCustomer() {
   }
 
   return (
-    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
+    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-50">
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
           <p className="cursor-pointer mx-1 sm:mx-2">Kênh nhà cung cấp</p>
@@ -65,7 +72,7 @@ export default function HeaderCustomer() {
                 </div>
 
                 {isOpen && (
-                  <div className=" origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <div
                       className="py-1"
                       style={{ zIndex: 9999 }} 
@@ -75,21 +82,21 @@ export default function HeaderCustomer() {
                     >
                       <a
                         href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
                         Thay đổi thông tin
                       </a>
                       <a
                         href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
                         Thay đổi mật khẩu
                       </a>
                       <a
                         href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                         onClick={handleLogout}
                       >

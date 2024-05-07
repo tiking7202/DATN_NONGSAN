@@ -5,6 +5,8 @@ import { jwtDecode } from "jwt-decode";
 import FooterCustomer from "../../../components/FooterCustomer/FooterCustomer";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
@@ -52,6 +54,9 @@ export default function CartPage() {
                       `http://localhost:3000/api/delete-cart/${userId}/${productId}`
                     );
                     console.log(response.data);
+                    toast.success('Xóa thành công sản phẩm từ giỏ hàng của bạn', {
+                      position: 'top-right'
+                    });
                     setCart(cart.filter(item => item.productid !== productId));
                     // Update your state here to reflect the change in the cart
                   } catch (error) {
@@ -73,7 +78,7 @@ export default function CartPage() {
     <div className="bg-fourth">
       <HeaderCustomer />
 
-      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-5">
+      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32">
         <h1 className="font-bold text-primary text-2xl">GIỎ HÀNG CỦA BẠN</h1>
       </div>
 
