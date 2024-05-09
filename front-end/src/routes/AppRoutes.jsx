@@ -7,6 +7,7 @@ import NotFound from "../pages/NotFound/NotFound";
 import CategoryPage from "../pages/Customer/CategoryPage/CategoryPage";
 import ProductDetailShow from "../pages/Customer/ProductDetail/ProductDetailShow";
 import CartPage from "../pages/Customer/CartPage/CartPage";
+import FarmDetails from "../components/FarmDetails/FarmDetails";
 
 export default function AppRoutes() {
     return (
@@ -20,6 +21,7 @@ export default function AppRoutes() {
             <Route path="/login" element={<LoginCustomer />} />
             <Route path="/category/:id" element={<CategoryPage />} />
             <Route path="cart" element={<CartPage />} />
+            <Route path="farm/:id" element={<FarmDetails />} />
             <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>

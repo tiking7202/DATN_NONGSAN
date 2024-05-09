@@ -15,8 +15,13 @@ exports.getProducts = async (req, res) => {
 exports.getProductsByCategoryId = async (req, res) => {
     const { id } = req.params;
     try {
+        const category = await pool.query('SELECT * FROM category WHERE categoryid = $1', [id]);
         const products = await pool.query('SELECT * FROM product WHERE categoryid = $1', [id]);
-        res.json(products.rows);
+        const productsWithFarm = await Promise.all(products.rows.map(async product => {
+            const farm = await pool.query('SELECT * FROM farm WHERE farmid = (SELECT farmid FROM product WHERE productid = $1)', [product.productid]);
+            return { ...product, farm: farm.rows[0], category: category.rows[0].categoryname};
+        }));
+        res.json(productsWithFarm);
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ message: 'Internal Server Error' });

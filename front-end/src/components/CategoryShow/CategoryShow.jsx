@@ -28,7 +28,7 @@ function CategoryShow() {
   };
 
   return (
-    <div className="my-10">
+    <div className="mt-10 ">
       <Slider {...settings}>
         {categories.map((category) => (
           <div

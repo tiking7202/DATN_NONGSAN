@@ -7,11 +7,12 @@ import {
   faShoppingCart,
   faMoneyBillWave,
 } from "@fortawesome/free-solid-svg-icons";
-import { addToCart } from "../../../service/cartService";
+import { addToCart } from "../../../service/CustomerService/cartService.js";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FooterCustomer from "../../../components/FooterCustomer/FooterCustomer.jsx";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
@@ -222,6 +223,7 @@ export default function ProductDetail() {
           </div>
         </div>
       )}
+      <FooterCustomer />  
     </>
   );
 }
