@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { API_BASE_URL } from "../../config/config";
 
 export default function FarmInfoShow() {
   const [farm, setFarm] = useState(null);
@@ -10,7 +11,7 @@ export default function FarmInfoShow() {
   const id = location.pathname.split("/").pop();
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/farm/product/${id}`)
+      .get(`${API_BASE_URL}/farm/product/${id}`)
       .then((response) => {
         setFarm(response.data);
       })

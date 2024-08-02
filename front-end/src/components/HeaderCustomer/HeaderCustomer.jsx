@@ -20,8 +20,10 @@ export default function HeaderCustomer() {
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
   let username = null;
+  // let userid = null;
   if (token) {
     const decodedToken = jwtDecode(token);
+    // userid = decodedToken?.userid;
     username = decodedToken?.username;
   }
 
@@ -31,9 +33,7 @@ export default function HeaderCustomer() {
       if (response.status === 200) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        toast.success('Đăng xuất thành công!', {
-          position: 'top-right'
-        });
+        toast.success("Đăng xuất thành công!");
         navigate("/login");
         console.log(response);
       } 

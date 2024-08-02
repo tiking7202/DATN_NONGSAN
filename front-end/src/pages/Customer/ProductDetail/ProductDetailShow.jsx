@@ -40,7 +40,7 @@ export default function ProductDetail() {
   };
 
   const handleAddToCart = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (!token) {
       toast.error("Đăng nhập để thêm vào giỏ hàng!");
       navigate("/login");

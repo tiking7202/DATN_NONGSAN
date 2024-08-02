@@ -45,9 +45,7 @@ const LoginCustomer = () => {
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
         // Chưa hoạt dộng được
-        toast.success("Đăng nhập thành công!", {
-          position: "top-right",
-        });
+        toast.success("Thêm vào giỏ hàng thành công!");
         callProtectedApi();
         // Điều hướng người dùng đến trang chính
         navigate("/");

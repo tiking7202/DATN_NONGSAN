@@ -83,9 +83,8 @@ const login = async (req, res) => {
         }
 
         // Generate access token and refresh token
-        const accessToken = generateAccessToken(user.rows[0].username);
+        const accessToken = generateAccessToken(user.rows[0].userid, user.rows[0].username);
         const refreshToken = generateRefreshToken(user.rows[0].username);
-
         // Store refresh token in the database
         await pool.query('UPDATE "User" SET refreshToken = $1 WHERE userid = $2', [
             refreshToken,

@@ -7,17 +7,16 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { API_BASE_URL } from "../../../config/config";
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
-
   const userId = decodedToken.userid;
-
   useEffect(() => {
     axios
-      .post(`http://localhost:3000/api/cart`, { userId })
+      .post(`${API_BASE_URL}/cart`, { userId })
       .then((response) => {
         setCart(response.data);
       })
@@ -51,7 +50,7 @@ export default function CartPage() {
                 onClick={async () => {
                   try {
                     const response = await axios.delete(
-                      `http://localhost:3000/api/delete-cart/${userId}/${productId}`
+                      `${API_BASE_URL}/delete-cart/${userId}/${productId}`
                     );
                     console.log(response.data);
                     toast.success('Xóa thành công sản phẩm từ giỏ hàng của bạn', {
