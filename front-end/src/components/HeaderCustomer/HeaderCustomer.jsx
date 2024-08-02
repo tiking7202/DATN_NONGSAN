@@ -10,14 +10,15 @@ import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { API_BASE_URL } from "../../config/config";
 
 
 export default function HeaderCustomer() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("accessToken");
   let username = null;
   if (token) {
     const decodedToken = jwtDecode(token);
@@ -26,11 +27,17 @@ export default function HeaderCustomer() {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/auth/logout");
+      const response = await axios.get(`${API_BASE_URL}/auth/logout`);
       if (response.status === 200) {
-        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        toast.success('Đăng xuất thành công!', {
+          position: 'top-right'
+        });
         navigate("/login");
-      } else {
+        console.log(response);
+      } 
+      else {
         toast.error('Đăng xuất thất bại. Vui lòng thử lại.', {
           position: 'top-right'
         });
@@ -40,6 +47,7 @@ export default function HeaderCustomer() {
       toast.error(error, {
         position: 'top-right'
       });
+      
     }
   };
 
@@ -49,6 +57,7 @@ export default function HeaderCustomer() {
 
   return (
     <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-50">
+      <ToastContainer />
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
           <p className="cursor-pointer mx-1 sm:mx-2">Kênh nhà cung cấp</p>

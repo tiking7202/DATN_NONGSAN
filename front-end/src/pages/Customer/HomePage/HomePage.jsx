@@ -8,6 +8,7 @@ function HomePage() {
     return (
         <div className="h-screen flex flex-col bg-fourth">
         <HeaderCustomer />
+        {/* <ToastContainer /> */}
         <div className="flex justify-center my-10 mt-44">
             {" "}
             {/* Add flex here */}

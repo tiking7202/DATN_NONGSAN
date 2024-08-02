@@ -3,135 +3,210 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_BASE_URL } from "../../../config/config";
 
 const LoginCustomer = () => {
-    const [credentials, setCredentials] = useState({
-        usernameOrEmail: "",
-        password: "",
-    });
-    const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
+  const [credentials, setCredentials] = useState({
+    usernameOrEmail: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setCredentials({ ...credentials, [name]: value });
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials({ ...credentials, [name]: value });
+  };
 
-    const handlePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Kiểm tra nếu username/email và password không rỗng
+    if (!credentials.usernameOrEmail || !credentials.password) {
+      toast.error("Vui lòng nhập đầy đủ thông tin đăng nhập.", {
+        position: "top-right",
+      });
+      return;
+    }
 
-        // Kiểm tra nếu username/email và password không rỗng
-        if (!credentials.usernameOrEmail || !credentials.password) {
-            toast.error('Vui lòng nhập đầy đủ thông tin đăng nhập.', {
-                position: 'top-right'
-            });
-            return;
-        }
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/login`,
+        credentials
+      );
+      // Hiển thị thông báo đăng nhập thành công
+      if (response.status === 200) {
+        
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.refreshToken);
+        // Chưa hoạt dộng được
+        toast.success("Đăng nhập thành công!", {
+          position: "top-right",
+        });
+        callProtectedApi();
+        // Điều hướng người dùng đến trang chính
+        navigate("/");
+      }
+      // De tranh loi thoi
+      if(response.status === 201)   getAuthToken();
+    } catch (error) {
+      // Hiển thị thông báo đăng nhập thất bại
+      toast.error(error.response.data, {
+        position: "top-right",
+      });
+    }
+  };
 
-        try {
-            const response = await axios.post(
-                "http://localhost:3000/api/auth/login",
-                credentials
-            );
-            localStorage.setItem("token", response.data.token);
-            // Hiển thị thông báo đăng nhập thành công
-            toast.success('Đăng nhập thành công!', {
-                position: 'top-right'
-            });
-            
-            // Điều hướng người dùng đến trang chính
-            navigate("/");
+  const refreshToken = async () => {
+    try {
+      const refreshToken = localStorage.getItem("refreshToken");
+      const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
+        refreshToken,
+      });
+      localStorage.setItem("accessToken", response.data.token);
+      return response.data.accessToken;
+    } catch (error) {
+      console.error("Refresh token error:", error);
+      toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", {
+        position: "top-right",
+      });
+      navigate("/login");
+    }
+  };
 
-        } catch (error) {
-            console.error("Login error:", error);
-            // Hiển thị thông báo đăng nhập thất bại
-            toast.error('Đăng nhập thất bại. Vui lòng thử lại.', {
-                position: 'top-right'
-            });
-        }
-    };
+  const getAuthToken = async () => {
+    let token = localStorage.getItem("accessToken");
+    // Check if token is expired and refresh if necessary
+    if (isTokenExpired(token)) {
+      token = await refreshToken();
+    }
+    return token;
+  };
+  const isTokenExpired = (token) => {
+    if (!token) return true;
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 < Date.now();
+  };
 
-    return (
-        <div className="backgroundImg">
-            <ToastContainer />
-            <div className="w-1/4 m-auto bg-fourth rounded-2xl">
-                <h1 className="text-primary py-3 font-bold text-center text-40">
-                Đăng Nhập
-                </h1>
+  // Hàm để gọi API với Bearer token
+  const callProtectedApi = async () => {
+    const token = localStorage.getItem("accessToken");
 
-                <div className="p-3 my-2">
-                    <div className="bg-secondary mx-2 rounded-t-xl p-2">
-                        <label
-                        htmlFor="usernameOrEmail"
-                        className="block text-xl text-primary font-bold mb-2"
-                        >
-                        Username hoặc email
-                        </label>
-                        <input
-                        type="text"
-                        placeholder="Username hoặc email"
-                        name="usernameOrEmail"
-                        value={credentials.usernameOrEmail}
-                        onChange={handleChange}
-                        className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
-                        />
-                    </div>
-                <div className="bg-secondary mx-2 rounded-b-xl p-2">
-                    <label
-                    htmlFor="usernameOrEmail"
-                    className="block text-xl text-primary font-bold mb-2"
-                    >
-                    Mật khẩu
-                    </label>
-                    <div className="relative">
-                    <input
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Mật khẩu"
-                        value={credentials.password}
-                        onChange={handleChange}
-                        className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
-                    />
-                    <FontAwesomeIcon
-                        icon={showPassword ? faEyeSlash : faEye}
-                        onClick={handlePasswordVisibility}
-                        className="absolute right-3 top-3 cursor-pointer"
-                    />
-                    </div>
-                    <div className="flex justify-between my-3">
-                    <div>
-                        <input type="checkbox" className="mr-2" />
-                        <label className="text-primary">Ghi nhớ mật khẩu</label>
-                    </div>
-                    <a href="/forgot-password" className="text-primary">
-                        Quên mật khẩu?
-                    </a>
-                    </div>
-                </div>
-                </div>
-                <div className="flex items-center flex-col mx-5 mb-5">
-                    <button
-                        type="submit"
-                        onClick={handleSubmit}
-                        className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full"
-                    >
-                        Đăng nhập
-                    </button>
-                    <p className="text-primary text-xl m-2">Hoặc</p>
-                    <button 
-                        className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full"
-                    >Đăng ký với google</button>
-                    <p className="text-primary">Bạn chưa có tài khoản? <Link className="text-third" to="/register/step1">Đăng ký</Link></p>
-                </div>
+    if (!token) {
+      toast.error("Bạn chưa đăng nhập. Vui lòng đăng nhập lại.", {
+        position: "top-right",
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${API_BASE_URL}/auth/protected`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Protected data:", response.data);
+    } catch (error) {
+      console.error("Error calling protected API:", error);
+
+      if (error.response && error.response.status === 401) {
+        toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", {
+          position: "top-right",
+        });
+      } else {
+        toast.error("Có lỗi xảy ra. Vui lòng thử lại.", {
+          position: "top-right",
+        });
+      }
+    }
+  };
+
+  return (
+    <div className="backgroundImg">
+      <ToastContainer />
+      <div className="w-1/4 m-auto bg-fourth rounded-2xl">
+        <h1 className="text-primary py-3 font-bold text-center text-40">
+          Đăng Nhập
+        </h1>
+
+        <div className="p-3 my-2">
+          <div className="bg-secondary mx-2 rounded-t-xl p-2">
+            <label
+              htmlFor="usernameOrEmail"
+              className="block text-xl text-primary font-bold mb-2"
+            >
+              Username hoặc email
+            </label>
+            <input
+              type="text"
+              placeholder="Username hoặc email"
+              name="usernameOrEmail"
+              value={credentials.usernameOrEmail}
+              onChange={handleChange}
+              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+            />
+          </div>
+          <div className="bg-secondary mx-2 rounded-b-xl p-2">
+            <label
+              htmlFor="usernameOrEmail"
+              className="block text-xl text-primary font-bold mb-2"
+            >
+              Mật khẩu
+            </label>
+            <div className="relative">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Mật khẩu"
+                value={credentials.password}
+                onChange={handleChange}
+                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              />
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                onClick={handlePasswordVisibility}
+                className="absolute right-3 top-3 cursor-pointer"
+              />
             </div>
+            <div className="flex justify-between my-3">
+              <div>
+                <input type="checkbox" className="mr-2" />
+                <label className="text-primary">Ghi nhớ mật khẩu</label>
+              </div>
+              <a href="/forgot-password" className="text-primary">
+                Quên mật khẩu?
+              </a>
+            </div>
+          </div>
         </div>
-    );
+        <div className="flex items-center flex-col mx-5 mb-5">
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full"
+          >
+            Đăng nhập
+          </button>
+          <p className="text-primary text-xl m-2">Hoặc</p>
+          <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full">
+            Đăng ký với google
+          </button>
+          <p className="text-primary">
+            Bạn chưa có tài khoản?{" "}
+            <Link className="text-third" to="/register/step1">
+              Đăng ký
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default LoginCustomer;

@@ -49,7 +49,7 @@ export default function FarmInfoShow() {
         </div>
         {/* Navigation */}
         <div className="w-4/5 bg-white rounded-md m-auto mt-3 flex p-5">
-          <Link to="/" className="text-2xl font-bold text-primary mx-5">
+          <Link to={`/farm/${id}`} className="text-2xl font-bold text-primary mx-5">
             Giới thiệu
           </Link>
           <Link to="/" className="text-2xl font-bold text-primary mx-5">
