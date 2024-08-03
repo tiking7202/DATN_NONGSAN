@@ -53,7 +53,10 @@ export default function ProductDetail() {
   const handleAddToCart = () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      toast.error("Đăng nhập để thêm vào giỏ hàng!");
+      toast.error("Đăng nhập để thêm vào giỏ hàng!", {
+        position: "top-right",
+        time: 500,
+      });
       navigate("/login");
     } else {
       const decodedToken = jwtDecode(token);
@@ -61,10 +64,16 @@ export default function ProductDetail() {
       addToCart(product.productid, userId, quantity)
         .then((response) => {
           response;
-          toast.success("Thêm vào giỏ hàng thành công!");
+          toast.success("Thêm vào giỏ hàng thành công!", {
+            position: "top-right",
+            time: 500,
+          });
         })
         .catch((error) => {
-          toast.error(error.response.data.message);
+          toast.error(error.response.data.message, {
+            position: "top-right",
+            time: 500,
+          });
         });
     }
   };

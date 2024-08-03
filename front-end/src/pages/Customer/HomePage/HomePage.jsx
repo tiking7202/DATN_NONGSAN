@@ -1,11 +1,23 @@
+import { useEffect } from "react";
+import { useToast } from "../../../../context/ToastContext";
 import CategoryShow from "../../../components/CustomerComponent/CategoryShow/CategoryShow";
 import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer";
 import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
 
 import ProductShowHome from "../../../components/CustomerComponent/ProductShowHome/ProductShowHome";
 import SlideShow from "../../../components/CustomerComponent/SlideShow/SlideShow";
+import { toast } from "react-toastify";
 
 function HomePage() {
+
+  const { toastMessage, setToastMessage } = useToast();
+  useEffect(() => {
+    if (toastMessage) {
+      toast.success(toastMessage);
+      setToastMessage(null); 
+    }
+  }, [toastMessage, setToastMessage]);
+
   return (
     <div className="h-screen flex flex-col bg-fourth">
       <HeaderCustomer />

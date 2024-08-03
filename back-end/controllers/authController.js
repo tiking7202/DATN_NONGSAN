@@ -9,11 +9,53 @@ const { use } = require("../routes/auth");
 // Đăng ký tài khoản b1
 const registerStep1 = async (req, res) => {
   try {
-    const { username, password, email, fullname, phonenumber, role, status } =
-      req.body;
+    const { username, password, email, fullname, phonenumber, role, status } = req.body;
+    
+    // Validate required fields
+    if (!username || !password || !email || !fullname || !phonenumber || !role || !status) {
+      return res.status(400).send("All fields are required");
+    }
+
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    // Lưu thông tin cơ bản vào cơ sở dữ liệu
+
+    // Check for existing username
+    const existingUsername = await pool.query(
+      'SELECT * FROM "User" WHERE username = $1',
+      [username]
+    );
+    if (existingUsername.rows.length > 0) {
+      return res.status(400).send("Username đã tồn tại");
+    }
+
+    // Check for existing email
+    const existingEmail = await pool.query(
+      'SELECT * FROM "User" WHERE email = $1',
+      [email]
+    );
+    if (existingEmail.rows.length > 0) {
+      return res.status(400).send("Email đã tồn tại, vui lòng chọn email khác");
+    }
+
+    // Check for existing fullname
+    const existingFullname = await pool.query(
+      'SELECT * FROM "User" WHERE fullname = $1',
+      [fullname]
+    );
+    if (existingFullname.rows.length > 0) {
+      return res.status(400).send("Họ và tên đã tồn tại, vui lòng chọn họ và tên khác");
+    }
+
+    // Check for existing phonenumber
+    const existingPhonenumber = await pool.query(
+      'SELECT * FROM "User" WHERE phonenumber = $1',
+      [phonenumber]
+    );
+    if (existingPhonenumber.rows.length > 0) {
+      return res.status(400).send("Số điện thoại đã tồn tại, vui lòng chọn số điện thoại khác");
+    }
+
+    // Insert new user
     const newUser = await pool.query(
       'INSERT INTO "User" (username, password, email, fullname, phonenumber, role, status) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
       [username, hashedPassword, email, fullname, phonenumber, role, status]
@@ -25,6 +67,7 @@ const registerStep1 = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 // Đăng ký tài khoản b2
 const registerStep2 = async (req, res) => {
   try {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +6,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
+import { useToast } from "../../../../context/ToastContext";
 
 const LoginCustomer = () => {
   const [credentials, setCredentials] = useState({
@@ -13,6 +14,18 @@ const LoginCustomer = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+
+  const { toastMessage, setToastMessage } = useToast();
+  useEffect(() => {
+    if (toastMessage) {
+      toast.success(toastMessage, {
+        position: "top-right",
+        time: 500,
+      });
+      setToastMessage(null); 
+    }
+  }, [toastMessage, setToastMessage]);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -30,6 +43,7 @@ const LoginCustomer = () => {
     if (!credentials.usernameOrEmail || !credentials.password) {
       toast.error("Vui lòng nhập đầy đủ thông tin đăng nhập.", {
         position: "top-right",
+        time: 500,
       });
       return;
     }
@@ -45,7 +59,8 @@ const LoginCustomer = () => {
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
         // Chưa hoạt dộng được
-        toast.success("Thêm vào giỏ hàng thành công!");
+        // toast.success("Đăng nhập thành công!");
+        setToastMessage("Đăng nhập thành công");
         callProtectedApi();
         // Điều hướng người dùng đến trang chính
         navigate("/");
@@ -56,6 +71,7 @@ const LoginCustomer = () => {
       // Hiển thị thông báo đăng nhập thất bại
       toast.error(error.response.data, {
         position: "top-right",
+        time: 500,
       });
     }
   };
@@ -72,6 +88,7 @@ const LoginCustomer = () => {
       console.error("Refresh token error:", error);
       toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", {
         position: "top-right",
+        time: 500,
       });
       navigate("/login");
     }
@@ -98,6 +115,7 @@ const LoginCustomer = () => {
     if (!token) {
       toast.error("Bạn chưa đăng nhập. Vui lòng đăng nhập lại.", {
         position: "top-right",
+        time: 500,
       });
       return;
     }
@@ -116,10 +134,12 @@ const LoginCustomer = () => {
       if (error.response && error.response.status === 401) {
         toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", {
           position: "top-right",
+          time: 500,
         });
       } else {
         toast.error("Có lỗi xảy ra. Vui lòng thử lại.", {
           position: "top-right",
+          time: 500,
         });
       }
     }

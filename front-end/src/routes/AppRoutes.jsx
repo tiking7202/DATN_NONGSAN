@@ -8,24 +8,29 @@ import CategoryPage from "../pages/Customer/CategoryPage/CategoryPage";
 import ProductDetailShow from "../pages/Customer/ProductDetail/ProductDetailShow";
 import CartPage from "../pages/Customer/CartPage/CartPage";
 import SearchPage from "../pages/Customer/SearchPage/SearchPage";
+import { ToastProvider } from "../../context/ToastContext";
 
 export default function AppRoutes() {
     return (
-        <div>
+        <ToastProvider>
         <Router>
             <Routes>
             <Route path="/" element={<HomePage />} />
+
+            {/* Route cho customer  */}
             <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
             <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
-            <Route path="/product/:id" element={<ProductDetailShow />} />
             <Route path="/login" element={<LoginCustomer />} />
+            <Route path="/product/:id" element={<ProductDetailShow />} />
             <Route path="/category/:id" element={<CategoryPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/search" element={<SearchPage />} />
-            {/* <Route path="/farm/:id" element={<FarmDetails />} /> */}
+
+            {/* Route cho farmer */}
+
             <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>
-        </div>
+        </ToastProvider>
     );
 }

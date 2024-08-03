@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
+import { useToast } from "../../../../context/ToastContext";
 
 export default function HeaderCustomer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,24 +26,30 @@ export default function HeaderCustomer() {
     username = decodedToken?.username;
   }
 
+  //set toast khi logout
+  const { setToastMessage } = useToast();
+
   const handleLogout = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/auth/logout`);
       if (response.status === 200) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        toast.success("Đăng xuất thành công!");
+        setToastMessage("Đăng xuất thành công!");
+        
         navigate("/login");
-        console.log(response);
+        // console.log(response);
       } else {
         toast.error("Đăng xuất thất bại. Vui lòng thử lại.", {
           position: "top-right",
+          time: 500,
         });
       }
     } catch (error) {
       console.error("Error during logout:", error);
-      toast.error(error, {
+      toast.error(error,{
         position: "top-right",
+        time: 500,
       });
     }
   };

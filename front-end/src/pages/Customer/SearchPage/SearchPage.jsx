@@ -5,6 +5,7 @@ import { addToCart } from "../../../service/CustomerService/cartService";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
+import FooterCustomer from './../../../components/CustomerComponent/FooterCustomer/FooterCustomer';
 
 
 function SearchPage() {
@@ -16,7 +17,10 @@ function SearchPage() {
     const accessToken = localStorage.getItem("accessToken");
     
     if (!accessToken) {
-      toast.error("Đăng nhập để thêm vào giỏ hàng!");
+      toast.error("Đăng nhập để thêm vào giỏ hàng!", {
+        position: "top-right",
+        time: 500,
+      });
       navigate("/login");
     } else {
       const decodedToken = jwtDecode(accessToken)
@@ -25,10 +29,16 @@ function SearchPage() {
       addToCart(productId, userId, 1)
         .then((response) => {
           response;
-          toast.success("Thêm vào giỏ hàng thành công!");
+          toast.success("Thêm vào giỏ hàng thành công!", {
+            position: "top-right",
+            time: 500,
+          });
         })
         .catch((error) => {
-          toast.error(error.response.data.message);
+          toast.error(error.response.data.message, {
+            position: "top-right",
+            time: 500,
+          });
         });
     }
   }
@@ -119,6 +129,8 @@ function SearchPage() {
             );
           })}
         </div>
+
+        <FooterCustomer />
     </div>
   )
 }

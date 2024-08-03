@@ -1,23 +1,84 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import '../../../../App.css';
-function RegisterCustomerStep2() {
+import "../../../../App.css";
+import { API_BASE_URL } from "../../../../config/config";
+import { toast, ToastContainer } from "react-toastify";
+import { useToast } from "../../../../../context/ToastContext";
+
+const RegisterCustomerStep2 = () => {
+  const navigate = useNavigate();
+  // Khai báo các state cần thiết dùng để lưu thông tin nhập vào từ form
   const [street, setStreet] = useState("");
   const [commune, setCommune] = useState("");
   const [district, setDistrict] = useState("");
   const [province, setProvince] = useState("");
   const [identityCard, setIdentityCard] = useState("");
-  const [avatar, setAvatar] = useState(null);
-  // const { userId } = useParams();
-  const location = useLocation();
-  const userId = new URLSearchParams(location.search).get('userid');
-  const handleAvatarChange = (event) => {
-    setAvatar(event.target.files[0]);
+  // const [avatar, setAvatar] = useState(null);
+
+  // state dùng để lưu thông báo lỗi
+  const [streetError, setStreetError] = useState("");
+  const [communeError, setCommuneError] = useState("");
+  const [districtError, setDistrictError] = useState("");
+  const [provinceError, setProvinceError] = useState("");
+  const [identityCardError, setIdentityCardError] = useState("");
+  // const [avatarError, setAvatarError] = useState("");
+
+  const validate = () => {
+    let isValid = true;
+
+    if (!street) {
+      setStreetError("Tên đường là bắt buộc");
+      isValid = false;
+    } else {
+      setStreetError("");
+    }
+
+    if (!commune) {
+      setCommuneError("Tên phường/xã là bắt buộc");
+      isValid = false;
+    } else {
+      setCommuneError("");
+    }
+
+    if (!district) {
+      setDistrictError("Quận/Huyện là bắt buộc");
+      isValid = false;
+    } else {
+      setDistrictError("");
+    }
+
+    if (!province) {
+      setProvinceError("Tỉnh/Thành phố là bắt buộc");
+      isValid = false;
+    } else {
+      setProvinceError("");
+    }
+
+    if (!identityCard) {
+      setIdentityCardError("Số CMND là bắt buộc");
+      isValid = false;
+    } else {
+      setIdentityCardError("");
+    }
+
+    return isValid;
   };
-  
+
+  const { setToastMessage } = useToast();
+
+  const location = useLocation();
+  const userId = new URLSearchParams(location.search).get("userid");
+  const handleAvatarChange = (event) => {
+    event.preventDefault();
+    // setAvatar(event.target.files[0]);
+  };
+
   const handleSubmit = async () => {
     try {
+      if (!validate()) {
+        return;
+      }
       const additionalData = {
         address: {
           street,
@@ -27,30 +88,33 @@ function RegisterCustomerStep2() {
         },
         identityCard,
       };
-      // const formData = new FormData();
-      // formData.append("avatar", avatar);
-      // formData.append("additionalData", JSON.stringify(additionalData));
-      // console.log(avatar)
-      // Gửi yêu cầu API cho giai đoạn 2 (nhập thông tin phụ và upload avatar)
-      await axios.put(
-        `http://localhost:3000/api/auth/register/step2/${userId}`,
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/register/step2/${userId}`,
         additionalData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      alert("Đăng ký thành công!");
+        // {
+        //   headers: {
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        // }
+      )
+      response
+      setToastMessage("Đăng ký thành công");
+      // toast.success("Đăng ký thành công");
+      navigate("/login");
+
     } catch (error) {
       console.error("Error during registration:", error);
-      alert("Đã có lỗi xảy ra!");
+      toast.error(error.response.data, {
+        position: "top-right",
+        time: 500,
+      });
     }
   };
 
   return (
     <div className="backgroundImg">
-      <div className="w-1/3 m-auto bg-fourth rounded-2xl">
+      <ToastContainer />
+      <div className="w-2/5 m-auto bg-fourth rounded-2xl">
         <h1 className="text-primary py-3 font-bold text-center text-40">
           Đăng ký
         </h1>
@@ -70,6 +134,7 @@ function RegisterCustomerStep2() {
               onChange={(e) => setStreet(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
+            {streetError && <p className="text-red-500">{streetError}</p>}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label
@@ -86,6 +151,7 @@ function RegisterCustomerStep2() {
               onChange={(e) => setCommune(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
+            {communeError && <p className="text-red-500">{communeError}</p>}
           </div>
         </div>
         <div className="flex justify-center px-5 my-3">
@@ -104,6 +170,7 @@ function RegisterCustomerStep2() {
               onChange={(e) => setDistrict(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
+            {districtError && <p className="text-red-500">{districtError}</p>}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label
@@ -120,6 +187,7 @@ function RegisterCustomerStep2() {
               onChange={(e) => setProvince(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
+            {provinceError && <p className="text-red-500">{provinceError}</p>}
           </div>
         </div>
         <div className="flex justify-center px-5 my-3">
@@ -138,6 +206,7 @@ function RegisterCustomerStep2() {
               onChange={(e) => setIdentityCard(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
+            {identityCardError && ( <p className="text-red-500">{identityCardError}</p>)}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label
@@ -156,7 +225,7 @@ function RegisterCustomerStep2() {
         <div className="flex items-center flex-col m-5">
           <button
             onClick={handleSubmit}
-            className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-2/3"
+            className="bg-primary hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-3 rounded-xl w-1/2"
           >
             Hoàn tất
           </button>
@@ -164,6 +233,6 @@ function RegisterCustomerStep2() {
       </div>
     </div>
   );
-}
+};
 
 export default RegisterCustomerStep2;
