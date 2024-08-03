@@ -1,10 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import HeaderCustomer from "../../../components/HeaderCustomer/HeaderCustomer"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faMapMarkerAlt, faTractor } from "@fortawesome/free-solid-svg-icons";
 import { addToCart } from "../../../service/CustomerService/cartService";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
 
 
 function SearchPage() {

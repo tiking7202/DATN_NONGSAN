@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import HeaderCustomer from "../../../components/HeaderCustomer/HeaderCustomer";
 import { jwtDecode } from "jwt-decode";
-import FooterCustomer from "../../../components/FooterCustomer/FooterCustomer";
+import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
+import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
@@ -53,10 +53,15 @@ export default function CartPage() {
                       `${API_BASE_URL}/delete-cart/${userId}/${productId}`
                     );
                     console.log(response.data);
-                    toast.success('Xóa thành công sản phẩm từ giỏ hàng của bạn', {
-                      position: 'top-right'
-                    });
-                    setCart(cart.filter(item => item.productid !== productId));
+                    toast.success(
+                      "Xóa thành công sản phẩm từ giỏ hàng của bạn",
+                      {
+                        position: "top-right",
+                      }
+                    );
+                    setCart(
+                      cart.filter((item) => item.productid !== productId)
+                    );
                     // Update your state here to reflect the change in the cart
                   } catch (error) {
                     console.error("Error:", error);
@@ -158,13 +163,17 @@ export default function CartPage() {
                   {item.quantity}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
-                  {item.productquantity > item.quantity ? "Còn hàng" : "Hết hàng"}
+                  {item.productquantity > item.quantity
+                    ? "Còn hàng"
+                    : "Hết hàng"}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
-                  <input type="checkbox" className="bg-primary text-white px-3 py-1 rounded-md m-2" />
+                  <input
+                    type="checkbox"
+                    className="bg-primary text-white px-3 py-1 rounded-md m-2"
+                  />
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
-                  
                   <button
                     className="bg-red-500 text-white px-3 py-1 rounded-md m-2"
                     onClick={() => onDeleteCart(userId, item.productid)}
@@ -181,7 +190,8 @@ export default function CartPage() {
             Thanh toán
           </button>
           <button className="bg-red-500 text-white px-4 py-2 rounded-md m-2">
-            Bỏ chọn tất cả </button>
+            Bỏ chọn tất cả{" "}
+          </button>
         </div>
       </div>
 

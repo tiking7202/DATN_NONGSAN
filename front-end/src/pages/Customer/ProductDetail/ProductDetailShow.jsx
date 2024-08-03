@@ -1,4 +1,3 @@
-import FarmInfoShow from "../../../components/FarmInfoShow/FarmInfoShow";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -12,8 +11,9 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import FooterCustomer from "../../../components/FooterCustomer/FooterCustomer.jsx";
+import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer.jsx";
 import { API_BASE_URL } from "../../../config/config.js";
+import FarmInfoShow from "../../../components/CustomerComponent/FarmInfoShow/FarmInfoShow.jsx";
 
 export default function ProductDetail() {
   const navigate = useNavigate();

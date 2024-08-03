@@ -1,9 +1,10 @@
-import HeaderCustomer from "../HeaderCustomer/HeaderCustomer";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { API_BASE_URL } from "../../config/config";
+import HeaderCustomer from "../HeaderCustomer/HeaderCustomer";
+import { API_BASE_URL } from "../../../config/config";
+
 
 export default function FarmInfoShow() {
   const [farm, setFarm] = useState(null);

@@ -7,8 +7,8 @@ import {
   faTractor,
   faCartPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import HeaderCustomer from "../../../components/HeaderCustomer/HeaderCustomer";
-import FooterCustomer from "../../../components/FooterCustomer/FooterCustomer";
+import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
+import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer";
 import { Link } from "react-router-dom";
 import { API_BASE_URL } from "../../../config/config";
 import { toast } from "react-toastify";
@@ -31,16 +31,16 @@ function CategoryPage() {
     fetchProducts();
   }, [id]);
 
-  const handleAddToCart = (productId) => {  
+  const handleAddToCart = (productId) => {
     const accessToken = localStorage.getItem("accessToken");
-    
+
     if (!accessToken) {
       toast.error("Đăng nhập để thêm vào giỏ hàng!");
       navigate("/login");
     } else {
-      const decodedToken = jwtDecode(accessToken)
-      const userId = decodedToken.userid; 
-      
+      const decodedToken = jwtDecode(accessToken);
+      const userId = decodedToken.userid;
+
       addToCart(productId, userId, 1)
         .then((response) => {
           response;
@@ -50,7 +50,7 @@ function CategoryPage() {
           toast.error(error.response.data.message);
         });
     }
-  }
+  };
 
   return (
     <>
@@ -128,7 +128,10 @@ function CategoryPage() {
                         <p className="ml-2">{product.farm.farmname}</p>
                       </div>
                     </div>
-                    <button className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200" onClick={() => handleAddToCart(product.productid)}>
+                    <button
+                      className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200"
+                      onClick={() => handleAddToCart(product.productid)}
+                    >
                       <FontAwesomeIcon icon={faCartPlus} size="2x" />
                     </button>
                   </div>

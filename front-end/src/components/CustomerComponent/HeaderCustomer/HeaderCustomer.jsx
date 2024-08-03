@@ -5,14 +5,14 @@ import {
   faCartPlus,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import "../../App.css";
+import "../../../App.css";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { API_BASE_URL } from "../../config/config";
+import { API_BASE_URL } from "../../../config/config";
 
 export default function HeaderCustomer() {
   const [isOpen, setIsOpen] = useState(false);

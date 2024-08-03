@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
-import { API_BASE_URL } from "../../config/config";
+import { API_BASE_URL } from "../../../config/config";
 
 function CategoryShow() {
   const [categories, setCategories] = useState([]);
