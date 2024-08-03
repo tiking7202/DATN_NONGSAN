@@ -2,12 +2,17 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faTractor, faCartPlus } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config/config';
+import { toast } from 'react-toastify';
+import { addToCart } from '../../service/CustomerService/cartService';
+import { jwtDecode } from 'jwt-decode';
 export default function ProductShowHome() {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/product')
+    axios.get(`${API_BASE_URL}/product`)
       .then(response => {
         setProducts(response.data);
       })
@@ -16,6 +21,26 @@ export default function ProductShowHome() {
       });
   }, []);
 
+  const handleAddToCart = (productId) => {  
+    const accessToken = localStorage.getItem("accessToken");
+    
+    if (!accessToken) {
+      toast.error("Đăng nhập để thêm vào giỏ hàng!");
+      navigate("/login");
+    } else {
+      const decodedToken = jwtDecode(accessToken)
+      const userId = decodedToken.userid; 
+      
+      addToCart(productId, userId, 1)
+        .then((response) => {
+          response;
+          toast.success("Thêm vào giỏ hàng thành công!");
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    }
+  }
 
   return (
     <div className=" m-auto flex flex-wrap justify-center ">
@@ -73,7 +98,7 @@ export default function ProductShowHome() {
                   </div>
                 </div>
                 
-                <button className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200">
+                <button className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200" onClick={() => handleAddToCart(product.productid)}>
                   <FontAwesomeIcon icon={faCartPlus} size="2x" />
                 </button>
               </div>

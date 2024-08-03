@@ -33,11 +33,42 @@ exports.getProductsByCategoryId = async (req, res) => {
 // Lấy sản phẩm theo id
 exports.getProductById = async (req, res) => {
     const { id } = req.params;
+
+    // Validate that the id is a valid UUID
+    const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+    if (!uuidRegex.test(id)) {
+        return res.status(400).json({ message: 'Invalid product ID' });
+    }
+
     try {
         const product = await pool.query('SELECT * FROM product WHERE productid = $1', [id]);
+        if (product.rows.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
         res.json(product.rows[0]);
     } catch (error) {
         console.error('Error fetching product:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+// Tìm kiếm sản phẩm
+exports.searchProduct = async (req, res) => {
+    const { search } = req.query;
+
+    if (!search) {
+        return res.status(400).json({ message: 'Search query is required' });
+    }
+
+    try {
+        // Validate that the search input is a valid string
+        if (typeof search !== 'string') {
+            return res.status(400).json({ message: 'Invalid search query' });
+        }
+        // const trimmedSearch = search.trim();
+        const products = await pool.query('SELECT * FROM product WHERE productname ILIKE $1', [`%${search}%`]);
+        res.json(products.rows);
+    } catch (error) {
+        console.error('Error searching products:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };

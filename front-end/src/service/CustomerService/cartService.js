@@ -1,8 +1,10 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../../config/config';
 
-export function addToCart(productId, userId) {
-    return axios.post('http://localhost:3000/api/add-cart', {
+export function addToCart(productId, userId, quantity) {
+    return axios.post(`${API_BASE_URL}/add-cart`, {
         productId,
-        userId
+        userId,
+        quantity
     });
 }

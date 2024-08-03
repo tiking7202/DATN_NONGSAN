@@ -10,20 +10,18 @@ import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../config/config";
 
-
 export default function HeaderCustomer() {
   const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
   let username = null;
-  // let userid = null;
   if (token) {
     const decodedToken = jwtDecode(token);
-    // userid = decodedToken?.userid;
     username = decodedToken?.username;
   }
 
@@ -36,24 +34,35 @@ export default function HeaderCustomer() {
         toast.success("Đăng xuất thành công!");
         navigate("/login");
         console.log(response);
-      } 
-      else {
-        toast.error('Đăng xuất thất bại. Vui lòng thử lại.', {
-          position: 'top-right'
+      } else {
+        toast.error("Đăng xuất thất bại. Vui lòng thử lại.", {
+          position: "top-right",
         });
       }
     } catch (error) {
       console.error("Error during logout:", error);
       toast.error(error, {
-        position: 'top-right'
+        position: "top-right",
       });
-      
     }
   };
 
   const handleCartClick = () => {
     token ? navigate("/cart") : navigate("/login");
-  }
+  };
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/search`, {
+        params: { search: query.trim() },
+      });
+      const data = response.data;
+      navigate(`/search?query=${encodeURIComponent(query.trim())}`, { state: { productSearch: data } });
+      setQuery("");
+    } catch (error) {
+      console.error("Error searching products:", error);
+    }
+  };
 
   return (
     <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-50">
@@ -84,7 +93,7 @@ export default function HeaderCustomer() {
                   <div className="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <div
                       className="py-1"
-                      style={{ zIndex: 9999 }} 
+                      style={{ zIndex: 9999 }}
                       role="menu"
                       aria-orientation="vertical"
                       aria-labelledby="options-menu"
@@ -138,12 +147,20 @@ export default function HeaderCustomer() {
             placeholder="Tìm kiếm sản phẩm, thương hiệu và cửa hàng"
             className="w-full p-2 sm:p-3 border rounded-sm placeholder-color pr-5 sm:pr-10 text-primary"
             style={{ zIndex: 500 }}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
           />
-          <button className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-4 py-1 sm:py-2 bg-green-500 text-white rounded-lg ">
+          <button
+            className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-4 py-1 sm:py-2 bg-green-500 text-white rounded-lg "
+            onClick={handleSearch}
+          >
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
-        <button className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0" onClick={handleCartClick}>
+        <button
+          className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0"
+          onClick={handleCartClick}
+        >
           <FontAwesomeIcon icon={faCartPlus} size="1x" />
         </button>
       </section>

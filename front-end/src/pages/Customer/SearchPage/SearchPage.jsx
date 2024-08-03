@@ -1,36 +1,17 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import HeaderCustomer from "../../../components/HeaderCustomer/HeaderCustomer"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMapMarkerAlt,
-  faTractor,
-  faCartPlus,
-} from "@fortawesome/free-solid-svg-icons";
-import HeaderCustomer from "../../../components/HeaderCustomer/HeaderCustomer";
-import FooterCustomer from "../../../components/FooterCustomer/FooterCustomer";
-import { Link } from "react-router-dom";
-import { API_BASE_URL } from "../../../config/config";
-import { toast } from "react-toastify";
-import { jwtDecode } from "jwt-decode";
+import { faCartPlus, faMapMarkerAlt, faTractor } from "@fortawesome/free-solid-svg-icons";
 import { addToCart } from "../../../service/CustomerService/cartService";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
-function CategoryPage() {
+
+function SearchPage() {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const { id } = useParams();
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const response = await axios.get(
-        `${API_BASE_URL}/category/${id}/product`
-      );
-      setProducts(response.data);
-    };
-
-    fetchProducts();
-  }, [id]);
-
+  const location = useLocation();
+  const productSearch = location.state.productSearch;
+  
   const handleAddToCart = (productId) => {  
     const accessToken = localStorage.getItem("accessToken");
     
@@ -53,22 +34,23 @@ function CategoryPage() {
   }
 
   return (
-    <>
+    <div className="bg-fourth">
       <HeaderCustomer />
-      <div className="bg-fourth">
-        <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32">
-          {products && products.length > 0 ? (
+
+      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32">
+        {productSearch && productSearch.length > 0 ? (
             <h1 className="font-bold text-primary text-2xl">
-              Danh mục sản phẩm: {products[0].category}
+              Sản phẩm tìm được...
             </h1>
           ) : (
             <h1 className="font-bold text-primary text-2xl">
-              Danh Mục chưa có sản phẩm nào
+              Không tìm thấy sản phẩm nào!
             </h1>
           )}
-        </div>
-        <div className="rounded-sm w-4/5 bg-white m-auto flex flex-wrap justify-center mt-5">
-          {products.map((product) => {
+      </div>
+
+      <div className="rounded-sm w-4/5 bg-white m-auto flex flex-wrap justify-center mt-5">
+          {productSearch.map((product) => {
             const currentDate = new Date();
             const expireDate = new Date(product.expirydate);
             const remainingTime = expireDate - currentDate;
@@ -121,11 +103,11 @@ function CategoryPage() {
                     <div className="text-primary font-bold">
                       <div className="flex items-center">
                         <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-                        <p className="ml-2">{product.farm.farmprovince}</p>
+                        <p className="ml-2">Dak Lak</p>
                       </div>
                       <div className="flex items-center mt-2">
                         <FontAwesomeIcon icon={faTractor} size="lg" />
-                        <p className="ml-2">{product.farm.farmname}</p>
+                        <p className="ml-2">GreenFarm</p>
                       </div>
                     </div>
                     <button className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200" onClick={() => handleAddToCart(product.productid)}>
@@ -137,10 +119,8 @@ function CategoryPage() {
             );
           })}
         </div>
-        <FooterCustomer />
-      </div>
-    </>
-  );
+    </div>
+  )
 }
 
-export default CategoryPage;
+export default SearchPage

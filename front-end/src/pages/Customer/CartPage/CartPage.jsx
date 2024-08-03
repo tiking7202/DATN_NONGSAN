@@ -113,7 +113,19 @@ export default function CartPage() {
                 scope="col"
                 className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
               >
+                Số lượng
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
+              >
                 Trạng thái sản phẩm
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
+              >
+                Chọn mua
               </th>
               <th
                 scope="col"
@@ -143,12 +155,16 @@ export default function CartPage() {
                   {item.productprice}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
-                  {item.productquantity > 0 ? "Còn hàng" : "Hết hàng"}
+                  {item.quantity}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
-                  <button className="bg-primary text-white px-3 py-1 rounded-md m-2">
-                    Mua ngay
-                  </button>
+                  {item.productquantity > item.quantity ? "Còn hàng" : "Hết hàng"}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
+                  <input type="checkbox" className="bg-primary text-white px-3 py-1 rounded-md m-2" />
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
+                  
                   <button
                     className="bg-red-500 text-white px-3 py-1 rounded-md m-2"
                     onClick={() => onDeleteCart(userId, item.productid)}
@@ -160,6 +176,13 @@ export default function CartPage() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-end">
+          <button className="bg-primary text-white px-4 py-2 rounded-md m-2">
+            Thanh toán
+          </button>
+          <button className="bg-red-500 text-white px-4 py-2 rounded-md m-2">
+            Bỏ chọn tất cả </button>
+        </div>
       </div>
 
       <FooterCustomer />

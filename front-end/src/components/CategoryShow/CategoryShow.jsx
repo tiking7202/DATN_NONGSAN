@@ -4,13 +4,14 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../../config/config";
 
 function CategoryShow() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/category")
+      .get(`${API_BASE_URL}/category`)
       .then((response) => {
         setCategories(response.data);
       })
@@ -22,7 +23,7 @@ function CategoryShow() {
   const settings = {
     dots: false,
     infinite: true,
-    speed: 1000,
+    speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
   };

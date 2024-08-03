@@ -10,18 +10,29 @@ import {
 import { addToCart } from "../../../service/CustomerService/cartService.js";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FooterCustomer from "../../../components/FooterCustomer/FooterCustomer.jsx";
+import { API_BASE_URL } from "../../../config/config.js";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
   let { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
+  const handleIncrease = () => {
+    setQuantity(quantity + 1);
+  };
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/product/${id}`)
+      .get(`${API_BASE_URL}/product/${id}`)
       .then((response) => {
         setProduct(response.data);
       })
@@ -47,9 +58,9 @@ export default function ProductDetail() {
     } else {
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.userid;
-      addToCart(product.productid, userId)
+      addToCart(product.productid, userId, quantity)
         .then((response) => {
-          console.log(response.data);
+          response;
           toast.success("Thêm vào giỏ hàng thành công!");
         })
         .catch((error) => {
@@ -118,6 +129,24 @@ export default function ProductDetail() {
                       Trạng thái:{" "}
                       <span>
                         {product.productquantity > 0 ? "Còn hàng" : "Hết hàng"}
+                      </span>
+                    </p>
+                    <p className="flex">
+                      Số lượng:{" "}
+                      <span className="flex items-center space-x-2 ml-3">
+                        <button
+                          onClick={handleDecrease}
+                          className="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                        >
+                          -
+                        </button>
+                        <span className="px-2">{quantity}</span>
+                        <button
+                          onClick={handleIncrease}
+                          className="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                        >
+                          +
+                        </button>
                       </span>
                     </p>
                     <div className="">
@@ -223,7 +252,7 @@ export default function ProductDetail() {
           </div>
         </div>
       )}
-      <FooterCustomer />  
+      <FooterCustomer />
     </>
   );
 }
