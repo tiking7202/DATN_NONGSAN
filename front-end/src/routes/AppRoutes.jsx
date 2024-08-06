@@ -9,6 +9,7 @@ import ProductDetailShow from "../pages/Customer/ProductDetail/ProductDetailShow
 import CartPage from "../pages/Customer/CartPage/CartPage";
 import SearchPage from "../pages/Customer/SearchPage/SearchPage";
 import { ToastProvider } from "../../context/ToastContext";
+import CheckoutPage from "../pages/Customer/CheckoutPage/CheckoutPage";
 
 export default function AppRoutes() {
     return (
@@ -24,6 +25,7 @@ export default function AppRoutes() {
             <Route path="/product/:id" element={<ProductDetailShow />} />
             <Route path="/category/:id" element={<CategoryPage />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/search" element={<SearchPage />} />
 
             {/* Route cho farmer */}

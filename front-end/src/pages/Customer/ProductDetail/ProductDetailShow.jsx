@@ -20,7 +20,6 @@ export default function ProductDetail() {
   let { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-
   const handleIncrease = () => {
     setQuantity(quantity + 1);
   };

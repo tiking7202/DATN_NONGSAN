@@ -8,8 +8,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
 import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
+import { useNavigate } from "react-router-dom";
 
 export default function CartPage() {
+  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
@@ -76,6 +78,36 @@ export default function CartPage() {
         );
       },
     });
+  };
+
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleCheckboxChange = (item) => {
+    setSelectedItems((prevSelectedItems) => {
+      if (prevSelectedItems.includes(item)) {
+        return prevSelectedItems.filter((i) => i !== item);
+      } else {
+        return [...prevSelectedItems, item];
+      }
+    });
+  };
+
+  const calculateTotalPrice = () => {
+    return selectedItems.reduce((total, item) => {
+      return total + item.productprice * item.quantity;
+    }, 0);
+  };
+
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      toast.error("Vui lòng chọn sản phẩm để thanh toán", {
+        position: "top-right",
+      });
+      return;
+    }
+    // console.log(selectedItems);
+    navigate("/checkout", { state: { selectedItems } });
+    
   };
 
   return (
@@ -171,6 +203,7 @@ export default function CartPage() {
                   <input
                     type="checkbox"
                     className="bg-primary text-white px-3 py-1 rounded-md m-2"
+                    onChange={() => handleCheckboxChange(item)}
                   />
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
@@ -185,13 +218,18 @@ export default function CartPage() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-end p-3 ">
+          <span className="text-lg font-bold">
+            Tổng tiền: {calculateTotalPrice()}{" "}
+          </span>
+        </div>
         <div className="flex justify-end">
-          <button className="bg-primary text-white px-4 py-2 rounded-md m-2">
+          <button className="bg-primary text-white px-4 py-2 rounded-md m-2" onClick={handleCheckout}>
             Thanh toán
           </button>
-          <button className="bg-red-500 text-white px-4 py-2 rounded-md m-2">
+          {/* <button className="bg-red-500 text-white px-4 py-2 rounded-md m-2">
             Bỏ chọn tất cả{" "}
-          </button>
+          </button> */}
         </div>
       </div>
 
