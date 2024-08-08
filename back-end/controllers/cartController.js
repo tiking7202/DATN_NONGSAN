@@ -56,6 +56,20 @@ exports.getAllCart = async (req, res) => {
   }
 };
 
+exports.updateQuantityCart = async (req, res) => {
+  const { userId, productId, quantity } = req.body;
+  try {
+    const updatedCart = await pool.query(
+      "UPDATE cart SET quantity = $1 WHERE userid = $2 AND productid = $3 RETURNING *",
+      [quantity, userId, productId]
+    );
+    res.status(200).json(updatedCart.rows[0]);
+  } catch (error) {
+    console.error("Error updating quantity in cart:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 exports.removeFromCart = async (req, res) => {
   const { userId, productId } = req.params;
 

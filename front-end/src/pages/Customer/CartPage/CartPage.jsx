@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
 import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
 import { useNavigate } from "react-router-dom";
+import { updateQuantityCart } from "../../../service/CustomerService/cartService";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -81,6 +82,7 @@ export default function CartPage() {
   };
 
   const [selectedItems, setSelectedItems] = useState([]);
+  // const [totalPrice, setTotalPrice] = useState(0);
 
   const handleCheckboxChange = (item) => {
     setSelectedItems((prevSelectedItems) => {
@@ -98,6 +100,16 @@ export default function CartPage() {
     }, 0);
   };
 
+  const handleUpdateQuantity = (productid, quantity) => {
+    updateQuantityCart(userId, productid, quantity);
+
+    setCart(prevCart => 
+      prevCart.map(item => 
+        item.productid === productid ? { ...item, quantity } : item
+      )
+    );
+  };
+
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
       toast.error("Vui lòng chọn sản phẩm để thanh toán", {
@@ -107,7 +119,6 @@ export default function CartPage() {
     }
     // console.log(selectedItems);
     navigate("/checkout", { state: { selectedItems } });
-    
   };
 
   return (
@@ -192,7 +203,25 @@ export default function CartPage() {
                   {item.productprice}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
+                  {item.quantity > 0 && (
+                    <button
+                      className="font-bold text-2xl mx-2"
+                      onClick={() =>
+                        handleUpdateQuantity(item.productid, item.quantity - 1)
+                      }
+                    >
+                      -
+                    </button>
+                  )}
                   {item.quantity}
+                  <button
+                    className="font-bold text-2xl mx-2"
+                    onClick={() =>
+                      handleUpdateQuantity(item.productid, item.quantity + 1)
+                    }
+                  >
+                    +
+                  </button>
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
                   {item.productquantity > item.quantity
@@ -224,7 +253,10 @@ export default function CartPage() {
           </span>
         </div>
         <div className="flex justify-end">
-          <button className="bg-primary text-white px-4 py-2 rounded-md m-2" onClick={handleCheckout}>
+          <button
+            className="bg-primary text-white px-4 py-2 rounded-md m-2"
+            onClick={handleCheckout}
+          >
             Thanh toán
           </button>
           {/* <button className="bg-red-500 text-white px-4 py-2 rounded-md m-2">

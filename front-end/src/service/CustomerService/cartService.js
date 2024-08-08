@@ -8,3 +8,11 @@ export function addToCart(productId, userId, quantity) {
         quantity
     });
 }
+
+export function updateQuantityCart(userId, productId, quantity) {
+    return axios.put(`${API_BASE_URL}/update-quantity-cart`, {
+        userId,
+        productId,
+        quantity
+    });
+}

@@ -3,6 +3,7 @@ const cartController = require('../controllers/cartController');
 
 router.post('/add-cart', cartController.addToCart);
 router.post('/cart', cartController.getAllCart);
+router.put('/update-quantity-cart', cartController.updateQuantityCart);
 router.delete('/delete-cart/:userId/:productId', cartController.removeFromCart);
 
 module.exports = router;
