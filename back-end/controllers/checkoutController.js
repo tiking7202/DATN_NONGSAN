@@ -145,11 +145,16 @@ const getPurchaseHistory = async (req, res) => {
       const getPurchasesHistory = await pool.query(getPurchasesHistorySQL, [
         orderId,
       ]);
-      console.log(getPurchasesHistory.rows);
-      // thêm vào result
-      result.push(getPurchasesHistory.rows);
+      const getOrderSQL = `SELECT orderstatus FROM "Order" WHERE orderid = $1`;
+      const getOrder = await pool.query(getOrderSQL, [orderId]);
+      const temp = {
+        orderId: orderId,
+        purchaseDate: getPurchasesHistory.rows[0].purchasedate,
+        totalAmount: getPurchasesHistory.rows[0].totalamount,
+        orderStatus: getOrder.rows[0].orderstatus,
+      };
+      result.push(temp);
     }
-
     res.json(result);
   } catch (error) {
     console.error("Error fetching purchase history:", error);
@@ -157,4 +162,30 @@ const getPurchaseHistory = async (req, res) => {
   }
 };
 
-module.exports = { addCheckOut, getShippingInfo, getPurchaseHistory };
+const getOrderItemById = async (req, res) => {
+  const { orderId } = req.params;
+  const sql = `SELECT * FROM orderitem WHERE orderid = $1`;
+  try {
+    const orderItem = await pool.query(sql, [orderId]);
+    //Lay thong tin san pham tu bang product
+    const result = [];
+    for (const item of orderItem.rows) {
+      const getProductSQL = `SELECT * FROM product WHERE productid = $1`;
+      const product = await pool.query(getProductSQL, [item.productid]);
+      const temp = {
+        productimage1: product.rows[0].productimage1,
+        productname: product.rows[0].productname,
+        overview: product.rows[0].overviewdes,
+        quantity: item.quantityofitem,
+      };
+      result.push(temp);
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = { addCheckOut, getShippingInfo, getPurchaseHistory, getOrderItemById };

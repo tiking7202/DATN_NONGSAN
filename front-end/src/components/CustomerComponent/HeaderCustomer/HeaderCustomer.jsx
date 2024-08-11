@@ -72,7 +72,7 @@ export default function HeaderCustomer() {
   };
 
   return (
-    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-50">
+    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40">
       <ToastContainer />
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
@@ -106,18 +106,26 @@ export default function HeaderCustomer() {
                       aria-labelledby="options-menu"
                     >
                       <a
-                        href="#"
+                        href="/change-info"
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
                         Thay đổi thông tin
                       </a>
+                      
                       <a
-                        href="#"
+                        href="/change-password"
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
                         Thay đổi mật khẩu
+                      </a>
+                      <a
+                        href="/purchase-history"
+                        className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
+                        role="menuitem"
+                      >
+                        Lịch sử mua hàng
                       </a>
                       <a
                         href="#"

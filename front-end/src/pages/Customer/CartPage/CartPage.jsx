@@ -94,13 +94,19 @@ export default function CartPage() {
     });
   };
 
-  const calculateTotalPrice = () => {
-    return selectedItems.reduce((total, item) => {
-      return total + item.productprice * item.quantity;
-    }, 0);
-  };
+  // const calculateTotalPrice = () => {
+  //   return selectedItems.reduce((total, item) => {
+  //     return total + item.productprice * item.quantity;
+  //   }, 0);
+  // };
 
   const handleUpdateQuantity = (productid, quantity) => {
+    if (quantity === 0) {
+      toast.error("Số lượng sản phẩm phải lớn hơn 0", {
+        position: "top-right",
+      });
+      return;
+    }
     updateQuantityCart(userId, productid, quantity);
 
     setCart(prevCart => 
@@ -117,7 +123,6 @@ export default function CartPage() {
       });
       return;
     }
-    // console.log(selectedItems);
     navigate("/checkout", { state: { selectedItems } });
   };
 
@@ -247,11 +252,11 @@ export default function CartPage() {
             ))}
           </tbody>
         </table>
-        <div className="flex justify-end p-3 ">
+        {/* <div className="flex justify-end p-3 ">
           <span className="text-lg font-bold">
             Tổng tiền: {calculateTotalPrice()}{" "}
           </span>
-        </div>
+        </div> */}
         <div className="flex justify-end">
           <button
             className="bg-primary text-white px-4 py-2 rounded-md m-2"

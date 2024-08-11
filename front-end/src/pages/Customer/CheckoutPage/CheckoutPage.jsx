@@ -8,10 +8,14 @@ import { getUserInfo } from "../../../service/CustomerService/userService";
 import { useEffect, useState } from "react";
 import { getShippingInfo } from "../../../service/CustomerService/checkoutService";
 import { toast } from "react-toastify";
+import { formatDate } from "../../../utils/formatDate";
+import { useToast } from "../../../../context/ToastContext";
 
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  //set toast khi dat hang thanh cong
+  const { setToastMessage } = useToast();
 
   const { selectedItems } = location.state || { selectedItems: [] };
 
@@ -76,8 +80,30 @@ const CheckoutPage = () => {
     setPaymentMethod(event.target.value);
   };
 
+  // Edit shipping address
+  const [isEditing, setIsEditing] = useState(false);
+  const [newAddress, setNewAddress] = useState(
+    shippingInfo ? shippingInfo.deliveryAddress : ""
+  );
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (e) => {
+    setNewAddress(e.target.value);
+  };
+
+  const handleSaveClick = () => {
+    if (!newAddress) {
+      toast.error("Địa chỉ mới không đc để trống!");
+      return;
+    }
+    setShippingInfo({ ...shippingInfo, deliveryAddress: newAddress });
+    
+    setIsEditing(false);
+  };
+
   const handleCheckout = async () => {
-    // const totalPrice = calculateTotalPrice() + 10; // Assuming $10 shipping fee
     const orderDetails = {
       userId: userId,
       paymentMethod: paymentMethod,
@@ -91,6 +117,10 @@ const CheckoutPage = () => {
     };
 
     try {
+      if (!paymentMethod) {
+        toast.error("Vui lòng chọn phương thức thanh toán!");
+        return;
+      }
       const response = await axios.post(
         `${API_BASE_URL}/checkout`,
         orderDetails,
@@ -102,16 +132,13 @@ const CheckoutPage = () => {
       );
 
       console.log("Checkout successful:", response.data);
-      // Update UI or redirect user to a success page
-      toast.success("Đặt hàng thành công!");
-      // Redirect user to purchase history page
-      // navigate("/purchase-history");
-      navigate("/");
+      setToastMessage("Đặt hàng thành công!");
+      navigate("/purchase-history");
     } catch (error) {
       console.error("Checkout failed:", error);
-      // Update UI to show error message
     }
   };
+
   return (
     <div className="bg-fourth">
       <HeaderCustomer />
@@ -131,20 +158,20 @@ const CheckoutPage = () => {
                 Thông tin khách hàng
               </h2>
               <div className="flex items-center ml-5 my-2">
-                <p className="font-bold">Tên khách hàng:</p>
-                <p className="text-gray-900 ml-2">
+                <p className="font-bold w-1/3 text-left">Tên khách hàng:</p>
+                <p className="text-gray-900 w-2/3 text-left">
                   {userInfo ? userInfo.fullname : ""}
                 </p>
               </div>
               <div className="flex items-center ml-5 my-2">
-                <p className="font-bold">Số điện thoại:</p>
-                <p className="text-gray-900 ml-2">
+                <p className="font-bold w-1/3 text-left">Số điện thoại:</p>
+                <p className="text-gray-900 w-2/3 text-left">
                   {userInfo ? userInfo.phonenumber : ""}
                 </p>
               </div>
               <div className="flex items-center ml-5 my-2">
-                <p className="font-bold ">Địa chỉ:</p>
-                <p className="text-gray-900 ml-2">
+                <p className="font-bold w-1/3 text-left">Địa chỉ:</p>
+                <p className="text-gray-900 w-2/3 text-left">
                   {userInfo
                     ? userInfo.street +
                       ", " +
@@ -163,7 +190,7 @@ const CheckoutPage = () => {
                 Chọn phương thức thanh toán
               </h2>
               <div className="ml-5 my-3">
-                <div className="flex">
+                <div className="flex  my-1">
                   <input
                     type="radio"
                     name="payment"
@@ -174,7 +201,7 @@ const CheckoutPage = () => {
                   />
                   <p className="ml-2">Thanh toán khi nhận hàng</p>
                 </div>
-                <div className="flex">
+                <div className="flex my-1">
                   <input
                     type="radio"
                     name="payment"
@@ -193,26 +220,48 @@ const CheckoutPage = () => {
               <h2 className="font-bold text-xl ml-3 flex">
                 Thông tin vận chuyển
               </h2>
-              <div className="flex items-center ml-5 my-2">
-                <p className="font-bold ">Địa chỉ nhận hàng:</p>
-                <p className="text-gray-900 ml-2 ">
-                  {userInfo
-                    ? userInfo.street +
-                      ", " +
-                      userInfo.commune +
-                      ", " +
-                      userInfo.district +
-                      ", " +
-                      userInfo.province
+              <div className="my-2 flex">
+                <p className="font-bold w-5/12 ml-5 text-left">
+                  Địa chỉ nhận hàng:
+                </p>
+                {!isEditing && (
+                  <p className="text-gray-900 w-7/12 justify-start text-left">
+                    {shippingInfo ? shippingInfo.deliveryAddress : ""}
+                    <button
+                      className="ml-2 text-primary"
+                      onClick={handleEditClick}
+                    >
+                      Thay đổi
+                    </button>
+                  </p>
+                )}
+                {isEditing && (
+                  <div className="flex w-7/12">
+                    <input
+                      type="text"
+                      value={newAddress}
+                      placeholder="Nhập địa chỉ mới"
+                      onChange={handleInputChange}
+                      className="border-collapse p-2 rounded-lg"
+                    />
+                    <button
+                      onClick={handleSaveClick}
+                      className="ml-2 p-2 rounded-lg bg-primary text-white"
+                    >
+                      Lưu
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="my-2 flex">
+                <p className="font-bold w-5/12 ml-5 text-left">
+                  Thời gian nhận hàng:
+                </p>
+                <p className="text-gray-900 w-7/12 justify-start text-left">
+                  {shippingInfo
+                    ? formatDate(shippingInfo.estimatedDeliveryTime)
                     : ""}
                 </p>
-                <a href="" className="ml-2">
-                  Thay đổi
-                </a>
-              </div>
-              <div className="flex items-center ml-5 my-2">
-                <p className="font-bold ">Thời gian giao:</p>
-                <p className="text-gray-900 ml-2 ">20/11/2023</p>
               </div>
             </div>
 
@@ -220,17 +269,19 @@ const CheckoutPage = () => {
             <div className="">
               <h2 className="font-bold text-xl ml-3 flex">Tóm tắt đơn hàng</h2>
               <div className="flex items-center ml-5 my-3">
-                <p className="font-bold">Tổng tiền:</p>
-                <p className="text-gray-900 ml-2">${calculateTotalPrice()}</p>
+                <p className="font-bold w-1/3 text-left">Tổng tiền:</p>
+                <p className="text-gray-900 w-2/3 text-left font-bold">
+                  {calculateTotalPrice()} VNĐ
+                </p>
               </div>
               <div className="flex items-center ml-5 my-3">
-                <p className="font-bold">Phí vận chuyển:</p>
-                <p className="text-gray-900 ml-2">$10</p>
+                <p className="font-bold w-1/3 text-left">Phí vận chuyển:</p>
+                <p className="text-gray-900 w-2/3 text-left font-bold">0 VNĐ</p>
               </div>
               <div className="flex items-center ml-5 my-3">
-                <p className="font-bold">Tổng cộng:</p>
-                <p className="text-gray-900 ml-2">
-                  ${calculateTotalPrice() + 10}
+                <p className="font-bold  w-1/3 text-left">Tổng cộng:</p>
+                <p className="text-gray-900 w-2/3 text-left font-bold">
+                  {calculateTotalPrice()} VNĐ
                 </p>
               </div>
             </div>

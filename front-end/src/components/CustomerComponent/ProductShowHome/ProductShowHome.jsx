@@ -51,7 +51,8 @@ export default function ProductShowHome() {
   };
 
   return (
-    <div className=" m-auto flex flex-wrap justify-center ">
+    // Add this div
+    <div className="bg-secondary m-auto flex flex-wrap justify-center py-6 rounded-lg">
       {products.map((product) => {
         const currentDate = new Date();
         const expireDate = new Date(product.expirydate);
@@ -115,5 +116,6 @@ export default function ProductShowHome() {
         );
       })}
     </div>
+    
   );
 }

@@ -43,9 +43,12 @@ exports.getProductById = async (req, res) => {
     try {
         const product = await pool.query('SELECT * FROM product WHERE productid = $1', [id]);
         if (product.rows.length === 0) {
-            return res.status(404).json({ message: 'Product not found' });
+            return res.status(400).json({ message: 'Product not found' });
         }
-        res.json(product.rows[0]);
+        category = await pool.query('SELECT * FROM category WHERE categoryid = $1', [product.rows[0].categoryid]);
+        farm = await pool.query('SELECT * FROM farm WHERE farmid = $1', [product.rows[0].farmid]);
+        // tra ve product va categoryname
+        res.json({ ...product.rows[0], categoryname: category.rows[0].categoryname, farmprovince: farm.rows[0].farmprovince  });
     } catch (error) {
         console.error('Error fetching product:', error);
         res.status(500).json({ message: 'Internal Server Error' });

@@ -10,6 +10,9 @@ import CartPage from "../pages/Customer/CartPage/CartPage";
 import SearchPage from "../pages/Customer/SearchPage/SearchPage";
 import { ToastProvider } from "../../context/ToastContext";
 import CheckoutPage from "../pages/Customer/CheckoutPage/CheckoutPage";
+import PurchasesHistory from "../pages/Customer/PurchasesHistory/PurchasesHistory";
+import ChangeInfo from "../pages/Customer/ChangeInfo/ChangeInfo";
+import AboutAgriPage from "../pages/Customer/AboutAgriPage/AboutAgriPage";
 
 export default function AppRoutes() {
     return (
@@ -27,7 +30,9 @@ export default function AppRoutes() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/search" element={<SearchPage />} />
-
+            <Route path="/purchase-history" element={<PurchasesHistory />} />
+            <Route path="/change-info" element={<ChangeInfo />} />
+            <Route path="/about-agri" element={<AboutAgriPage />} />
             {/* Route cho farmer */}
 
             <Route path="*" element={<NotFound />} />

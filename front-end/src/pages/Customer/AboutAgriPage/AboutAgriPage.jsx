@@ -1,7 +1,10 @@
+import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
+
 export default function AboutAgriPage() {
   return (
-    <div>
-      About Agri Page
-    </div>
+    <> 
+      <HeaderCustomer />
+      
+    </>
   )
 }

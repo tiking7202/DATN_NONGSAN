@@ -3,6 +3,9 @@ const pool = require("../config/dbConnect");
 exports.addToCart = async (req, res) => {
   const { userId, productId, quantity } = req.body;
   try {
+    if(quantity === 0) {
+      return res.status(400).json({ message: "Số lượng sản phẩm phải lớn hơn 0" });
+    }
     const existingProduct = await pool.query(
       "SELECT * FROM cart WHERE userid = $1 AND productid = $2",
       [userId, productId]
