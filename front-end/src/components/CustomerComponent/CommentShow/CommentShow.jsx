@@ -24,7 +24,7 @@ export default function CommentShow() {
   const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userid;
-  const { id } =  useParams();
+  const { id } = useParams();
   useEffect(() => {
     //Chuyển qua component cha để fix lỗi
     const fetchData = async () => {
@@ -36,7 +36,7 @@ export default function CommentShow() {
 
         setComments(reviewsResponse.data);
         setAmountOfReview(reviewCountResponse.data);
-        
+
         // Get user info
         const fetchUserInfo = async () => {
           const userInfoMap = {};
@@ -47,7 +47,6 @@ export default function CommentShow() {
           setUserInfo(userInfoMap);
         };
         fetchUserInfo();
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -59,16 +58,21 @@ export default function CommentShow() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if(newRating === 0) {
+      if (newRating === 0) {
         toast.error("Vui lòng chọn số sao trước khi gửi đánh giá");
         return;
       }
-      if(newComment === "") {
+      if (newComment === "") {
         toast.error("Vui lòng nhập bình luận trước khi gửi đánh giá");
         return;
       }
 
-      const response = await axios.post(`${API_BASE_URL}/review`, { userId: userId, productId: id, rating: newRating, comment: newComment });
+      const response = await axios.post(`${API_BASE_URL}/review`, {
+        userId: userId,
+        productId: id,
+        rating: newRating,
+        comment: newComment,
+      });
       setNewComment("");
       setNewRating(0);
       const [reviewsResponse, reviewCountResponse] = await Promise.all([
@@ -78,7 +82,6 @@ export default function CommentShow() {
       setComments(reviewsResponse.data);
       setAmountOfReview(reviewCountResponse.data);
       toast.success(response.data.message);
-      
     } catch (error) {
       console.error("Error posting review:", error);
     }
@@ -108,7 +111,8 @@ export default function CommentShow() {
                 }
               />
               <p className="text-lg ml-2 my-auto">
-                {amountOfReview[4]} đánh giá
+                {amountOfReview[4]}{" "}
+                <span className="font-light ml-1">đánh giá</span>
               </p>
             </div>
             <div className="flex m-1">
@@ -123,7 +127,8 @@ export default function CommentShow() {
                 }
               />
               <p className="text-lg ml-2 my-auto">
-                {amountOfReview[3]} đánh giá
+                {amountOfReview[3]}{" "}
+                <span className="font-light ml-1">đánh giá</span>
               </p>
             </div>
 
@@ -139,7 +144,8 @@ export default function CommentShow() {
                 }
               />
               <p className="text-lg ml-2 my-auto">
-                {amountOfReview[2]} đánh giá
+                {amountOfReview[2]}{" "}
+                <span className="font-light ml-1">đánh giá</span>
               </p>
             </div>
             <div className="flex m-1">
@@ -154,7 +160,8 @@ export default function CommentShow() {
                 }
               />
               <p className="text-lg ml-2 my-auto">
-                {amountOfReview[1]} đánh giá
+                {amountOfReview[1]}{" "}
+                <span className="font-light ml-1">đánh giá</span>
               </p>
             </div>
             <div className="flex m-1">
@@ -169,7 +176,8 @@ export default function CommentShow() {
                 }
               />
               <p className="text-lg ml-2 my-auto">
-                {amountOfReview[0]} đánh giá
+                {amountOfReview[0]}{" "}
+                <span className="font-light ml-1">đánh giá</span>
               </p>
             </div>
           </div>
@@ -211,33 +219,40 @@ export default function CommentShow() {
       </div>
 
       <div className="mt-5 flex bg-fourth p-3 rounded-lg flex-col">
-        { comments.length > 0 ? comments.map((comment) => (
-          <div key={comment.reviewId} className="w-full my-2 bg-white p-1 rounded-lg">
-            <div className="flex my-auto">
-              <p className="font-bold text-xl my-auto mx-5">
-                {userInfo[comment.userid]?.fullname || 'Luu Ha'}
+        {comments.length > 0 ? (
+          comments.map((comment) => (
+            <div
+              key={comment.reviewId}
+              className="w-full my-2 bg-white p-1 rounded-lg"
+            >
+              <div className="flex my-auto">
+                <p className="font-bold text-xl my-auto mx-5">
+                  {userInfo[comment.userid]?.fullname || "Luu Ha"}
                 </p>
-              
-              <p className="font-light my-auto">{formatDate(comment.reviewtime)}</p>
-            </div>
-            <div className="flex my-auto">
-            <Rating
-                initialRating={comment.rating}
-                readonly
-                emptySymbol={
-                  <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
-                }
-                fullSymbol={
-                  <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
-                }
-                className="ml-5 my-2"
-              />
-            <p className="text-lg ml-5 my-auto">{comment.comment}</p>
 
+                <p className="font-light my-auto">
+                  {formatDate(comment.reviewtime)}
+                </p>
               </div>
-          </div>
-        )) : <p className="font-bold text-primary">Chưa có đánh giá nào...</p>
-        }
+              <div className="flex my-auto">
+                <Rating
+                  initialRating={comment.rating}
+                  readonly
+                  emptySymbol={
+                    <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
+                  }
+                  fullSymbol={
+                    <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
+                  }
+                  className="ml-5 my-2"
+                />
+                <p className="text-lg ml-5 my-auto">{comment.comment}</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="font-bold text-primary">Chưa có đánh giá nào...</p>
+        )}
       </div>
     </div>
   );
