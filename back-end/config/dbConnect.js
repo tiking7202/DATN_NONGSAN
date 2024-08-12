@@ -1,6 +1,7 @@
-const { Client } = require('pg');
+const { Client } = require("pg");
 
-const connectionString = "postgresql://postgres:hung123dac@localhost:5432/Nongsan";
+const connectionString =
+  "postgresql://postgres:070202@localhost:5432/DATN_NongSan";
 const client = new Client({
   connectionString: connectionString,
 });

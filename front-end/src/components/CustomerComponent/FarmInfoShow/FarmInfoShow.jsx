@@ -1,25 +1,39 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import HeaderCustomer from "../HeaderCustomer/HeaderCustomer";
+import { Link, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../../../config/config";
-
+import HeaderCustomer from "../HeaderCustomer/HeaderCustomer";
 
 export default function FarmInfoShow() {
+  // Có 2 TH cần xử lý:
+  // 1. Lấy thông tin trang trại theo productid
+  // 2. Lấy thông tin trang trại theo farmid
+
   const [farm, setFarm] = useState(null);
   const location = useLocation();
+  const resourceType = location.pathname.split("/")[1];
   const id = location.pathname.split("/").pop();
+  // console.log(id);
+
   useEffect(() => {
-    axios
-      .get(`${API_BASE_URL}/farm/product/${id}`)
-      .then((response) => {
+    const fetchFarmData = async () => {
+      try {
+        let response;
+        if (resourceType === "product") {
+          response = await axios.get(`${API_BASE_URL}/farm/product/${id}`);
+        } else if (resourceType === "farm") {
+          response = await axios.get(`${API_BASE_URL}/farm/${id}`);
+        } else {
+          throw new Error("Invalid resource type");
+        }
         setFarm(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("There was an error!", error);
-      });
-  }, [id]);
+      }
+    };
+
+    fetchFarmData();
+  }, [resourceType, id]);
   return (
     <div>
       <HeaderCustomer />
@@ -28,7 +42,8 @@ export default function FarmInfoShow() {
         <div className="w-4/5 mx-auto bg-white px-3 pt-8 pb-5 rounded-md">
           {farm && farm.farmname && (
             <p className="font-bold text-2xl text-primary">
-              Tên trang trại: <span className="ml-3 text-third">{farm.farmname}</span>
+              Tên trang trại:{" "}
+              <span className="ml-3 text-third">{farm.farmname}</span>
             </p>
           )}
         </div>
@@ -51,13 +66,22 @@ export default function FarmInfoShow() {
         </div>
         {/* Navigation */}
         <div className="w-4/5 bg-white rounded-md m-auto mt-3 flex p-5">
-          <Link to={`/farm/${id}`} className="text-2xl font-bold text-primary mx-5">
+          <Link
+            to={`/farm/info/${farm?.farmid}`}
+            className="text-2xl font-bold text-primary mx-5"
+          >
             Giới thiệu
           </Link>
-          <Link to="/" className="text-2xl font-bold text-primary mx-5">
+          <Link
+            to={`/farm/productdetail/${id}`}
+            className="text-2xl font-bold text-primary mx-5"
+          >
             Sản phẩm
           </Link>
-          <Link to="/" className="text-2xl font-bold text-primary mx-5">
+          <Link
+            to={`/farm/season/${id}`}
+            className="text-2xl font-bold text-primary mx-5"
+          >
             Thông tin mùa vụ
           </Link>
         </div>
