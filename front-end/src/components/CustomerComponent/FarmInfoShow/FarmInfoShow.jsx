@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import HeaderCustomer from "../HeaderCustomer/HeaderCustomer";
+import { Link, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../../../config/config";
+import HeaderCustomer from "../HeaderCustomer/HeaderCustomer";
 
 export default function FarmInfoShow() {
   // Có 2 TH cần xử lý:
@@ -67,15 +66,23 @@ export default function FarmInfoShow() {
         {/* Navigation */}
         <div className="w-4/5 bg-white rounded-md m-auto mt-3 flex p-5">
           <Link
-            to={`/farm/${farm?.farmid}`}
+            to={`/farm/info/${farm?.farmid}`}
             className="text-2xl font-bold text-primary mx-5"
           >
             Giới thiệu
           </Link>
-          <Link to="/farm/" className="text-2xl font-bold text-primary mx-5">
+
+          <Link
+            to={`/farm/productdetail/${id}`}
+            className="text-2xl font-bold text-primary mx-5"
+          >
+        
             Sản phẩm
           </Link>
-          <Link to="/" className="text-2xl font-bold text-primary mx-5">
+          <Link
+            to={`/farm/season/${id}`}
+            className="text-2xl font-bold text-primary mx-5"
+          >
             Thông tin mùa vụ
           </Link>
         </div>

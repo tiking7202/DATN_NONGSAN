@@ -1,13 +1,18 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import RegisterCustomerStep1 from "../pages/Customer/RegisterPage/RegisterCustomerStep1/RegisterCustomerStep1";
-import RegisterCustomerStep2 from "../pages/Customer/RegisterPage/RegisterCustomerStep2/RegisterCustomerStep2";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { ToastProvider } from "../../context/ToastContext";
+import CartPage from "../pages/Customer/CartPage/CartPage";
+import CategoryPage from "../pages/Customer/CategoryPage/CategoryPage";
+import CheckoutPage from "../pages/Customer/CheckoutPage/CheckoutPage";
+import FarmInfoPage from "../pages/Customer/FarmInfoPage/FarmInfoPage";
 import HomePage from "../pages/Customer/HomePage/HomePage";
 import LoginCustomer from "../pages/Customer/LoginPage/LoginCustomer";
-import NotFound from "../pages/NotFound/NotFound";
-import CategoryPage from "../pages/Customer/CategoryPage/CategoryPage";
 import ProductDetailShow from "../pages/Customer/ProductDetail/ProductDetailShow";
-import CartPage from "../pages/Customer/CartPage/CartPage";
+import RegisterCustomerStep1 from "../pages/Customer/RegisterPage/RegisterCustomerStep1/RegisterCustomerStep1";
+import RegisterCustomerStep2 from "../pages/Customer/RegisterPage/RegisterCustomerStep2/RegisterCustomerStep2";
 import SearchPage from "../pages/Customer/SearchPage/SearchPage";
+import FarmProductPage from "../pages/Customer/FarmProductPage/FarmProductPage";
+import FarmSeasonPage from "../pages/Customer/FarmSeasonPage/FarmSeasonPage";
+import NotFound from "../pages/NotFound/NotFound";
 import { ToastProvider } from "../../context/ToastContext";
 import CheckoutPage from "../pages/Customer/CheckoutPage/CheckoutPage";
 import PurchasesHistory from "../pages/Customer/PurchasesHistory/PurchasesHistory";
@@ -35,14 +40,18 @@ export default function AppRoutes() {
             <Route path="/purchase-history" element={<PurchasesHistory />} />
             <Route path="/change-info" element={<ChangeInfo />} />
             <Route path="/about-agri" element={<AboutAgriPage />} />
+             <Route path="/farm/info/:id" element={<FarmInfoPage />} />
+            <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
+            <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
 
             {/* Route cho farmer */}
             <Route path="/farmer/login" element={<FarmerLogin />} />
             <Route path="/farmer" element={<FarmerDashboard />} />
 
-            <Route path="*" element={<NotFound />} />
-            </Routes>
-        </Router>
-        </ToastProvider>
-    );
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </ToastProvider>
+  );
 }
