@@ -120,11 +120,6 @@ const login = async (req, res) => {
             return res.status(400).send("Mật khẩu không chính xác");
         }
 
-        // const role = user.rows[0].role;
-        // if (role !== "customer") {
-        //     return res.status(400).send("Đây không phải là tài khoản khách hàng");
-        // }
-
         // Generate access token and refresh token
         const accessToken = generateAccessToken(user.rows[0].userid, user.rows[0].username, user.rows[0].fullname, user.rows[0].role);
         const refreshToken = generateRefreshToken(user.rows[0].username);

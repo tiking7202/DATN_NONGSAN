@@ -93,46 +93,6 @@ exports.searchProduct = async (req, res) => {
   }
 };
 
-exports.createProduct = async (req, res) => {
-  const { name, price, categoryId } = req.body;
-  try {
-    const newProduct = await pool.query(
-      "INSERT INTO products (name, price, category_id) VALUES ($1, $2, $3) RETURNING *",
-      [name, price, categoryId]
-    );
-    res.status(201).json(newProduct.rows[0]);
-  } catch (error) {
-    console.error("Error creating product:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-exports.updateProduct = async (req, res) => {
-  const { id } = req.params;
-  const { name, price, categoryId } = req.body;
-  try {
-    const updatedProduct = await pool.query(
-      "UPDATE products SET name = $1, price = $2, category_id = $3 WHERE id = $4 RETURNING *",
-      [name, price, categoryId, id]
-    );
-    res.json(updatedProduct.rows[0]);
-  } catch (error) {
-    console.error("Error updating product:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-exports.deleteProduct = async (req, res) => {
-  const { id } = req.params;
-  try {
-    await pool.query("DELETE FROM products WHERE id = $1", [id]);
-    res.json({ message: "Product deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting product:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
 // Lấy tất cả sản phẩm theo farmid mà chỉ có productid
 exports.getProductsByProductId = async (req, res) => {
   const { productid } = req.params;
@@ -179,6 +139,35 @@ exports.getProductsByFarmId = async (req, res) => {
         .status(404)
         .json({ message: "No products found for this farm ID" });
     }
+    res.json(products.rows);
+  } catch (error) {
+    console.error("Error fetching products by farm ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// farmer controller
+
+// Lấy tất cả sản phẩm theo farmid
+exports.getProductsByFarmId = async (req, res) => {
+  const { userid } = req.params;
+
+  try {
+    // Lấy tất cả sản phẩm theo userid
+    const products = await pool.query(
+      `SELECT p.* 
+        FROM product p
+        JOIN farm f ON p.farmid = f.farmid
+        WHERE f.userid = $1`,
+      [userid]
+    );
+
+    // Nếu không có sản phẩm nào thì trả về thông báo
+    if (products.rows.length === 0) {
+      return res.status(400).json({ message: "Không tìm thấy sản phẩm nào" });
+    }
+
+    // Trả về danh sách sản phẩm
     res.json(products.rows);
   } catch (error) {
     console.error("Error fetching products by farm ID:", error);
