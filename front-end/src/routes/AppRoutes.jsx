@@ -35,7 +35,7 @@ export default function AppRoutes() {
             <Route path="/purchase-history" element={<PurchasesHistory />} />
             <Route path="/change-info" element={<ChangeInfo />} />
             <Route path="/about-agri" element={<AboutAgriPage />} />
-            
+
             {/* Route cho farmer */}
             <Route path="/farmer/login" element={<FarmerLogin />} />
             <Route path="/farmer" element={<FarmerDashboard />} />

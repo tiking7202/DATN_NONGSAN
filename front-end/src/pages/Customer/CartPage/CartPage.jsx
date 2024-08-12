@@ -17,6 +17,7 @@ export default function CartPage() {
   const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userid;
+  
   useEffect(() => {
     axios
       .post(`${API_BASE_URL}/cart`, { userId })
@@ -109,8 +110,8 @@ export default function CartPage() {
     }
     updateQuantityCart(userId, productid, quantity);
 
-    setCart(prevCart => 
-      prevCart.map(item => 
+    setCart((prevCart) =>
+      prevCart.map((item) =>
         item.productid === productid ? { ...item, quantity } : item
       )
     );
