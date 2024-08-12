@@ -13,8 +13,6 @@ import SearchPage from "../pages/Customer/SearchPage/SearchPage";
 import FarmProductPage from "../pages/Customer/FarmProductPage/FarmProductPage";
 import FarmSeasonPage from "../pages/Customer/FarmSeasonPage/FarmSeasonPage";
 import NotFound from "../pages/NotFound/NotFound";
-import { ToastProvider } from "../../context/ToastContext";
-import CheckoutPage from "../pages/Customer/CheckoutPage/CheckoutPage";
 import PurchasesHistory from "../pages/Customer/PurchasesHistory/PurchasesHistory";
 import ChangeInfo from "../pages/Customer/ChangeInfo/ChangeInfo";
 import AboutAgriPage from "../pages/Customer/AboutAgriPage/AboutAgriPage";
@@ -40,7 +38,7 @@ export default function AppRoutes() {
             <Route path="/purchase-history" element={<PurchasesHistory />} />
             <Route path="/change-info" element={<ChangeInfo />} />
             <Route path="/about-agri" element={<AboutAgriPage />} />
-             <Route path="/farm/info/:id" element={<FarmInfoPage />} />
+            <Route path="/farm/info/:id" element={<FarmInfoPage />} />
             <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
             <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
 

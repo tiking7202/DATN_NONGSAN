@@ -69,11 +69,6 @@ exports.getProductById = async (req, res) => {
         console.error('Error fetching product:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-    res.json(product.rows[0]);
-  } catch (error) {
-    console.error("Error fetching product:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
 };
 // Tìm kiếm sản phẩm
 exports.searchProduct = async (req, res) => {
