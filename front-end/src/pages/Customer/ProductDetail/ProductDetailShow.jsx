@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faShoppingCart,
   faMoneyBillWave,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { addToCart } from "../../../service/CustomerService/cartService.js";
 import { jwtDecode } from "jwt-decode";
@@ -14,20 +15,29 @@ import "react-toastify/dist/ReactToastify.css";
 import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer.jsx";
 import { API_BASE_URL } from "../../../config/config.js";
 import FarmInfoShow from "../../../components/CustomerComponent/FarmInfoShow/FarmInfoShow.jsx";
+import CommentShow from "../../../components/CustomerComponent/CommentShow/CommentShow.jsx";
+import { getAmountOfReview } from "../../../service/CustomerService/reviewService.js";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
   let { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+
+  const [reviewCount, setReviewCount] = useState(0);
   const handleIncrease = () => {
     setQuantity(quantity + 1);
   };
 
   const handleDecrease = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+    if (quantity === 1) {
+      toast.error("Số lượng sản phẩm thêm vào giỏ hàng phải lớn hơn 0", {
+        position: "top-right",
+        time: 500,
+      });
+      return;
     }
+    setQuantity(quantity - 1);
   };
   useEffect(() => {
     axios
@@ -36,6 +46,18 @@ export default function ProductDetail() {
         setProduct(response.data);
       })
       .catch((error) => console.error(error));
+
+
+      const fetchReviewCount = async () => {
+        try {
+          const reviewResponse = await getAmountOfReview(id);
+          setReviewCount(reviewResponse.data);
+        } catch (error) {
+          console.error('Error fetching review count:', error);
+        }
+      };
+  
+      fetchReviewCount();
   }, [id]);
 
   const [currentImage, setCurrentImage] = useState("");
@@ -67,6 +89,7 @@ export default function ProductDetail() {
             position: "top-right",
             time: 500,
           });
+          setQuantity(1);
         })
         .catch((error) => {
           toast.error(error.response.data.message, {
@@ -115,51 +138,72 @@ export default function ProductDetail() {
                   </div>
                 </div>
                 <div className="w-1/2">
-                  <h1 className="text-3xl text-primary font-bold">
+                  <h1 className="text-4xl text-primary font-bold mx-3">
                     {product.productname}
                   </h1>
-                  <p>Danh mục: Rau, củ, quả</p>
-                  <div className="">
-                    <span className="text-2xl text-primary font-bold">
+                  <p className="mx-5 font-thin ">
+                    Danh mục: {product.categoryname}
+                  </p>
+                  <div className="flex">
+                    <span className="text-4xl m-3 text-primary font-semibold text">
                       {product.productprice} VNĐ
                     </span>
-                    <span className="text-md ml-2">/kg</span>
+                    <span className="text-2xl my-auto ">
+                      /{product.unitofmeasure}
+                    </span>
                   </div>
-                  <div className="my-4 w-full h-1 bg-primary"></div>
-                  <div className="">
-                    <p className="">
-                      Giao hàng từ: <span>Đà Lạt</span>
-                    </p>
-                    <p className="">
-                      Số lượng: <span>{product.productquantity} kg</span>
-                    </p>
-                    <p className="">
-                      Trạng thái:{" "}
-                      <span>
+                  <div className="my-4 w-full mx-auto h-1 bg-primary"></div>
+                  <div className="p-2">
+                    <div className="m-2">
+                      <span className="text-primary font-medium mr-1">
+                        Giao hàng từ:{" "}
+                      </span>
+                      <span className="font-semibold">
+                        {product.farmprovince}
+                      </span>
+                    </div>
+                    <div className="m-2">
+                      <span className="text-primary font-medium mr-1">
+                        Số lượng:{" "}
+                      </span>
+                      <span className="font-semibold">
+                        {product.productquantity} {product.unitofmeasure}
+                      </span>
+                    </div>
+                    <div className="m-2">
+                      <span className="text-primary font-medium mr-1">
+                        Trạng thái:{" "}
+                      </span>
+                      <span className="font-semibold">
                         {product.productquantity > 0 ? "Còn hàng" : "Hết hàng"}
                       </span>
-                    </p>
-                    <p className="flex">
-                      Số lượng:{" "}
-                      <span className="flex items-center space-x-2 ml-3">
+                    </div>
+                    <div className="flex m-2">
+                      <span className="text-primary font-medium mr-1 my-auto">
+                        Số lượng:{" "}
+                      </span>
+
+                      <div className="w-1/4 p-1 flex items-center bg-fourth space-x-2 ml-3 border-2 border-neutral-950 rounded-md font-bold ">
                         <button
                           onClick={handleDecrease}
-                          className="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                          className="w-1/3 px-2 py-1 rounded-md text-gray-900 hover:bg-gray-200"
                         >
                           -
                         </button>
-                        <span className="px-2">{quantity}</span>
+                        <span className="w-1/3 px-2 text-center">
+                          {quantity}
+                        </span>
                         <button
                           onClick={handleIncrease}
-                          className="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                          className="w-1/3 px-2 py-1 rounded-md text-gray-900 hover:bg-gray-200"
                         >
                           +
                         </button>
-                      </span>
-                    </p>
-                    <div className="">
+                      </div>
+                    </div>
+                    <div className="flex m-2 w-3/4">
                       <button
-                        className="bg-primary text-white p-3 rounded-md mt-4"
+                        className="bg-primary text-white p-3 rounded-md mt-4 w-1/2 hover:opacity-90"
                         onClick={handleAddToCart}
                       >
                         Thêm vào giỏ hàng
@@ -168,7 +212,7 @@ export default function ProductDetail() {
                           className="ml-2"
                         />
                       </button>
-                      <button className="bg-primary text-white p-3 rounded-md mt-4 ml-2">
+                      <button className="bg-primary text-white p-3 rounded-md mt-4 ml-3 w-1/2  hover:opacity-90">
                         Mua ngay{" "}
                         <FontAwesomeIcon
                           icon={faMoneyBillWave}
@@ -176,50 +220,55 @@ export default function ProductDetail() {
                         />
                       </button>
                     </div>
-                    <p>
-                      Ngày hết hạn:{" "}
-                      <span>
+                    <div className="flex m-2">
+                      <span className="text-primary font-medium mr-1">
+                        Ngày hết hạn:{" "}
+                      </span>
+                      <span className="font-semibold ml-2">
                         {new Date(product.expirydate).toLocaleDateString(
                           "vi-VN"
                         )}
                       </span>
-                    </p>
-                    <p>
-                      Bình luận:{" "}
-                      <span>
-                        {new Date(product.expirydate).toLocaleDateString(
-                          "vi-VN"
-                        )}
+                    </div>
+                    <div className="flex m-2">
+                      <span className="text-primary font-medium mr-1">
+                        Bình luận:{" "}
                       </span>
-                    </p>
-                    <p>
-                      Đánh giá:{" "}
-                      <span>
-                        {new Date(product.expirydate).toLocaleDateString(
-                          "vi-VN"
-                        )}
+                      <span className="font-semibold ml-2">{reviewCount[5]} bình luận</span>
+                    </div>
+                    <div className="flex m-2">
+                      <span className="text-primary font-medium mr-1">
+                        Đánh giá:{" "}
                       </span>
-                    </p>
+                      <span className="font-semibold ml-2">
+                      {reviewCount[6]}
+                        <FontAwesomeIcon
+                          icon={faStar}
+                          color="#ffd700"
+                          className="ml-1"
+                        />
+                      </span>
+                    </div>
                   </div>
                 </div>
               </>
             )}
           </div>
 
-          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-5">
+          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7">
             <h1 className="font-bold text-primary text-2xl">
               Thông tin chi tiết về sản phẩm
             </h1>
           </div>
-          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-5">
-            <p className="text-justify text-base m-3">{product.overviewdes}</p>
+          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-2">
+            <p className="text-justify text-base m-3 font-medium ml-5">{product.overviewdes}</p>
 
             {product.healtbenefit && (
               <>
                 <p className="text-justify text-xl font-bold m-3">
                   Lợi ích đối với sức khỏe
                 </p>
-                <p className="text-justify text-base m-3">
+                <p className="text-justify text-base m-3 font-medium ml-5">
                   {product.healtbenefit}
                 </p>
               </>
@@ -230,7 +279,7 @@ export default function ProductDetail() {
                 <p className="text-justify text-xl font-bold m-3">
                   Phương pháp bảo quản sản phẩm
                 </p>
-                <p className="text-justify text-base m-3">
+                <p className="text-justify text-base m-3 font-medium ml-5">
                   {product.storagemethod}
                 </p>
               </>
@@ -240,20 +289,22 @@ export default function ProductDetail() {
                 <p className="text-justify text-xl font-bold m-3">
                   Phương pháp chế biến sản phẩm
                 </p>
-                <p className="text-justify text-base m-3">
+                <p className="text-justify text-base m-3 font-medium ml-5">
                   {product.cookingmethod}
                 </p>
               </>
             )}
           </div>
 
-          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-5">
+          <div className="w-4/5 mx-auto bg-secondary rounded-md p-5 mt-7">
             <h1 className="font-bold text-primary text-2xl">
-              Bình luận, đánh giá
+              Bình luận, đánh giá về sản phẩm
             </h1>
           </div>
-
-          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-5">
+          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-2">
+            <CommentShow />
+          </div>
+          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7">
             <h1 className="font-bold text-primary text-2xl">
               Sản phẩm liên quan
             </h1>

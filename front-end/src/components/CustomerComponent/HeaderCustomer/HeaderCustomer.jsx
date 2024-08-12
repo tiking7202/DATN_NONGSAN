@@ -16,14 +16,14 @@ import { API_BASE_URL } from "../../../config/config";
 import { useToast } from "../../../../context/ToastContext";
 
 export default function HeaderCustomer() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
-  let username = null;
+  let fullName = null;
   if (token) {
     const decodedToken = jwtDecode(token);
-    username = decodedToken?.username;
+    fullName = decodedToken?.fullname;
   }
 
   //set toast khi logout
@@ -71,12 +71,23 @@ export default function HeaderCustomer() {
     }
   };
 
+  const handleRouteToLoginFarmer =  async () => {
+    const response = await axios.get(`${API_BASE_URL}/auth/logout`);
+      if (response.status === 200) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        navigate("/farmer/login");
+      } else {
+        toast.error("Đăng xuất thất bại. Vui lòng thử lại.");
+      }    
+  }
+
   return (
-    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-50">
+    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40">
       <ToastContainer />
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
-          <p className="cursor-pointer mx-1 sm:mx-2">Kênh nhà cung cấp</p>
+          <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToLoginFarmer}>Kênh nhà cung cấp</p>
           <p className="cursor-pointer mx-1 sm:mx-2">Trở thành nhà cung cấp</p>
         </section>
         <section className="flex space-x-2 sm:space-x-4 mt-2 sm:mt-4">
@@ -85,14 +96,14 @@ export default function HeaderCustomer() {
             <p>Thông báo</p>
           </div>
           <div className="flex space-x-1 sm:space-x-2">
-            {username ? (
+            {fullName ? (
               <div className="relative inline-block text-left">
                 <div>
                   <p
                     className="cursor-pointer mx-1 sm:mx-2"
                     onClick={() => setIsOpen(!isOpen)}
                   >
-                    {username}
+                    {fullName}
                   </p>
                 </div>
 
@@ -106,18 +117,26 @@ export default function HeaderCustomer() {
                       aria-labelledby="options-menu"
                     >
                       <a
-                        href="#"
+                        href="/change-info"
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
                         Thay đổi thông tin
                       </a>
+                      
                       <a
-                        href="#"
+                        href="/change-password"
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
                         Thay đổi mật khẩu
+                      </a>
+                      <a
+                        href="/purchase-history"
+                        className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
+                        role="menuitem"
+                      >
+                        Lịch sử mua hàng
                       </a>
                       <a
                         href="#"

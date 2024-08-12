@@ -25,24 +25,18 @@ exports.getFarmById = async (req, res) => {
 
 // Lấy farm theo productid
 exports.getFarmByProductId = async (req, res) => {
-  const { productid } = req.params;
+    const { productid } = req.params;
+    
+    if (!productid) return res.status(400).json({ message: "Product ID is required" });
+    
+    try {
+        const { rows } = await pool.query("SELECT * FROM farm WHERE farmid = (SELECT farmid FROM product WHERE productid = $1)", [productid]);
+        if (!rows[0]) return res.status(400).json({ message: "No farm found for this product ID" });
+        
+        res.json(rows[0]);
+    } catch (error) {
+        console.error("Error fetching farm:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 
-  if (!productid)
-    return res.status(400).json({ message: "Product ID is required" });
-
-  try {
-    const { rows } = await pool.query(
-      "SELECT * FROM farm WHERE farmid = (SELECT farmid FROM product WHERE productid = $1)",
-      [productid]
-    );
-    if (!rows[0])
-      return res
-        .status(404)
-        .json({ message: "No farm found for this product ID" });
-
-    res.json(rows[0]);
-  } catch (error) {
-    console.error("Error fetching farm:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
 };

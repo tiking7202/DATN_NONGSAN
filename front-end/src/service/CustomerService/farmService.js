@@ -3,10 +3,18 @@ import { API_BASE_URL } from '../../config/config';
 
 // Lấy tất cả farm
 export function getFarms() {
-    return axios.get(`${API_BASE_URL}/farm`);
+    try {
+        return axios.get(`${API_BASE_URL}/farm`);
+    } catch (error) {     
+        console.error(error);
+    }
 }
 
 // Lấy farm theo productid
 export function getFarmByProductId(productid) {
-    return axios.get(`${API_BASE_URL}/farm/product/${productid}`);
+    try {
+        return axios.get(`${API_BASE_URL}/farm/product/${productid}`);
+    } catch (error) {           
+        console.error(error);
+    }
 }

@@ -13,7 +13,6 @@ export default function FarmInfoShow() {
   const location = useLocation();
   const resourceType = location.pathname.split("/")[1];
   const id = location.pathname.split("/").pop();
-  // console.log(id);
 
   useEffect(() => {
     const fetchFarmData = async () => {
@@ -72,10 +71,12 @@ export default function FarmInfoShow() {
           >
             Giới thiệu
           </Link>
+
           <Link
             to={`/farm/productdetail/${id}`}
             className="text-2xl font-bold text-primary mx-5"
           >
+        
             Sản phẩm
           </Link>
           <Link

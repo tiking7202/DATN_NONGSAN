@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import imgLogin from "../../../assets/logimFarmer.jpg";
 import { API_BASE_URL } from "../../../config/config";
+import axios from "axios";
 import { useToast } from "../../../../context/ToastContext";
 import { jwtDecode } from "jwt-decode";
 
-const LoginCustomer = () => {
+export default function FarmerLogin() {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     usernameOrEmail: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
   const { toastMessage, setToastMessage } = useToast();
   useEffect(() => {
     if (toastMessage) {
@@ -26,20 +25,18 @@ const LoginCustomer = () => {
       setToastMessage(null);
     }
   }, [toastMessage, setToastMessage]);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials({ ...credentials, [name]: value });
   };
 
-  const handlePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Kiểm tra nếu username/email và password không rỗng
     if (!credentials.usernameOrEmail || !credentials.password) {
       toast.error("Vui lòng nhập đầy đủ thông tin đăng nhập.", {
         position: "top-right",
@@ -48,6 +45,7 @@ const LoginCustomer = () => {
       return;
     }
 
+    // Call API here
     try {
       const response = await axios.post(
         `${API_BASE_URL}/auth/login`,
@@ -58,17 +56,18 @@ const LoginCustomer = () => {
         //lay token và giai ma token
         const decodedToken = jwtDecode(response.data.accessToken);
         const role = decodedToken?.role;
-        if (role !== "customer") {
-          toast.error("Đây không phải là tài khoản khách hàng");
+        if (role !== "farmer") {
+          toast.error("Đây không phải là tài khoản nông dân");
           return;
         }
 
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
+        
         setToastMessage("Đăng nhập thành công");
         callProtectedApi();
         // Điều hướng người dùng đến trang chính
-        navigate("/");
+        navigate("/farmer");
       }
       // De tranh loi thoi
       if (response.status === 201) getAuthToken();
@@ -151,86 +150,97 @@ const LoginCustomer = () => {
   };
 
   return (
-    <div className="backgroundImg">
+    <div className="h-screen bg-fourth p-2 flex items-center justify-center">
       <ToastContainer />
-      <div className="w-1/4 m-auto bg-fourth rounded-2xl  shadow-2xl">
-        <h1 className="text-primary py-3 font-bold text-center text-40">
-          Đăng Nhập
-        </h1>
-
-        <div className="p-3 my-2">
-          <div className="bg-secondary mx-2 rounded-t-xl p-2">
-            <label
-              htmlFor="usernameOrEmail"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Username hoặc email
-            </label>
-            <input
-              type="text"
-              placeholder="Username hoặc email"
-              name="usernameOrEmail"
-              value={credentials.usernameOrEmail}
-              onChange={handleChange}
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
-            />
+      <div className="w-2/3 m-auto shadow-lg bg-secondary rounded-2xl flex">
+        <div className="text-primary w-2/3 flex items-center justify-center">
+          <div className="w-11/12 h-1/3 m-auto flex flex-col justify-center">
+            <h2 className=" text-3xl text-center font-bold my-3 pt-5">
+              TRỞ THÀNH ĐỐI TÁC VỚI AGRIMART
+            </h2>
+            <div className="ml-5 mb-3 text-center text-lg font-medium">
+              Cung cấp sản phẩm của bạn trên hệ thống của chúng tôi và tiếp cận
+              hàng ngàn khách hàng tiềm năng. Đăng ký ngay để trở thành đối tác của chúng tôi.
+            </div>
+            <img src={imgLogin} alt="farmer" className="w-7/12 m-auto my-2 rounded-lg" />
           </div>
-          <div className="bg-secondary mx-2 rounded-b-xl p-2">
-            <label
-              htmlFor="usernameOrEmail"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Mật khẩu
-            </label>
-            <div className="relative">
+        </div>
+        <div className="w-1/3 shadow-2xl">
+          <h1 className="text-primary pt-5 font-bold text-center text-3xl">
+            Đăng Nhập
+          </h1>
+          <div className="my-2">
+            <div className="bg-secondary mx-2 rounded-t-xl p-2">
+              <label
+                htmlFor="usernameOrEmail"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Username hoặc email
+              </label>
               <input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Mật khẩu"
-                value={credentials.password}
+                type="text"
+                placeholder="Username hoặc email"
+                name="usernameOrEmail"
+                value={credentials.usernameOrEmail}
                 onChange={handleChange}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />
-              <FontAwesomeIcon
-                icon={showPassword ? faEyeSlash : faEye}
-                onClick={handlePasswordVisibility}
-                className="absolute right-3 top-3 cursor-pointer"
-              />
             </div>
-            <div className="flex justify-between my-3">
-              <div>
-                <input type="checkbox" className="mr-2" />
-                <label className="text-primary">Ghi nhớ mật khẩu</label>
+            <div className="bg-secondary mx-2 rounded-b-xl p-2">
+              <label
+                htmlFor="usernameOrEmail"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Mật khẩu
+              </label>
+              <div className="relative">
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Mật khẩu"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                />
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  onClick={handlePasswordVisibility}
+                  className="absolute right-3 top-3 cursor-pointer"
+                />
               </div>
-              <a href="/forgot-password" className="text-primary">
-                Quên mật khẩu?
-              </a>
+              <div className="flex justify-between my-3">
+                <div>
+                  <input type="checkbox" className="mr-2" />
+                  <label className="text-primary">Ghi nhớ mật khẩu</label>
+                </div>
+                <a href="/forgot-password" className="text-primary">
+                  Quên mật khẩu?
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center flex-col mx-5 mb-5">
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full"
-          >
-            Đăng nhập
-          </button>
-          <p className="text-primary text-xl m-2">Hoặc</p>
-          <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full">
-            Đăng nhập với google
-          </button>
-          <p className="text-primary">
-            Bạn chưa có tài khoản?{" "}
-            <Link className="text-third" to="/register/step1">
-              Đăng ký
-            </Link>
-          </p>
+          <div className="flex items-center flex-col mx-5 mb-5">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full"
+            >
+              Đăng nhập
+            </button>
+            <p className="text-primary text-xl m-2">Hoặc</p>
+            <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full">
+              Đăng nhập với google
+            </button>
+            <p className="text-primary">
+              Bạn chưa có tài khoản?{" "}
+              <Link className="text-third" to="/register/step1">
+                Đăng ký
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default LoginCustomer;
+}
