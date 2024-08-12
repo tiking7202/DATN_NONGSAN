@@ -20,11 +20,9 @@ export default function FarmInfoShow() {
         let response;
         if (resourceType === "product") {
           response = await axios.get(`${API_BASE_URL}/farm/product/${id}`);
-        } else if (resourceType === "farm") {
+        } else  {
           response = await axios.get(`${API_BASE_URL}/farm/${id}`);
-        } else {
-          throw new Error("Invalid resource type");
-        }
+        } 
         setFarm(response.data);
       } catch (error) {
         console.error("There was an error!", error);
@@ -73,14 +71,14 @@ export default function FarmInfoShow() {
           </Link>
 
           <Link
-            to={`/farm/productdetail/${id}`}
+            to={`/farm/productdetail/${farm?.farmid}`}
             className="text-2xl font-bold text-primary mx-5"
           >
         
             Sản phẩm
           </Link>
           <Link
-            to={`/farm/season/${id}`}
+            to={`/farm/season/${farm?.farmid}`}
             className="text-2xl font-bold text-primary mx-5"
           >
             Thông tin mùa vụ

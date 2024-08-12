@@ -30,17 +30,6 @@ export default function FarmInfoPage() {
       });
   }, [id]);
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${API_BASE_URL}/product/${id}`)
-  //     .then((response) => {
-  //       console.log(response);
-  //       setProduct(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("There was an error!", error);
-  //     });
-  // }, [id]);
 
   if (!farmData) return <p>Loading...</p>;
 
@@ -110,7 +99,7 @@ export default function FarmInfoPage() {
         </p>
         {/* Số sản phẩm */}
         <div className="mt-2">
-          <p className="text-lg font-bold text-xl">
+          <p className="font-bold text-xl">
             <FontAwesomeIcon icon={faListAlt} className="mr-3 text-xl" />
             Tổng số loại sản phẩm trang trại cung cấp:{" "}
             <span className="text-3xl text-primary">

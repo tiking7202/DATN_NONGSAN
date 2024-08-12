@@ -1,33 +1,20 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import {
-//   faMapMarkerAlt,
-//   faTractor,
-//   faCartPlus,
-// } from "@fortawesome/free-solid-svg-icons";
-// import { Link, useNavigate, useParams } from "react-router-dom";
 import { useParams, Link } from "react-router-dom";
 import { API_BASE_URL } from "../../../config/config";
-// import { toast } from "react-toastify";
-// import { addToCart } from "../../../service/CustomerService/cartService";
-// import { jwtDecode } from "jwt-decode";
 import FarmInfoShow from "../../../components/CustomerComponent/FarmInfoShow/FarmInfoShow.jsx";
 import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer.jsx"; // Import FooterCustomer
 
 import moment from "moment";
 
 export default function FarmSeasonPage() {
-  //   const navigate = useNavigate();
-  let { id } = useParams(); // Lấy farmid từ URL
-  console.log(id);
+  let { id } = useParams(); 
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     axios
       .get(`${API_BASE_URL}/farm/productdetail/${id}`) // Sử dụng farmid để lấy sản phẩm
       .then((response) => {
-        console.log(response);
         setProducts(response.data);
       })
       .catch((error) => {
@@ -35,30 +22,7 @@ export default function FarmSeasonPage() {
       });
   }, [id]);
 
-  //   const handleAddToCart = (productId) => {
-  //     const accessToken = localStorage.getItem("accessToken");
-
-  //     if (!accessToken) {
-  //       toast.error("Đăng nhập để thêm vào giỏ hàng!", {
-  //         position: "top-right",
-  //         time: 500,
-  //       });
-  //       navigate("/login");
-  //     } else {
-  //       const decodedToken = jwtDecode(accessToken);
-  //       const userId = decodedToken.userid;
-
-  //       addToCart(productId, userId, 1)
-  //         .then((response) => {
-  //           response;
-  //           toast.success("Thêm vào giỏ hàng thành công!");
-  //         })
-  //         .catch((error) => {
-  //           toast.error(error.response.data.message);
-  //         });
-  //     }
-  //   };
-
+ 
   return (
     <div>
       {/* Component FarmInfoShow được hiển thị ở đầu trang */}
@@ -135,28 +99,6 @@ export default function FarmSeasonPage() {
                       {product.productstate}
                     </span>
                   </p>
-                  {/* <p className="text-2xl m-3 font-bold italic text-green-500">
-                    {product.productprice}đ
-                  </p> */}
-                  {/* <div className="flex justify-between items-center mt-4">
-                    <div className="text-primary font-bold">
-                      <div className="flex items-center">
-                        <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-                        <p className="ml-2">{product.farmaddress}</p>
-                      </div>
-                      <div className="flex items-center mt-2">
-                        <FontAwesomeIcon icon={faTractor} size="lg" />
-                        <p className="ml-2">{product.farmname}</p>
-                      </div>
-                    </div>
-
-                    <button
-                      className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200"
-                      onClick={() => handleAddToCart(product.productid)}
-                    >
-                      <FontAwesomeIcon icon={faCartPlus} size="2x" />
-                    </button>
-                  </div> */}
                 </div>
               </div>
             );

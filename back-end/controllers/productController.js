@@ -46,8 +46,6 @@ exports.getProductsByCategoryId = async (req, res) => {
 // Lấy sản phẩm theo id
 exports.getProductById = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
-
   // Validate that the id is a valid UUID
   const uuidRegex =
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
