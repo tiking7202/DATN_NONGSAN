@@ -10,6 +10,7 @@ import { API_BASE_URL } from "../../../config/config";
 import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
 import { useNavigate } from "react-router-dom";
 import { updateQuantityCart } from "../../../service/CustomerService/cartService";
+import DeleteCartDialog from "./DeleteCartDialog";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export default function CartPage() {
   const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userid;
-  
+
   useEffect(() => {
     axios
       .post(`${API_BASE_URL}/cart`, { userId })
@@ -29,57 +30,21 @@ export default function CartPage() {
       });
   }, [userId]);
 
-  const onDeleteCart = (userId, productId) => {
-    confirmAlert({
-      customUI: ({ onClose }) => {
-        return (
-          <div className="custom-ui bg-white p-5 rounded shadow-lg w-full m-auto flex flex-col justify-between">
-            <div>
-              <h1 className="text-2xl text-center font-bold mb-4">
-                Xác nhận xóa
-              </h1>
-              <p className="mb-6 text-lg">
-                Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?
-              </p>
-            </div>
-            <div className="flex justify-end">
-              <button
-                className="bg-gray-200 text-black px-4 py-2 rounded mr-2"
-                onClick={onClose}
-              >
-                Hủy
-              </button>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={async () => {
-                  try {
-                    const response = await axios.delete(
-                      `${API_BASE_URL}/delete-cart/${userId}/${productId}`
-                    );
-                    console.log(response.data);
-                    toast.success(
-                      "Xóa thành công sản phẩm từ giỏ hàng của bạn",
-                      {
-                        position: "top-right",
-                      }
-                    );
-                    setCart(
-                      cart.filter((item) => item.productid !== productId)
-                    );
-                    // Update your state here to reflect the change in the cart
-                  } catch (error) {
-                    console.error("Error:", error);
-                  }
-                  onClose();
-                }}
-              >
-                Đồng ý
-              </button>
-            </div>
-          </div>
-        );
-      },
-    });
+  // Dialog xác nhận xóa sản phẩm khỏi giỏ hàng
+  const [isOpenDeleteCart, setIsOpenDeleteCart] = useState(false);
+
+  const [productId, setProductId] = useState("");
+  const refreshCart = async () => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/cart`, { userId });
+      setCart(response.data);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+    }
+  };
+  const onDeleteCart = async (productId) => {
+    setIsOpenDeleteCart(true);
+    setProductId(productId);
   };
 
   const [selectedItems, setSelectedItems] = useState([]);
@@ -244,7 +209,7 @@ export default function CartPage() {
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
                   <button
                     className="bg-red-500 text-white px-3 py-1 rounded-md m-2"
-                    onClick={() => onDeleteCart(userId, item.productid)}
+                    onClick={() => onDeleteCart(item.productid)}
                   >
                     Xóa
                   </button>
@@ -272,6 +237,15 @@ export default function CartPage() {
       </div>
 
       <FooterCustomer />
+
+      {isOpenDeleteCart && (
+        <DeleteCartDialog
+          onClose={() => setIsOpenDeleteCart(false)}
+          productId={productId}
+          userId={userId}
+          refreshCart={refreshCart}
+        />
+      )}
     </div>
   );
 }
