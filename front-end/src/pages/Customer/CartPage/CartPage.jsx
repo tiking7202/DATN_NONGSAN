@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer";
-import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -225,7 +224,7 @@ export default function CartPage() {
         </div> */}
         <div className="flex justify-end">
           <button
-            className="bg-primary text-white px-4 py-2 rounded-md m-2"
+            className="bg-primary text-white px-4 py-2 rounded-md m-2 font-bold"
             onClick={handleCheckout}
           >
             Thanh toán

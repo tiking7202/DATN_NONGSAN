@@ -18,37 +18,37 @@ import ChangeInfo from "../pages/Customer/ChangeInfo/ChangeInfo";
 import AboutAgriPage from "../pages/Customer/AboutAgriPage/AboutAgriPage";
 import FarmerDashboard from "../pages/Farmer/FarmerDashboard/FarmerDashboard";
 import FarmerLogin from "../pages/Farmer/FarmerLogin/FarmerLogin";
-import { PrivateRoute } from "./PrivateRoute";
 import FarmerShowProducts from "../pages/Farmer/FarmerProduct/FarmerShowProducts";
-
+import FarmerShowFarm from "../pages/Farmer/FarmerFarm/FarmerShowFarm";
 
 export default function AppRoutes() {
-    return (
-        <ToastProvider>
-        <Router>
-            <Routes>
-            <Route path="/" element={<HomePage />} />
+  return (
+    <ToastProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
 
-            {/* Route cho customer  */}
-            <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
+          {/* Route cho customer  */}
+          <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
           <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
           <Route path="/login" element={<LoginCustomer />} />
           <Route path="/product/:id" element={<ProductDetailShow />} />
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<PrivateRoute element={CheckoutPage} />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/search" element={<SearchPage />} />
-          <Route path="/purchase-history" element={<PrivateRoute element={PurchasesHistory} />} />
-          <Route path="/change-info" element={<PrivateRoute element={ChangeInfo} />} />
+          <Route path="/purchase-history" element={<PurchasesHistory />} />
+          <Route path="/change-info" element={<ChangeInfo />} />
           <Route path="/about-agri" element={<AboutAgriPage />} />
           <Route path="/farm/info/:id" element={<FarmInfoPage />} />
           <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
           <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
 
-            {/* Route cho farmer */}
-            <Route path="/farmer/login" element={<FarmerLogin />} />
-            <Route path="/farmer" element={<FarmerDashboard />} />
-            <Route path="/farmer/products" element={<FarmerShowProducts />} />
+          {/* Route cho farmer */}
+          <Route path="/farmer/login" element={<FarmerLogin />} />
+          <Route path="/farmer" element={<FarmerDashboard />} />
+          <Route path="/farmer/products" element={<FarmerShowProducts />} />
+          <Route path="/farmer/farms" element={<FarmerShowFarm />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

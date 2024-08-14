@@ -172,6 +172,10 @@ const getOrderItemById = async (req, res) => {
     for (const item of orderItem.rows) {
       const getProductSQL = `SELECT * FROM product WHERE productid = $1`;
       const product = await pool.query(getProductSQL, [item.productid]);
+      //Viết để tránh trường hợp sản phẩm đã bị xóa khỏi bảng product
+      if(product.rows.length === 0) {
+        continue;
+      }
       const temp = {
         productimage1: product.rows[0].productimage1,
         productname: product.rows[0].productname,

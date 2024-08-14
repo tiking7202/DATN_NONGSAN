@@ -1,12 +1,13 @@
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { jwtDecode } from "jwt-decode";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { useToast } from "../../../../context/ToastContext";
 import axios from "axios";
 import { API_BASE_URL } from "../../../config/config";
+import { isFarmer } from "../../../utils/roleCheck";
 
 export default function HeaderFarmer() {
   const navigate = useNavigate();
@@ -17,6 +18,19 @@ export default function HeaderFarmer() {
     const decodedToken = jwtDecode(token);
     fullName = decodedToken?.fullname;
   }
+  useEffect(() => {
+    if(!token) {
+      navigate("/farmer/login");
+    }
+    
+    //Kiểm tra có phải là customer hay không
+    if(token) {
+      if(!isFarmer(token)) {
+        localStorage.removeItem("accessToken");
+        navigate("/farmer/login");
+      }
+    }
+  }, [token, navigate]);
 
   //set toast khi logout
   const { setToastMessage } = useToast();

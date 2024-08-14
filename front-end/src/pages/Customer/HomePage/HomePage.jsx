@@ -13,11 +13,12 @@ function HomePage() {
   const navigate = useNavigate();
   const { toastMessage, setToastMessage } = useToast();
   useEffect(() => {
+    
     if (toastMessage) {
       toast.success(toastMessage);
       setToastMessage(null);
     }
-  }, [toastMessage, setToastMessage]);
+  }, [toastMessage, setToastMessage, navigate]);
 
   return (
     <div className="h-screen flex flex-col bg-fourth">

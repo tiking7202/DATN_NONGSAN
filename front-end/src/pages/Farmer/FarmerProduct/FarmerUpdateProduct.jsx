@@ -15,15 +15,13 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
   const [productimage1, setProductimage1] = useState(product.productimage1);
   const [productimage2, setProductimage2] = useState(product.productimage2);
   const [productimage3, setProductimage3] = useState(product.productimage3);
-  const [productquantity, setProductquantity] = useState(
-    product.productquantity
-  );
+  const [productquantity, setProductquantity] = useState(product.productquantity);
   const [unitofmeasure, setUnitofmeasure] = useState(product.unitofmeasure);
   const [productprice, setProductprice] = useState(product.productprice);
   const [expirydate, setExpirydate] = useState(product.expirydate);
   const [overviewdes, setOverviewdes] = useState(product.overviewdes);
   const [storagemethod, setStoragemethod] = useState(product.storagemethod);
-  const [healthbenefit, setHealthbenefit] = useState(product.healtbenefit);
+  const [healtbenefit, setHealtbenefit] = useState(product.healtbenefit);
   const [cookingmethod, setCookingmethod] = useState(product.cookingmethod);
 
   //error state
@@ -144,7 +142,7 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
     } else {
       setStoragemethodError("");
     }
-    if (healthbenefit === "") {
+    if (healtbenefit === "") {
       setHealthbenefitError("Lợi ích đối với sức khỏe không được để trống");
       return false;
     } else {
@@ -179,7 +177,7 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
             expirydate,
             overviewdes,
             storagemethod,
-            healthbenefit,
+            healtbenefit,
             cookingmethod,
           }
         );
@@ -463,8 +461,8 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
               </label>
               <textarea
                 placeholder="Lợi ích đối với sức khỏe"
-                value={healthbenefit}
-                onChange={(e) => setHealthbenefit(e.target.value)}
+                value={healtbenefit}
+                onChange={(e) => setHealtbenefit(e.target.value)}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500 h-40"
               />
               <p className="mt-1 text-red-500 text-xs italic">
