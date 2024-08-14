@@ -47,7 +47,7 @@ export default function HeaderFarmer() {
   };
 
   return (
-    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40">
+    <header className="z-40 p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full">
       <ToastContainer />
       <nav className="flex justify-between w-full m-auto py-2">
         <section className="flex flex-col sm:flex-row items-center">
@@ -69,7 +69,7 @@ export default function HeaderFarmer() {
             <p className="cursor-pointer"  onClick={() => setIsOpen(!isOpen)}>{fullName}</p>
 
             {isOpen && (
-                  <div className="z-50 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <div
                       className="py-1"
                       style={{ zIndex: 9999 }}

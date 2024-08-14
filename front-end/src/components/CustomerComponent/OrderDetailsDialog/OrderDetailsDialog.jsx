@@ -1,3 +1,5 @@
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 
 const OrderDetailsDialog = ({ order, onClose }) => {
@@ -9,6 +11,14 @@ const OrderDetailsDialog = ({ order, onClose }) => {
   return (
     <div className="z-50 fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded shadow-lg w-1/2 m-auto text-primary">
+        <div className="flex justify-end">
+          <button
+            className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold fixed"
+            onClick={onClose}
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        </div>
         <h2 className="text-2xl text-center font-bold mb-4">
           Chi tiết đơn hàng
         </h2>
@@ -30,14 +40,14 @@ const OrderDetailsDialog = ({ order, onClose }) => {
             </li>
           ))}
         </ul>
-        <div className="flex justify-end">
+        {/* <div className="flex justify-end">
           <button
             className="bg-primary hover:bg-primary-700 text-white font-bold py-2 px-4 rounded"
             onClick={onClose}
           >
             Đóng
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
