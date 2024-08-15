@@ -12,6 +12,6 @@ router.put("/product/:id", productController.updateProduct);
 router.delete("/product/:id", productController.deleteProduct);
 
 router.get("/farm/productdetail/:id", productController.getProductsByFarmId);
-router.get("/farm/season/:id", productController.getProductsByFarmId);
+// router.get("/farm/season/:id", productController.getProductsByFarmId);
 
 module.exports = router;

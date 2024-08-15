@@ -18,35 +18,47 @@ import ChangeInfo from "../pages/Customer/ChangeInfo/ChangeInfo";
 import AboutAgriPage from "../pages/Customer/AboutAgriPage/AboutAgriPage";
 import FarmerDashboard from "../pages/Farmer/FarmerDashboard/FarmerDashboard";
 import FarmerLogin from "../pages/Farmer/FarmerLogin/FarmerLogin";
-
+import FarmerRegisterStep1 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep1/FarmerRegisterStep1";
+import FarmerRegisterStep2 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep2/FarmerRegisterStep2";
+import FarmerRegisterStep3 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep3/FarmerRegisterStep3";
 export default function AppRoutes() {
-    return (
-        <ToastProvider>
-        <Router>
-            <Routes>
-            <Route path="/" element={<HomePage />} />
+  return (
+    <ToastProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
 
-            {/* Route cho customer  */}
-            <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
-            <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
-            <Route path="/login" element={<LoginCustomer />} />
-            <Route path="/product/:id" element={<ProductDetailShow />} />
-            <Route path="/category/:id" element={<CategoryPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/purchase-history" element={<PurchasesHistory />} />
-            <Route path="/change-info" element={<ChangeInfo />} />
-            <Route path="/about-agri" element={<AboutAgriPage />} />
-            <Route path="/farm/info/:id" element={<FarmInfoPage />} />
-            <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
-            <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
+          {/* Route cho customer  */}
+          <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
+          <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
+          <Route path="/login" element={<LoginCustomer />} />
+          <Route path="/product/:id" element={<ProductDetailShow />} />
+          <Route path="/category/:id" element={<CategoryPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/purchase-history" element={<PurchasesHistory />} />
+          <Route path="/change-info" element={<ChangeInfo />} />
+          <Route path="/about-agri" element={<AboutAgriPage />} />
+          <Route path="/farm/info/:id" element={<FarmInfoPage />} />
+          <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
+          <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
 
-            {/* Route cho farmer */}
-            <Route path="/farmer/login" element={<FarmerLogin />} />
-            <Route path="/farmer" element={<FarmerDashboard />} />
-
-
+          {/* Route cho farmer */}
+          <Route path="/farmer/login" element={<FarmerLogin />} />
+          <Route path="/farmer" element={<FarmerDashboard />} />
+          <Route
+            path="/farmer/register/step1"
+            element={<FarmerRegisterStep1 />}
+          />
+          <Route
+            path="/farmer/register/step2"
+            element={<FarmerRegisterStep2 />}
+          />
+          <Route
+            path="/farmer/register/step3"
+            element={<FarmerRegisterStep3 />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
