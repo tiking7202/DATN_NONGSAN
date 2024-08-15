@@ -123,31 +123,8 @@ const login = async (req, res) => {
       [usernameOrEmail]
     );
 
-<<<<<<< HEAD
     if (user.rows.length === 0) {
       return res.status(400).send("Tên đăng nhập hoặc email không tồn tại");
-=======
-        const validPassword = await bcrypt.compare(password, user.rows[0].password);
-        if (!validPassword) {
-            return res.status(400).send("Mật khẩu không chính xác");
-        }
-
-        // Generate access token and refresh token
-        const accessToken = generateAccessToken(user.rows[0].userid, user.rows[0].username, user.rows[0].fullname, user.rows[0].role);
-        const refreshToken = generateRefreshToken(user.rows[0].username);
-
-
-        // Store refresh token in the database
-        await pool.query('UPDATE "User" SET refreshToken = $1 WHERE userid = $2', [
-            refreshToken,
-            user.rows[0].userid,
-        ]);
-
-        res.header("auth-token", accessToken).json({ accessToken, refreshToken });
-    } catch (error) {
-        console.error("Lỗi khi đăng nhập:", error);
-        res.status(500).send("Internal Server Error");
->>>>>>> d1b1ad07737053570af114cf49a8eee0e7fca569
     }
 
     const validPassword = await bcrypt.compare(password, user.rows[0].password);
@@ -315,9 +292,9 @@ const registerFarmerStep2 = async (req, res) => {
     if (!farmName || !farmType || !farmemail || !farmArea || !farmDescription) {
       return res.status(400).send("Vui lòng nhập đầy đủ thông tin.");
     }
-    // if (!farmstreet || !farmcommune || !farmdistrict || !farmprovince) {
-    //   return res.status(400).send("Địa chỉ không đầy đủ.");
-    // }
+    if (!farmstreet || !farmcommune || !farmdistrict || !farmprovince) {
+      return res.status(400).send("Địa chỉ không đầy đủ.");
+    }
 
     // Tiến hành cập nhật thông tin trang trại vào cơ sở dữ liệu
     const newFarm = await pool.query(

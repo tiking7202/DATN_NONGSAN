@@ -18,39 +18,18 @@ import ChangeInfo from "../pages/Customer/ChangeInfo/ChangeInfo";
 import AboutAgriPage from "../pages/Customer/AboutAgriPage/AboutAgriPage";
 import FarmerDashboard from "../pages/Farmer/FarmerDashboard/FarmerDashboard";
 import FarmerLogin from "../pages/Farmer/FarmerLogin/FarmerLogin";
-<<<<<<< HEAD
 import FarmerRegisterStep1 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep1/FarmerRegisterStep1";
 import FarmerRegisterStep2 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep2/FarmerRegisterStep2";
 import FarmerRegisterStep3 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep3/FarmerRegisterStep3";
-=======
 import FarmerShowProducts from "../pages/Farmer/FarmerProduct/FarmerShowProducts";
 import FarmerShowFarm from "../pages/Farmer/FarmerFarm/FarmerShowFarm";
 
->>>>>>> d1b1ad07737053570af114cf49a8eee0e7fca569
 export default function AppRoutes() {
   return (
     <ToastProvider>
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-<<<<<<< HEAD
-
-          {/* Route cho customer  */}
-          <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
-          <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
-          <Route path="/login" element={<LoginCustomer />} />
-          <Route path="/product/:id" element={<ProductDetailShow />} />
-          <Route path="/category/:id" element={<CategoryPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/purchase-history" element={<PurchasesHistory />} />
-          <Route path="/change-info" element={<ChangeInfo />} />
-          <Route path="/about-agri" element={<AboutAgriPage />} />
-          <Route path="/farm/info/:id" element={<FarmInfoPage />} />
-          <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
-          <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
-=======
 
           {/* Route cho customer  */}
           <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
@@ -73,11 +52,6 @@ export default function AppRoutes() {
           <Route path="/farmer" element={<FarmerDashboard />} />
           <Route path="/farmer/products" element={<FarmerShowProducts />} />
           <Route path="/farmer/farms" element={<FarmerShowFarm />} />
->>>>>>> d1b1ad07737053570af114cf49a8eee0e7fca569
-
-          {/* Route cho farmer */}
-          <Route path="/farmer/login" element={<FarmerLogin />} />
-          <Route path="/farmer" element={<FarmerDashboard />} />
           <Route
             path="/farmer/register/step1"
             element={<FarmerRegisterStep1 />}
