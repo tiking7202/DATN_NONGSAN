@@ -25,7 +25,6 @@ export default function CommentShow() {
   const [userInfo, setUserInfo] = useState({});
   const [userId, setUserId] = useState("");
 
-  // const userId = decodedToken.userid;
   const { id } = useParams();
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -33,7 +32,7 @@ export default function CommentShow() {
       const decodedToken = jwtDecode(token);
       setUserId(decodedToken.userid);
     }
-    //Chuyển qua component cha để fix lỗi
+
     const fetchData = async () => {
       try {
         const [reviewsResponse, reviewCountResponse] = await Promise.all([
@@ -43,24 +42,29 @@ export default function CommentShow() {
 
         setComments(reviewsResponse.data);
         setAmountOfReview(reviewCountResponse.data);
-
-        // Get user info
-        const fetchUserInfo = async () => {
-          const userInfoMap = {};
-          for (const comment of comments) {
-            const data = await getUserInfo(comment.userid);
-            userInfoMap[comment.userid] = data;
-          }
-          setUserInfo(userInfoMap);
-        };
-        fetchUserInfo();
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [id, comments]);
+  }, [id]);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfoMap = {};
+      for (const comment of comments) {
+        const data = await getUserInfo(comment.userid);
+        userInfoMap[comment.userid] = data;
+      }
+      setUserInfo(userInfoMap);
+    };
+
+    if (comments.length > 0) {
+      fetchUserInfo();
+    }
+  }, [comments]);
+
   const { setToastMessage } = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -238,7 +242,7 @@ export default function CommentShow() {
             >
               <div className="flex my-auto">
                 <p className="font-bold text-xl my-auto mx-5">
-                  {userInfo[comment.userid]?.fullname || "Luu Ha"}
+                  {userInfo[comment.userid]?.fullname}
                 </p>
 
                 <p className="font-light my-auto">

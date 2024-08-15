@@ -30,14 +30,13 @@ export default function FarmInfoPage() {
       });
   }, [id]);
 
-
   if (!farmData) return <p>Loading...</p>;
 
   return (
     <div className="bg-fourth text-gray-800">
       <FarmInfoShow />
 
-      <div className="container mx-auto p-8 mt-10 bg-white rounded-lg shadow-lg w-4/5">
+      <div className="container mx-auto p-5 mt-5 bg-white rounded-lg shadow-lg w-4/5 text-primary">
         {/* Nội dung farm */}
         <div className="mb-5">
           <h2 className="text-2xl font-bold mb-3">
@@ -59,50 +58,48 @@ export default function FarmInfoPage() {
 
         {/* Hình ảnh */}
         <h2 className="text-2xl font-bold mb-3 mt-5">MỘT SỐ HÌNH ẢNH</h2>
-        <div className=" mb-8 w-full ">
-          <div className="flex justify-center mt-2">
-            <img
-              src={farmData.farmimage1}
-              alt="product"
-              className="object-cover rounded-md mx-3 w-48 h-40 cursor-pointer"
-            />
-            <img
-              src={farmData.farmimage2}
-              alt="product"
-              className="object-cover rounded-md mx-3 w-48 h-40 cursor-pointer"
-            />
-            <img
-              src={farmData.farmimage3}
-              alt="product"
-              className="object-cover rounded-md mx-3 w-48 h-40 cursor-pointer"
-            />
-          </div>
+        <div className=" my-5 w-full flex justify-center">
+          <img
+            src={farmData.farmimage1}
+            alt="product"
+            className="object-cover rounded-md mx-3 w-1/4 cursor-pointer"
+          />
+          <img
+            src={farmData.farmimage2}
+            alt="product"
+            className="object-cover rounded-md mx-3 w-1/4 cursor-pointer"
+          />
+          <img
+            src={farmData.farmimage3}
+            alt="product"
+            className="object-cover rounded-md mx-3 w-1/4  cursor-pointer"
+          />
         </div>
       </div>
 
       {/* Thông tin liên hệ và tổng số sản phẩm */}
-      <div className="container mx-auto p-8 mt-6 bg-white rounded-lg shadow-lg w-4/5">
+      <div className="container mx-auto p-8 my-6 bg-white rounded-lg shadow-lg w-4/5 text-primary">
         <h2 className="text-2xl font-bold mb-2"> Thông tin liên hệ</h2>
-        <p className="text-xl">
+        <p className="text-lg">
           {" "}
           <FontAwesomeIcon icon={faPhone} className="mr-3 text-xl" />
           Số điện thoại: {farmData.farmphone}
         </p>
-        <p className="text-xl">
+        <p className="text-lg">
           <FontAwesomeIcon icon={faEnvelope} className="mr-3 text-xl" />
           Email: {farmData.farmemail}
         </p>
-        <p className="text-xl">
+        <p className="text-lg">
           {" "}
           <FontAwesomeIcon icon={faMapMarkerAlt} className="mr-3 text-xl" />
           Tỉnh/Thành phố: {farmData.farmdistrict}
         </p>
         {/* Số sản phẩm */}
-        <div className="mt-2">
+        <div className="my-3">
           <p className="font-bold text-xl">
             <FontAwesomeIcon icon={faListAlt} className="mr-3 text-xl" />
             Tổng số loại sản phẩm trang trại cung cấp:{" "}
-            <span className="text-3xl text-primary">
+            <span className="text-2xl text-primary">
               {farmData.farmproductstotal}
             </span>
           </p>
