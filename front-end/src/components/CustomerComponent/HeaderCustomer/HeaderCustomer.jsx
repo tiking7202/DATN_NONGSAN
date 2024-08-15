@@ -36,7 +36,6 @@ export default function HeaderCustomer() {
         navigate("/login");
       }
     }
-    
   }, [token, navigate]);
 
   //set toast khi logout
