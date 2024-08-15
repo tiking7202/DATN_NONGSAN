@@ -6,5 +6,5 @@ router.get("/farm", farmController.getFarms);
 router.get("/farm/:id", farmController.getFarmById);
 router.get("/farm/product/:productid", farmController.getFarmByProductId);
 router.get("/farm/info/:id", farmController.getFarmById);
-
+router.get("/farm/user/:userid", farmController.getFarmByUserId);
 module.exports = router;

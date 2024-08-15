@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -14,6 +14,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
 import { useToast } from "../../../../context/ToastContext";
+import { isCustomer } from "../../../utils/roleCheck";
+
 
 export default function HeaderCustomer() {
   const navigate = useNavigate();
@@ -25,6 +27,16 @@ export default function HeaderCustomer() {
     const decodedToken = jwtDecode(token);
     fullName = decodedToken?.fullname;
   }
+
+  useEffect(() => {
+    //Kiểm tra có phải là customer hay không
+    if(token) {
+      if(!isCustomer(token)) {
+        localStorage.removeItem("accessToken");
+        navigate("/login");
+      }
+    }
+  }, [token, navigate]);
 
   //set toast khi logout
   const { setToastMessage } = useToast();

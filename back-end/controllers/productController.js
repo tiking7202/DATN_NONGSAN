@@ -61,7 +61,7 @@ exports.getProductById = async (req, res) => {
         category = await pool.query('SELECT * FROM category WHERE categoryid = $1', [product.rows[0].categoryid]);
         farm = await pool.query('SELECT * FROM farm WHERE farmid = $1', [product.rows[0].farmid]);
         // tra ve product va categoryname
-        res.json({ ...product.rows[0], categoryname: category.rows[0].categoryname, farmprovince: farm.rows[0].farmprovince  });
+        res.json({ ...product.rows[0], categoryname: category.rows[0].categoryname, farmname: farm.rows[0].farmname, farmprovince: farm.rows[0].farmprovince  });
         
     } catch (error) {
         console.error('Error fetching product:', error);
@@ -89,46 +89,6 @@ exports.searchProduct = async (req, res) => {
     res.json(products.rows);
   } catch (error) {
     console.error("Error searching products:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-exports.createProduct = async (req, res) => {
-  const { name, price, categoryId } = req.body;
-  try {
-    const newProduct = await pool.query(
-      "INSERT INTO products (name, price, category_id) VALUES ($1, $2, $3) RETURNING *",
-      [name, price, categoryId]
-    );
-    res.status(201).json(newProduct.rows[0]);
-  } catch (error) {
-    console.error("Error creating product:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-exports.updateProduct = async (req, res) => {
-  const { id } = req.params;
-  const { name, price, categoryId } = req.body;
-  try {
-    const updatedProduct = await pool.query(
-      "UPDATE products SET name = $1, price = $2, category_id = $3 WHERE id = $4 RETURNING *",
-      [name, price, categoryId, id]
-    );
-    res.json(updatedProduct.rows[0]);
-  } catch (error) {
-    console.error("Error updating product:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-exports.deleteProduct = async (req, res) => {
-  const { id } = req.params;
-  try {
-    await pool.query("DELETE FROM products WHERE id = $1", [id]);
-    res.json({ message: "Product deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting product:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -185,3 +145,192 @@ exports.getProductsByFarmId = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+// farmer controller
+
+// Lấy tất cả sản phẩm theo farmid
+exports.getAllProductsByFarmId = async (req, res) => {
+  const { userid } = req.params;
+  const { page = 1, pageSize = 10 } = req.query; // Lấy tham số phân trang từ query, mặc định page = 1 và pageSize = 10
+
+  const offset = (page - 1) * pageSize;
+  const limit = parseInt(pageSize, 10);
+
+  try {
+    // Lấy tổng số sản phẩm theo userid
+    const totalResult = await pool.query(
+      `SELECT COUNT(*) FROM product p
+        JOIN farm f ON p.farmid = f.farmid
+        WHERE f.userid = $1`,
+      [userid]
+    );
+    const totalProducts = parseInt(totalResult.rows[0].count, 10);
+
+    // Lấy sản phẩm theo userid với phân trang
+    const result = await pool.query(
+      `SELECT p.*, c.categoryname, f.farmname 
+        FROM product p
+        JOIN farm f ON p.farmid = f.farmid
+        JOIN category c ON p.categoryid = c.categoryid
+        WHERE f.userid = $1
+        LIMIT $2 OFFSET $3`,
+      [userid, limit, offset]
+    );
+
+    // Nếu không có sản phẩm nào thì trả về thông báo
+    if (result.rows.length === 0) {
+      return res.status(400).json({ message: "Không tìm thấy sản phẩm nào" });
+    }
+
+    // Trả về danh sách sản phẩm cùng với thông tin phân trang
+    res.json({
+      products: result.rows,
+      pagination: {
+        totalProducts,
+        currentPage: parseInt(page, 10),
+        pageSize: limit,
+        totalPages: Math.ceil(totalProducts / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching products by farm ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Tạo sản phẩm mới
+exports.createProduct = async (req, res) => {
+  const {
+    productname,
+    productimage1,
+    productimage2,
+    productimage3,
+    categoryid,
+    farmid,
+    productquantity,
+    unitofmeasure,
+    productprice,
+    overviewdes,
+    expirydate,
+    healtbenefit,
+    cookingmethod,
+    storagemethod,
+  } = req.body;
+
+  // Kiểm tra dữ liệu đầu vào 
+  if ( !productname || !categoryid || !farmid || !productquantity || !unitofmeasure || !productprice || !overviewdes || !expirydate ) { return res.status(400).json({ message: 'Các trường ko được để trống' }); }
+
+  try {
+    // Tạo sản phẩm mới
+    const newProduct = await pool.query(
+      `INSERT INTO product (productname, productimage1, productimage2, productimage3, categoryid, farmid, productquantity, unitofmeasure, productprice, overviewdes, expirydate, healtbenefit, cookingmethod, storagemethod)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        RETURNING *`,
+      [
+        productname,
+        productimage1,
+        productimage2,
+        productimage3,
+        categoryid,
+        farmid,
+        productquantity,
+        unitofmeasure,
+        productprice,
+        overviewdes,
+        expirydate,
+        healtbenefit,
+        cookingmethod,
+        storagemethod,
+      ]
+    );
+
+    // Trả về thông tin sản phẩm vừa tạo
+    res.json({ product: newProduct.rows[0], message: "Tạo sản phẩm thành công" });
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+// Sửa thông tin sản phẩm
+exports.updateProduct = async (req, res) => {
+  const { productid } = req.params;
+  const {
+    productname,
+    productimage1,
+    productimage2,
+    productimage3,
+    categoryid,
+    farmid,
+    productquantity,
+    unitofmeasure,
+    productprice,
+    overviewdes,
+    expirydate,
+    healtbenefit,
+    cookingmethod,
+    storagemethod,
+  } = req.body;
+
+  // Kiểm tra dữ liệu đầu vào
+  if ( !productname || !categoryid || !farmid || !productquantity || !unitofmeasure || !productprice || !overviewdes || !expirydate ) { return res.status(400).json({ message: 'Các trường ko được để trống' }); }
+
+  try {
+    // Kiểm tra sản phẩm có tồn tại không
+    const productQuery = await pool.query('SELECT * FROM product WHERE productid = $1', [productid]);
+    if (productQuery.rows.length === 0) {
+      return res.status(400).json({ message: 'Không tìm thấy sản phẩm' });
+    }
+    // Sửa thông tin sản phẩm
+    const updatedProduct = await pool.query(
+      `UPDATE product
+        SET productname = $1, productimage1 = $2, productimage2 = $3, productimage3 = $4, categoryid = $5, farmid = $6, productquantity = $7, unitofmeasure = $8, productprice = $9, overviewdes = $10, expirydate = $11, healtbenefit = $12, cookingmethod = $13, storagemethod = $14
+        WHERE productid = $15
+        RETURNING *`,
+      [
+        productname,
+        productimage1,
+        productimage2,
+        productimage3,
+        categoryid,
+        farmid,
+        productquantity,
+        unitofmeasure,
+        productprice,
+        overviewdes,
+        expirydate,
+        healtbenefit,
+        cookingmethod,
+        storagemethod,
+        productid,
+      ]
+    );
+
+    // Trả về thông tin sản phẩm vừa sửa
+    res.json({ product: updatedProduct.rows[0], message: 'Sửa sản phẩm thành công' });
+  } catch (error) {
+    console.error('error updating product:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+// Xóa sản phẩm
+exports.deleteProduct = async (req, res) => {
+  const { productid } = req.params;
+
+  try {
+    // Kiểm tra sản phẩm có tồn tại không
+    const productQuery = await pool.query('SELECT * FROM product WHERE productid = $1', [productid]);
+    if (productQuery.rows.length === 0) {
+      return res.status(400).json({ message: 'Không tìm thấy sản phẩm' });
+    }
+
+    // Xóa sản phẩm
+    await pool.query('DELETE FROM product WHERE productid = $1', [productid]);
+
+    res.json({ message: 'Xóa sản phẩm thành công' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}

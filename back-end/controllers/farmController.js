@@ -38,5 +38,21 @@ exports.getFarmByProductId = async (req, res) => {
         console.error("Error fetching farm:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
+};
 
+// Lay farm theo userid
+exports.getFarmByUserId = async (req, res) => {
+    const { userid } = req.params;
+    
+    if (!userid) return res.status(400).json({ message: "User ID is required" });
+    
+    try {
+        const { rows } = await pool.query("SELECT * FROM farm WHERE userid = $1", [userid]);
+        if (!rows[0]) return res.status(400).json({ message: "No farm found for this user ID" });
+        
+        res.json(rows);
+    } catch (error) {
+        console.error("Error fetching farm:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 };
