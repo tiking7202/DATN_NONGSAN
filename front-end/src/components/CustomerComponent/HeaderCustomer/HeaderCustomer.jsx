@@ -38,7 +38,6 @@ export default function HeaderCustomer() {
     }
   }, [token, navigate]);
 
-  //set toast khi logout
   const { setToastMessage } = useToast();
 
   const handleLogout = async () => {
