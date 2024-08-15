@@ -21,24 +21,25 @@ export default function HeaderCustomer() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [fullName, setFullName] = useState(""); 
+  const [avatar, setAvatar] = useState("");
+  
   const token = localStorage.getItem("accessToken");
-  let fullName = null;
-  if (token) {
-    const decodedToken = jwtDecode(token);
-    fullName = decodedToken?.fullname;
-  }
-
+  
   useEffect(() => {
-    //Kiểm tra có phải là customer hay không
     if(token) {
+      const decodedToken = jwtDecode(token);
+      setFullName(decodedToken?.fullname);
+      setAvatar(decodedToken?.avatar);
+      //Kiểm tra có phải là customer hay không
       if(!isCustomer(token)) {
         localStorage.removeItem("accessToken");
         navigate("/login");
       }
     }
+  
   }, [token, navigate]);
 
-  //set toast khi logout
   const { setToastMessage } = useToast();
 
   const handleLogout = async () => {
@@ -110,10 +111,10 @@ export default function HeaderCustomer() {
           <div className="flex space-x-1 sm:space-x-2">
             {fullName ? (
               <div className="relative inline-block text-left">
-                <div>
+                <div className="flex cursor-pointer " onClick={() => setIsOpen(!isOpen)}>
+                  <img src={avatar} alt="avatar" className="w-7 h-7 rounded-full" />
                   <p
-                    className="cursor-pointer mx-1 sm:mx-2"
-                    onClick={() => setIsOpen(!isOpen)}
+                    className="mx-1 sm:mx-2"                    
                   >
                     {fullName}
                   </p>

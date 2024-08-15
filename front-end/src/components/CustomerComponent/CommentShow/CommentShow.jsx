@@ -10,22 +10,29 @@ import axios from "axios";
 import { API_BASE_URL } from "../../../config/config";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "../../../utils/formatDate";
 import { getUserInfo } from "../../../service/CustomerService/userService";
+import { useToast } from "../../../../context/ToastContext";
 
 export default function CommentShow() {
+  const navigate = useNavigate();
+
   const [comments, setComments] = useState([]);
   const [amountOfReview, setAmountOfReview] = useState(0);
   const [newComment, setNewComment] = useState("");
   const [newRating, setNewRating] = useState(0);
   const [userInfo, setUserInfo] = useState({});
+  const [userId, setUserId] = useState("");
 
-  const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token);
-  const userId = decodedToken.userid;
+  // const userId = decodedToken.userid;
   const { id } = useParams();
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.userid);
+    }
     //Chuyển qua component cha để fix lỗi
     const fetchData = async () => {
       try {
@@ -53,11 +60,15 @@ export default function CommentShow() {
     };
 
     fetchData();
-  }, [id]);
-
+  }, [id, comments]);
+  const { setToastMessage } = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!userId) {
+        setToastMessage("Vui lòng đăng nhập để đánh giá sản phẩm");
+        navigate("/login");
+      }
       if (newRating === 0) {
         toast.error("Vui lòng chọn số sao trước khi gửi đánh giá");
         return;

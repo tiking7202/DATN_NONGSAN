@@ -17,6 +17,10 @@ export default function FarmerLogin() {
   });
   const { toastMessage, setToastMessage } = useToast();
   useEffect(() => {
+    // Xóa token khỏi localStorage nếu có
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    
     if (toastMessage) {
       toast.success(toastMessage, {
         position: "top-right",

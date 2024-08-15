@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const avatarService = require("../services/avatarService");
 const { generateAccessToken, generateRefreshToken } = require("../utils/token");
-// const { use } = require("../routes/auth");
 
 // Đăng ký tài khoản b1
 const registerStep1 = async (req, res) => {
@@ -115,48 +114,38 @@ const registerStep2 = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  try {
-    const { usernameOrEmail, password } = req.body;
+    try {
+        const { usernameOrEmail, password } = req.body;
 
-    const user = await pool.query(
-      'SELECT * FROM "User" WHERE UserName = $1 OR Email = $1',
-      [usernameOrEmail]
-    );
+        const user = await pool.query(
+            'SELECT * FROM "User" WHERE UserName = $1 OR Email = $1',
+            [usernameOrEmail]
+        );
+        
+        if (user.rows.length === 0) {
+            return res.status(400).send("Tên đăng nhập hoặc email không tồn tại");
+        }
 
-    if (user.rows.length === 0) {
-      return res.status(400).send("Tên đăng nhập hoặc email không tồn tại");
+        const validPassword = await bcrypt.compare(password, user.rows[0].password);
+        if (!validPassword) {
+            return res.status(400).send("Mật khẩu không chính xác");
+        }
+
+        // Generate access token and refresh token
+        const accessToken = generateAccessToken(user.rows[0].userid, user.rows[0].username, user.rows[0].fullname, user.rows[0].role, user.rows[0].avatar);
+        const refreshToken = generateRefreshToken(user.rows[0].username);
+
+        // Store refresh token in the database
+        await pool.query('UPDATE "User" SET refreshToken = $1 WHERE userid = $2', [
+            refreshToken,
+            user.rows[0].userid,
+        ]);
+
+        res.header("auth-token", accessToken).json({ accessToken, refreshToken, avatar: user.rows[0].avatar });
+    } catch (error) {
+        console.error("Lỗi khi đăng nhập:", error);
+        res.status(500).send("Internal Server Error");
     }
-
-    const validPassword = await bcrypt.compare(password, user.rows[0].password);
-    if (!validPassword) {
-      return res.status(400).send("Mật khẩu không chính xác");
-    }
-
-    // const role = user.rows[0].role;
-    // if (role !== "customer") {
-    //     return res.status(400).send("Đây không phải là tài khoản khách hàng");
-    // }
-
-    // Generate access token and refresh token
-    const accessToken = generateAccessToken(
-      user.rows[0].userid,
-      user.rows[0].username,
-      user.rows[0].fullname,
-      user.rows[0].role
-    );
-    const refreshToken = generateRefreshToken(user.rows[0].username);
-
-    // Store refresh token in the database
-    await pool.query('UPDATE "User" SET refreshToken = $1 WHERE userid = $2', [
-      refreshToken,
-      user.rows[0].userid,
-    ]);
-
-    res.header("auth-token", accessToken).json({ accessToken, refreshToken });
-  } catch (error) {
-    console.error("Lỗi khi đăng nhập:", error);
-    res.status(500).send("Internal Server Error");
-  }
 };
 
 const refreshToken = async (req, res) => {

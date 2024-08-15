@@ -12,20 +12,20 @@ import { isFarmer } from "../../../utils/roleCheck";
 export default function HeaderFarmer() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [avatar, setAvatar] = useState("");
   const token = localStorage.getItem("accessToken");
-  let fullName = null;
-  if (token) {
-    const decodedToken = jwtDecode(token);
-    fullName = decodedToken?.fullname;
-  }
   useEffect(() => {
-    if(!token) {
+    if (!token) {
       navigate("/farmer/login");
     }
-    
+
     //Kiểm tra có phải là customer hay không
-    if(token) {
-      if(!isFarmer(token)) {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setFullName(decodedToken?.fullname);
+      setAvatar(decodedToken?.avatar);
+      if (!isFarmer(token)) {
         localStorage.removeItem("accessToken");
         navigate("/farmer/login");
       }
@@ -42,7 +42,7 @@ export default function HeaderFarmer() {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         setToastMessage("Đăng xuất thành công!");
-        
+
         navigate("/farmer/login");
         // console.log(response);
       } else {
@@ -53,7 +53,7 @@ export default function HeaderFarmer() {
       }
     } catch (error) {
       console.error("Error during logout:", error);
-      toast.error(error,{
+      toast.error(error, {
         position: "top-right",
         time: 500,
       });
@@ -73,57 +73,67 @@ export default function HeaderFarmer() {
           </div>
         </section>
         <section className="flex space-x-2 text-xl">
-          <div className="flex items-center cursor-pointer mx-2">
+          <div className="flex items-center cursor-pointer mx-5">
             <FontAwesomeIcon icon={faBell} />
             {/* <p>Thông báo</p> */}
           </div>
 
-          <div className="flex items-center">
+          <div className="flex items-center ml-3">
             <div className="relative inline-block text-left">
-            <p className="cursor-pointer"  onClick={() => setIsOpen(!isOpen)}>{fullName}</p>
+              <div
+                className="cursor-pointer flex"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <img
+                  src={avatar}
+                  alt="avatar"
+                  className="w-8 h-8 rounded-full"
+                />
+                <p className="ml-2">{fullName}</p>
+              </div>
 
-            {isOpen && (
-                  <div className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                    <div
-                      className="py-1"
-                      style={{ zIndex: 9999 }}
-                      role="menu"
-                      aria-orientation="vertical"
-                      aria-labelledby="options-menu"
+              {isOpen && (
+                <div className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div
+                    className="py-1"
+                    style={{ zIndex: 9999 }}
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="options-menu"
+                  >
+                    <a
+                      href="/farmer"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
                     >
-                      <a
-                        href="/farmer"
-                        className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                      >
-                        Thay đổi thông tin
-                      </a>
-                      <a
-                        href="/farmer"
-                        className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                      >
-                        Thay đổi mật khẩu
-                      </a>
-                      <a
-                        href="/farmer"
-                        className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                      >
-                        Yêu cầu hỗ trợ
-                      </a>                    
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                        onClick={handleLogout}
-                      >
-                        Đăng xuất
-                      </a>
-                    </div>
+                      Thay đổi thông tin
+                    </a>
+                    <a
+                      href="/farmer"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
+                    >
+                      Thay đổi mật khẩu
+                    </a>
+                    <a
+                      href="/farmer"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
+                    >
+                      Yêu cầu hỗ trợ
+                    </a>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
+                      onClick={handleLogout}
+                    >
+                      Đăng xuất
+                    </a>
                   </div>
-                )}
                 </div>
+              )}
+            </div>
           </div>
         </section>
       </nav>
