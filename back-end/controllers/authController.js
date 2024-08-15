@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const avatarService = require("../services/avatarService");
 const { generateAccessToken, generateRefreshToken } = require("../utils/token");
-// const { use } = require("../routes/auth");
 
 // Đăng ký tài khoản b1
 const registerStep1 = async (req, res) => {
@@ -121,9 +120,8 @@ const login = async (req, res) => {
         }
 
         // Generate access token and refresh token
-        const accessToken = generateAccessToken(user.rows[0].userid, user.rows[0].username, user.rows[0].fullname, user.rows[0].role);
+        const accessToken = generateAccessToken(user.rows[0].userid, user.rows[0].username, user.rows[0].fullname, user.rows[0].role, user.rows[0].avatar);
         const refreshToken = generateRefreshToken(user.rows[0].username);
-
 
         // Store refresh token in the database
         await pool.query('UPDATE "User" SET refreshToken = $1 WHERE userid = $2', [
@@ -131,7 +129,7 @@ const login = async (req, res) => {
             user.rows[0].userid,
         ]);
 
-        res.header("auth-token", accessToken).json({ accessToken, refreshToken });
+        res.header("auth-token", accessToken).json({ accessToken, refreshToken, avatar: user.rows[0].avatar });
     } catch (error) {
         console.error("Lỗi khi đăng nhập:", error);
         res.status(500).send("Internal Server Error");
