@@ -18,6 +18,9 @@ import ChangeInfo from "../pages/Customer/ChangeInfo/ChangeInfo";
 import AboutAgriPage from "../pages/Customer/AboutAgriPage/AboutAgriPage";
 import FarmerDashboard from "../pages/Farmer/FarmerDashboard/FarmerDashboard";
 import FarmerLogin from "../pages/Farmer/FarmerLogin/FarmerLogin";
+import FarmerRegisterStep1 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep1/FarmerRegisterStep1";
+import FarmerRegisterStep2 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep2/FarmerRegisterStep2";
+import FarmerRegisterStep3 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep3/FarmerRegisterStep3";
 import FarmerShowProducts from "../pages/Farmer/FarmerProduct/FarmerShowProducts";
 import FarmerShowFarm from "../pages/Farmer/FarmerFarm/FarmerShowFarm";
 
@@ -49,7 +52,18 @@ export default function AppRoutes() {
           <Route path="/farmer" element={<FarmerDashboard />} />
           <Route path="/farmer/products" element={<FarmerShowProducts />} />
           <Route path="/farmer/farms" element={<FarmerShowFarm />} />
-
+          <Route
+            path="/farmer/register/step1"
+            element={<FarmerRegisterStep1 />}
+          />
+          <Route
+            path="/farmer/register/step2"
+            element={<FarmerRegisterStep2 />}
+          />
+          <Route
+            path="/farmer/register/step3"
+            element={<FarmerRegisterStep3 />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

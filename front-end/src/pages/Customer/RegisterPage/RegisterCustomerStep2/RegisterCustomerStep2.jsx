@@ -90,18 +90,17 @@ const RegisterCustomerStep2 = () => {
       };
       const response = await axios.post(
         `${API_BASE_URL}/auth/register/step2/${userId}`,
-        additionalData,
+        additionalData
         // {
         //   headers: {
         //     "Content-Type": "multipart/form-data",
         //   },
         // }
-      )
-      response
+      );
+      response;
       setToastMessage("Đăng ký thành công");
       // toast.success("Đăng ký thành công");
       navigate("/login");
-
     } catch (error) {
       console.error("Error during registration:", error);
       toast.error(error.response.data, {
@@ -206,7 +205,9 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setIdentityCard(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
-            {identityCardError && ( <p className="text-red-500">{identityCardError}</p>)}
+            {identityCardError && (
+              <p className="text-red-500">{identityCardError}</p>
+            )}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label

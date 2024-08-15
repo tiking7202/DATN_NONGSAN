@@ -22,7 +22,7 @@ export default function FarmProductPage() {
 
   useEffect(() => {
     axios
-      .get(`${API_BASE_URL}/farm/productdetail/${id}`) // Sử dụng farmid để lấy sản phẩm
+      .get(`${API_BASE_URL}/farm/productdetail/${id}`)
       .then((response) => {
         console.log(response);
         setProducts(response.data);

@@ -7,7 +7,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { API_BASE_URL } from "../../../../config/config";
 import { toast, ToastContainer } from "react-toastify";
 
-const RegisterCustomerStep1 =  () => {
+const RegisterCustomerStep1 = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -77,15 +77,14 @@ const RegisterCustomerStep1 =  () => {
         password,
         fullname,
         phonenumber,
-        role:  "customer",
+        role: "customer",
         status: "false",
       };
-      
+
       // Gửi yêu cầu API cho giai đoạn 1 (nhập thông tin cơ bản)
       const response = await axios.post(
         `${API_BASE_URL}/auth/register/step1`,
-        userData,
-        
+        userData
       );
       const userId = response.data.userid;
       // Điều hướng sang trang nhập thông tin phụ
@@ -263,6 +262,6 @@ const RegisterCustomerStep1 =  () => {
       </div>
     </div>
   );
-}
+};
 
 export default RegisterCustomerStep1;

@@ -67,7 +67,7 @@ export default function FarmerLogin() {
 
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
-        
+
         setToastMessage("Đăng nhập thành công");
         callProtectedApi();
         // Điều hướng người dùng đến trang chính
@@ -164,9 +164,14 @@ export default function FarmerLogin() {
             </h2>
             <div className="ml-5 mb-3 text-center text-lg font-medium">
               Cung cấp sản phẩm của bạn trên hệ thống của chúng tôi và tiếp cận
-              hàng ngàn khách hàng tiềm năng. Đăng ký ngay để trở thành đối tác của chúng tôi.
+              hàng ngàn khách hàng tiềm năng. Đăng ký ngay để trở thành đối tác
+              của chúng tôi.
             </div>
-            <img src={imgLogin} alt="farmer" className="w-7/12 m-auto my-2 rounded-lg" />
+            <img
+              src={imgLogin}
+              alt="farmer"
+              className="w-7/12 m-auto my-2 rounded-lg"
+            />
           </div>
         </div>
         <div className="w-1/3 shadow-2xl">
@@ -238,7 +243,7 @@ export default function FarmerLogin() {
             </button>
             <p className="text-primary">
               Bạn chưa có tài khoản?{" "}
-              <Link className="text-third" to="/register/step1">
+              <Link className="text-third" to="/farmer/register/step1">
                 Đăng ký
               </Link>
             </p>

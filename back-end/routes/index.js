@@ -7,14 +7,16 @@ const farm = require("./farm");
 const cart = require("./cart");
 const checkout = require("./checkout");
 const review = require("./review");
+const crop = require("./crop");
 
 router.use("/auth", auth);
 router.use("", user);
 router.use("", category);
 router.use("", product);
 router.use("", farm);
-router.use("", cart)
+router.use("", cart);
 router.use("", checkout);
 router.use("", review);
+router.use("", crop);
 
 module.exports = router;
