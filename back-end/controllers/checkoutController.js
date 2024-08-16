@@ -138,9 +138,9 @@ const getPurchaseHistory = async (req, res) => {
   SELECT orderid FROM "Order" WHERE userid = $1
 `;
     const orderIds = await pool.query(getOrderIds, [userId]);
-    
+
     for (const order of orderIds.rows) {
-      const orderId = order.orderid; 
+      const orderId = order.orderid;
       const getPurchasesHistorySQL = `SELECT * FROM purchaseshistory WHERE orderid = $1`;
       const getPurchasesHistory = await pool.query(getPurchasesHistorySQL, [
         orderId,
@@ -173,7 +173,7 @@ const getOrderItemById = async (req, res) => {
       const getProductSQL = `SELECT * FROM product WHERE productid = $1`;
       const product = await pool.query(getProductSQL, [item.productid]);
       //Viết để tránh trường hợp sản phẩm đã bị xóa khỏi bảng product
-      if(product.rows.length === 0) {
+      if (product.rows.length === 0) {
         continue;
       }
       const temp = {
@@ -192,4 +192,136 @@ const getOrderItemById = async (req, res) => {
   }
 };
 
-module.exports = { addCheckOut, getShippingInfo, getPurchaseHistory, getOrderItemById };
+// farmer show orders
+const getAllOrdersByFarmer = async (req, res) => {
+  const { farmerId } = req.params;
+  try {
+    const farmIdQuery = `SELECT farmid FROM farm WHERE userid = $1`;
+    const farmIdResult = await pool.query(farmIdQuery, [farmerId]);
+    if (farmIdResult.rows.length === 0) {
+      return res.status(400).json({ error: "Farmer not found" });
+    }
+
+    const productIds = await Promise.all(
+      farmIdResult.rows.map(async (farm) => {
+        const productQuery = `SELECT productid FROM product WHERE farmid = $1`;
+        const productResult = await pool.query(productQuery, [farm.farmid]);
+        return productResult.rows.map((product) => product.productid);
+      })
+    ).then((results) => results.flat());
+
+    if (productIds.length === 0) {
+      return res.status(400).json({ error: "Product not found" });
+    }
+
+    const orderItems = await Promise.all(
+      productIds.map(async (productId) => {
+        const orderItemQuery = `SELECT * FROM orderitem WHERE productid = $1`;
+        const orderItemResult = await pool.query(orderItemQuery, [productId]);
+        return orderItemResult.rows;
+      })
+    ).then((results) => results.flat());
+
+    const uniqueOrderItems = Array.from(
+      new Set(orderItems.map((item) => item.orderid))
+    ).map((orderId) => orderItems.find((item) => item.orderid === orderId));
+
+    const orders = await Promise.all(
+      uniqueOrderItems.map(async (item) => {
+        const orderQuery = `SELECT * FROM "Order" WHERE orderid = $1`;
+        const orderResult = await pool.query(orderQuery, [item.orderid]);
+        const fullNameQuery = `SELECT fullname FROM "User" WHERE userid = $1`;
+        const fullNameResult = await pool.query(fullNameQuery, [
+          orderResult.rows[0].userid,
+        ]);
+        orderResult.rows[0].fullname = fullNameResult.rows[0].fullname;
+        return orderResult.rows[0];
+      })
+    );
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+    const paginatedOrders = orders.slice(startIndex, startIndex + limit);
+
+    res.json({
+      totalItems: orders.length,
+      totalPages: Math.ceil(orders.length / limit),
+      currentPage: page,
+      orders: paginatedOrders,
+    });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getOrderDetailFarmer = async (req, res) => {
+  const { orderId } = req.params;
+  try {
+    const orderQuery = `SELECT * FROM "Order" WHERE orderid = $1`;
+    const orderResult = await pool.query(orderQuery, [orderId]);
+    if (orderResult.rows.length === 0) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    const order = orderResult.rows[0];
+    const orderItemQuery = `SELECT * FROM orderitem WHERE orderid = $1`;
+    const orderItemResult = await pool.query(orderItemQuery, [orderId]);
+    const orderItems = orderItemResult.rows;
+    const items = await Promise.all(
+      orderItems.map(async (item) => {
+        const productQuery = `SELECT * FROM product WHERE productid = $1`;
+        const productResult = await pool.query(productQuery, [item.productid]);
+        const product = productResult.rows[0];
+        return {
+          productId: product.productid,
+          productName: product.productname,
+          productImage: product.productimage1,
+          quantity: item.quantityofitem,
+          price: product.productprice,
+          unitofmeasure: product.unitofmeasure,
+          overviewdes: product.overviewdes,
+        };
+      })
+    );
+    const userQuery = `SELECT * FROM "User" WHERE userid = $1`;
+    const userResult = await pool.query(userQuery, [order.userid]);
+    const user = userResult.rows[0];
+    const paymentQuery = `SELECT * FROM payment WHERE orderid = $1`;
+    const paymentResult = await pool.query(paymentQuery, [orderId]);
+    const payment = paymentResult.rows[0];
+    const returnResult = {
+      orderId: order.orderid,
+      orderStatus: order.orderstatus,
+      orderCreateTime: order.ordercreatetime,
+      orderUpdateTime: order.orderupdatetime,
+      totalAmount: order.totalamount,
+      deliveryAddress: order.shippingaddress,
+      estimatedDeliveryTime: order.estimatedelivery,
+      paymentMethod: payment.paymentmethod,
+      paymentStatus: payment.paymentstatus,
+      paymentCreateTime: payment.paymentcreatetime,
+      paymentUpdateTime: payment.paymentupdatetime,
+      user: {
+        userId: user.userid,
+        fullName: user.fullname,
+        email: user.email,
+        phonenumber: user.phonenumber,
+      },
+      items,
+    };
+    res.json(returnResult);
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  addCheckOut,
+  getShippingInfo,
+  getPurchaseHistory,
+  getOrderItemById,
+  getAllOrdersByFarmer,
+  getOrderDetailFarmer,
+};

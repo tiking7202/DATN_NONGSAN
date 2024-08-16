@@ -60,6 +60,8 @@ export default function HeaderFarmer() {
     }
   };
 
+  
+  
   return (
     <header className="z-40 p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full">
       <ToastContainer />
@@ -68,8 +70,8 @@ export default function HeaderFarmer() {
           <h1 className="font-bold text-3xl sm:text-4xl mx-2 sm:mx-5">
             <Link to="/farmer">AgriMart</Link>
           </h1>
-          <div className="text-2xl font-extralight">
-            <p>Kênh nhà cung cấp</p>
+          <div className="text-2xl font-medium">
+            <p className="">Kênh nhà cung cấp</p>
           </div>
         </section>
         <section className="flex space-x-2 text-xl">

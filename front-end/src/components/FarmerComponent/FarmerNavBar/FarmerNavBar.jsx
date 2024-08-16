@@ -5,7 +5,7 @@ const FarmerNavBar = () => {
 
   return (
     <div className="fixed top-0 left-0 w-1/6 bg-secondary mt-20">
-      <nav className="flex flex-col text-xl">
+      <nav className="flex flex-col text-xl font-bold">
         <Link
           to="/farmer"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
