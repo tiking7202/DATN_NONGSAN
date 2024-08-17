@@ -3,6 +3,7 @@ const pool = require("../config/dbConnect");
 // Các trạng thái đơn hàng: Đã tạo, Đã xác nhận, Đang giao, Đã giao, Đã hủy
 // Những trạng thái cập nhật số lượng trong bảng Product: Đã giao, Đã hủy
 // Các phương thức thanh toán: Thanh toán khi nhận hàng, Thanh toán qua thẻ
+
 const addCheckOut = async (req, res) => {
   const {
     userId,
@@ -11,17 +12,7 @@ const addCheckOut = async (req, res) => {
     shippingAddress,
     estimatedDeliveryTime,
   } = req.body;
-  const orderStatus = "Đã tạo";
-  const orderCreateTime = new Date();
-  const orderUpdateTime = new Date();
-  const paymentStatus = "Pending";
-  const paymentCreateTime = new Date();
-  const paymentUpdateTime = new Date();
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  // Validate input data
+
   if (
     !userId ||
     !paymentMethod ||
@@ -31,70 +22,88 @@ const addCheckOut = async (req, res) => {
     return res.status(400).json({ message: "Invalid input data" });
   }
 
+  const orderStatus = "Đã tạo";
+  const paymentStatus = "Đang chờ";
+  const currentTime = new Date();
+
+  function groupProductsByFarmId(products) {
+    const grouped = products.reduce((result, product) => {
+      let group = result.find((g) => g[0].farmid === product.farmid);
+      if (!group) {
+        group = [];
+        result.push(group);
+      }
+      group.push(product);
+      return result;
+    }, []);
+    return grouped;
+  }
+
   const sqlOrder = `INSERT INTO "Order" (userid, estimatedelivery, shippingaddress, orderstatus, ordercreatetime, orderupdatetime, totalamount) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING orderid`;
-  const valuesOrder = [
-    userId,
-    estimatedDeliveryTime,
-    shippingAddress,
-    orderStatus,
-    orderCreateTime,
-    orderUpdateTime,
-    total,
-  ];
-
   const sqlOrderItem = `INSERT INTO orderitem (orderid, productid, quantityofitem) VALUES ($1, $2, $3)`;
-
   const sqlPayment = `INSERT INTO payment (orderid, userid, paymentmethod, paymentstatus, paymentcreatetime, paymentupdatetime, totalamount) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING paymentid`;
+  const sqlUpdateProduct = `UPDATE product SET productquantity = productquantity - $1 WHERE productid = $2`;
+  const sqlDeleteCart = `DELETE FROM cart WHERE productid = $1`;
+  const sqlInsertHistory = `INSERT INTO purchaseshistory (orderid, paymentid, purchasedate, totalamount) VALUES ($1, $2, NOW(), $3)`;
+
+  const executeQuery = (query, values) => pool.query(query, values);
 
   try {
-    // Start transaction
     await pool.query(`START TRANSACTION`);
-    // Insert into Orders table
-    const resultOrder = await pool.query(sqlOrder, valuesOrder);
-    const orderId = resultOrder.rows[0].orderid;
-    // Prepare values for OrderItems table
-    const valuesOrderItems = items.map((item) => [
-      orderId,
-      item.productId,
-      item.quantity,
-    ]);
-    // Insert into OrderItems table
-    for (const valuesOrderItem of valuesOrderItems) {
-      await pool.query(sqlOrderItem, valuesOrderItem);
+
+    const itemsByFarm = groupProductsByFarmId(items);
+
+    for (const farmItems of itemsByFarm) {
+      const total = farmItems.reduce(
+        (sum, item) => sum + item.productprice * item.quantity,
+        0
+      );
+
+      const resultOrder = await executeQuery(sqlOrder, [
+        userId,
+        estimatedDeliveryTime,
+        shippingAddress,
+        orderStatus,
+        currentTime,
+        currentTime,
+        total,
+      ]);
+      const orderId = resultOrder.rows[0].orderid;
+
+      const orderItemsPromises = farmItems.map((item) =>
+        executeQuery(sqlOrderItem, [orderId, item.productid, item.quantity])
+      );
+      await Promise.all(orderItemsPromises);
+
+      const resultPayment = await executeQuery(sqlPayment, [
+        orderId,
+        userId,
+        paymentMethod,
+        paymentStatus,
+        currentTime,
+        currentTime,
+        total,
+      ]);
+      const paymentId = resultPayment.rows[0].paymentid;
+
+      const updateProductPromises = farmItems.map((item) =>
+        executeQuery(sqlUpdateProduct, [item.quantity, item.productId])
+      );
+      await Promise.all(updateProductPromises);
+
+      await executeQuery(sqlInsertHistory, [orderId, paymentId, total]);
+
+      for (const item of farmItems) {
+        await executeQuery(sqlDeleteCart, [item.productid]);
+      }
     }
-    // Insert into Payments table
-    const valuesPayment = [
-      orderId,
-      userId,
-      paymentMethod,
-      paymentStatus,
-      paymentCreateTime,
-      paymentUpdateTime,
-      total,
-    ];
-    const resultPayment = await pool.query(sqlPayment, valuesPayment);
-    const paymentId = resultPayment.rows[0].paymentid;
 
-    // Update product quantities in Product table
-    for (const item of items) {
-      const sqlUpdateProduct = `UPDATE product SET productquantity = productquantity - $1 WHERE productid = $2`;
-      await pool.query(sqlUpdateProduct, [item.quantity, item.productId]);
-    }
-
-    // Clear the cart for the user
-    const sqlClearCart = `DELETE FROM cart WHERE userid = $1`;
-    await pool.query(sqlClearCart, [userId]);
-
-    // Insert data into purchaseshistory table
-    const sqlInsertHistory = `INSERT INTO purchaseshistory (orderid, paymentid, purchasedate, totalamount) VALUES ($1, $2, NOW(), $3)`;
-    await pool.query(sqlInsertHistory, [orderId, paymentId, total]);
-    // Commit transaction
     await pool.query(`COMMIT`);
+    // Tra ve chi tiet don hang
 
     res.json({ message: "Đơn hàng đã được tạo thành công" });
   } catch (error) {
     console.error("Error occurred:", error);
-    // Rollback transaction in case of error
     await pool.query("ROLLBACK");
     res.status(500).json({ message: error.message });
   }
@@ -317,6 +326,23 @@ const getOrderDetailFarmer = async (req, res) => {
   }
 };
 
+const updateStatusOrder = async (req, res) => {
+  const { orderId, status } = req.body;
+  const currentTime = new Date();
+  const sql = `UPDATE "Order" SET orderstatus = $1, orderupdatetime = $2 WHERE orderid = $3`;
+  try {
+    await pool.query(sql, [status, currentTime, orderId]);
+
+    res.json({
+      message: "Cập nhật thành công",
+      updateTime: currentTime,
+    });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   addCheckOut,
   getShippingInfo,
@@ -324,4 +350,5 @@ module.exports = {
   getOrderItemById,
   getAllOrdersByFarmer,
   getOrderDetailFarmer,
+  updateStatusOrder,
 };

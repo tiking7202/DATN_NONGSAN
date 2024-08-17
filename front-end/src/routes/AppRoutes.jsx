@@ -24,6 +24,7 @@ import FarmerRegisterStep3 from "../pages/Farmer/FarmerRegister/FarmerRegisterSt
 import FarmerShowProducts from "../pages/Farmer/FarmerProduct/FarmerShowProducts";
 import FarmerShowFarm from "../pages/Farmer/FarmerFarm/FarmerShowFarm";
 import FarmerShowOrders from "../pages/Farmer/FarmerOrder/FarmerShowOrders";
+import CheckoutDetailPage from "../pages/Customer/CheckoutDetailPage/CheckoutDetailPage";
 
 export default function AppRoutes() {
   return (
@@ -40,6 +41,7 @@ export default function AppRoutes() {
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path='/checkout-detail/:id' element={<CheckoutDetailPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/purchase-history" element={<PurchasesHistory />} />
           <Route path="/change-info" element={<ChangeInfo />} />

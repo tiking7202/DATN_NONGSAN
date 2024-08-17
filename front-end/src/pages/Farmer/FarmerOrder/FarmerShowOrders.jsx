@@ -50,11 +50,32 @@ export default function FarmerShowOrders() {
   const [isOpenOrderDetail, setIsOpenOrderDetail] = useState(false);
   const [orderIdDetail, setOrderIdDetail] = useState(null);
   const openOrderDetailDialog = (orderId) => {
-    console.log(orderId);
     setIsOpenOrderDetail(true);
     setOrderIdDetail(orderId);
-
   };
+
+  const refreshOrders = () => {
+    const fetchOrders = async (page, limit) => {
+      try {
+        const response = await axios(
+          `${API_BASE_URL}/farmer/orders/${farmerId}`,
+          {
+            params: {
+              page,
+              limit,
+            },
+          }
+        );
+        setOrders(response.data.orders);
+        setTotalPages(response.data.totalPages);
+      } catch (error) {
+        console.log("Failed to fetch orders: ", error);
+      }
+    };
+    fetchOrders();
+  };
+
+
   return (
     <div>
       <HeaderFarmer />
@@ -68,10 +89,10 @@ export default function FarmerShowOrders() {
                   <tr className="text-center bg-primary text-secondary font-bold border border-black">
                     <td className="py-3 w-1/12">Mã đơn hàng</td>
                     <td className="py-3 w-2/12">Tên khách hàng</td>
-                    <td className="py-3 w-2/12">Ngày đặt hàng</td>
-                    <td className="py-3 w-1/12">Trạng thái</td>
+                    <td className="py-3 w-1/12">Ngày đặt</td>
                     <td className="py-3 w-3/12">Địa chỉ nhận hàng</td>
                     <td className="py-3 w-1/12">Tổng tiền</td>
+                    <td className="py-3 w-1/12">Trạng thái</td>
                     <td className="py-3 w-2/12"></td>
                   </tr>
                 </thead>
@@ -84,10 +105,27 @@ export default function FarmerShowOrders() {
                       <td className="py-3">{order.orderid.slice(0, 8)}</td>
                       <td className="">{order.fullname}</td>
                       <td className="">{formatDate(order.ordercreatetime)}</td>
-                      <td className="">{order.orderstatus}</td>
+                      {/* <td className="">{formatDate(order.orderupdatetime)}</td> */}
                       <td className="">{order.shippingaddress}</td>
                       <td className="">
                         {order.totalamount.toLocaleString()} VNĐ
+                      </td>
+                      <td className="py-3 flex justify-center items-center my-auto">
+                        {/* <select
+                          value={order.orderstatus}
+                          onChange={handleStatusChange}
+                          className="mr-1 w-2/3"
+                        >
+                          <option value="Đã tạo">Đã tạo</option>
+                          <option value="Đang xử lý">Đang xử lý</option>
+                          <option value="Đang giao hàng">Đang giao hàng</option>
+                          <option value="Đã giao hàng">Đã giao hàng</option>
+                          <option value="Đã hủy">Đã hủy</option>
+                        </select>
+                        <button className="text-primary rounded-xl" 
+                          onClick={ () => onChangeStatus(order.orderid, orderStatus) }
+                        >Lưu</button> */}
+                        {order.orderstatus}
                       </td>
                       <td className="">
                         <button
@@ -144,6 +182,7 @@ export default function FarmerShowOrders() {
         <FarmerOrderDetail
           onClose={() => setIsOpenOrderDetail(false)}
           orderIdDetail={orderIdDetail}
+          refreshOrders={refreshOrders}
         />
       )}
     </div>
