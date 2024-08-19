@@ -95,13 +95,25 @@ export default function HeaderCustomer() {
       }    
   }
 
+  const handleRouteToRegisterFarmer = async () => {
+    const response = await axios.get(`${API_BASE_URL}/auth/logout`);
+    if (response.status === 200) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      navigate("/farmer/register/step1");
+    } else {
+      toast.error("Đăng xuất thất bại. Vui lòng thử lại.");
+    }   
+  }
+
+
   return (
     <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40">
       <ToastContainer />
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
           <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToLoginFarmer}>Kênh nhà cung cấp</p>
-          <p className="cursor-pointer mx-1 sm:mx-2">Trở thành nhà cung cấp</p>
+          <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToRegisterFarmer}>Trở thành nhà cung cấp</p>
         </section>
         <section className="flex space-x-2 sm:space-x-4 mt-2 sm:mt-4">
           <div className="flex items-center space-x-1 sm:space-x-2 cursor-pointer mx-1 sm:mx-2">

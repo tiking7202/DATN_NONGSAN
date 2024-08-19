@@ -204,6 +204,10 @@ const getOrderItemById = async (req, res) => {
 // farmer show orders
 const getAllOrdersByFarmer = async (req, res) => {
   const { farmerId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
   try {
     const farmIdQuery = `SELECT farmid FROM farm WHERE userid = $1`;
     const farmIdResult = await pool.query(farmIdQuery, [farmerId]);
@@ -235,29 +239,26 @@ const getAllOrdersByFarmer = async (req, res) => {
       new Set(orderItems.map((item) => item.orderid))
     ).map((orderId) => orderItems.find((item) => item.orderid === orderId));
 
-    const orders = await Promise.all(
-      uniqueOrderItems.map(async (item) => {
-        const orderQuery = `SELECT * FROM "Order" WHERE orderid = $1`;
-        const orderResult = await pool.query(orderQuery, [item.orderid]);
-        const fullNameQuery = `SELECT fullname FROM "User" WHERE userid = $1`;
-        const fullNameResult = await pool.query(fullNameQuery, [
-          orderResult.rows[0].userid,
-        ]);
-        orderResult.rows[0].fullname = fullNameResult.rows[0].fullname;
-        return orderResult.rows[0];
-      })
-    );
+    const totalItemsQuery = `SELECT COUNT(*) FROM "Order" WHERE orderid = ANY($1::uuid[])`;
+    const totalItemsResult = await pool.query(totalItemsQuery, [uniqueOrderItems.map(item => item.orderid)]);
+    const totalItems = parseInt(totalItemsResult.rows[0].count);
+    const totalPages = Math.ceil(totalItems / limit);
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const startIndex = (page - 1) * limit;
-    const paginatedOrders = orders.slice(startIndex, startIndex + limit);
+    const ordersQuery = `
+      SELECT o.*, u.fullname
+      FROM "Order" o
+      JOIN "User" u ON o.userid = u.userid
+      WHERE o.orderid = ANY($1::uuid[])
+      ORDER BY o.orderid
+      LIMIT $2 OFFSET $3
+    `;
+    const ordersResult = await pool.query(ordersQuery, [uniqueOrderItems.map(item => item.orderid), limit, offset]);
 
     res.json({
-      totalItems: orders.length,
-      totalPages: Math.ceil(orders.length / limit),
+      totalItems,
+      totalPages,
       currentPage: page,
-      orders: paginatedOrders,
+      orders: ordersResult.rows,
     });
   } catch (error) {
     console.error("Error fetching orders:", error);

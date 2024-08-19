@@ -25,6 +25,7 @@ import FarmerShowProducts from "../pages/Farmer/FarmerProduct/FarmerShowProducts
 import FarmerShowFarm from "../pages/Farmer/FarmerFarm/FarmerShowFarm";
 import FarmerShowOrders from "../pages/Farmer/FarmerOrder/FarmerShowOrders";
 import CheckoutDetailPage from "../pages/Customer/CheckoutDetailPage/CheckoutDetailPage";
+import FarmerDetailInfo from "../pages/Farmer/FarmerInfo/FarmerDetailInfo";
 
 export default function AppRoutes() {
   return (
@@ -68,6 +69,8 @@ export default function AppRoutes() {
             element={<FarmerRegisterStep3 />}
           />
           <Route path='/farmer/orders' element={<FarmerShowOrders />} />
+          <Route path="/farmer/profile" element={<FarmerDetailInfo />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

@@ -19,18 +19,18 @@ export default function FarmerShowOrders() {
   const decodedToken = jwtDecode(token);
   const farmerId = decodedToken?.userid;
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const pageSize = 10;
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const fetchOrders = async (page, limit) => {
+    const fetchOrders = async () => {
       try {
-        const response = await axios(
+        const response = await axios.get(
           `${API_BASE_URL}/farmer/orders/${farmerId}`,
           {
             params: {
               page,
-              limit,
+              pageSize,
             },
           }
         );
@@ -41,7 +41,7 @@ export default function FarmerShowOrders() {
       }
     };
     fetchOrders();
-  }, [farmerId, page, limit]);
+  }, [farmerId, page, pageSize]);
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -55,14 +55,14 @@ export default function FarmerShowOrders() {
   };
 
   const refreshOrders = () => {
-    const fetchOrders = async (page, limit) => {
+    const fetchOrders = async () => {
       try {
         const response = await axios(
           `${API_BASE_URL}/farmer/orders/${farmerId}`,
           {
             params: {
               page,
-              limit,
+              pageSize,
             },
           }
         );
