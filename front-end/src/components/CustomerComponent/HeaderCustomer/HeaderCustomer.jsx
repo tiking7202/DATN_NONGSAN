@@ -141,36 +141,35 @@ export default function HeaderCustomer() {
                       aria-orientation="vertical"
                       aria-labelledby="options-menu"
                     >
-                      <a
-                        href="/change-info"
+                      <Link
+                        to="/detail-info"
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
-                        Thay đổi thông tin
-                      </a>
+                        Thông tin cá nhân
+                      </Link>
                       
-                      <a
+                      {/* <a
                         href="/change-password"
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
                         Thay đổi mật khẩu
-                      </a>
-                      <a
-                        href="/purchase-history"
+                      </a> */}
+                      <Link
+                        to="/purchase-history"
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                       >
                         Lịch sử mua hàng
-                      </a>
-                      <a
-                        href="#"
+                      </Link>
+                      <Link
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
                         role="menuitem"
                         onClick={handleLogout}
                       >
                         Đăng xuất
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 )}

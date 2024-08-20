@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import FarmerNavBar from "../../../components/FarmerComponent/FarmerNavBar/FarmerNavBar";
-import HeaderFarmer from "../../../components/FarmerComponent/HeaderFarmer/HeaderFarmer";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
+import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer";
+import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
+import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../../config/config";
-import { formatDate } from "../../../utils/formatDate";
+import axios from "axios";
+import { formatDate } from "./../../../utils/formatDate";
 import ChangePasswordDialog from "../../../components/ChangePasswordDialog";
 import ChangeInfoDialog from "../../../components/ChangeInfoDialog";
 
-export default function FarmerDetailInfo() {
+export default function DetailInfoPage() {
   const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userid;
@@ -40,19 +40,15 @@ export default function FarmerDetailInfo() {
 
   return (
     <div>
-      <HeaderFarmer />
-      <div className="flex">
-        <FarmerNavBar />
-        <div className="bg-fourth w-5/6 h-screen fixed right-0 top-0 mt-20">
-          <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg">
-            <h1 className="font-bold text-primary text-2xl p-5">
-              Thông tin cá nhân
-            </h1>
-          </div>
-          <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg p-5">
-            {user && (
-              <div className="flex flex-wrap justify-between ">
-                <div className="p-5 flex flex-col w-7/12">
+      <HeaderCustomer />
+      <div className="bg-fourth pb-7">
+        <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32">
+          <h1 className="font-bold text-primary text-2xl">Thông tin cá nhân</h1>
+        </div>
+        <div className="rounded-lg w-4/5 m-auto bg-secondary mt-5 p-5">
+          {user && (
+            <div className="flex flex-wrap justify-between ">
+              <div className="p-5 flex flex-col w-7/12">
                 <div className="flex">
                   <p className="font-bold text-xl p-3 text-primary">
                     Họ và tên:{" "}
@@ -113,7 +109,7 @@ export default function FarmerDetailInfo() {
                     {user.indentitycard}
                   </p>
                 </div>
-                <div className="flex justify-end w-2/3">
+                <div className="flex justify-end">
                   <button
                     className="bg-primary text-secondary font-bold text-xl p-2 rounded-md mt-5"
                     onClick={() => openChangeInfoDialog()}
@@ -122,27 +118,29 @@ export default function FarmerDetailInfo() {
                   </button>
                 </div>
               </div>
-                <div className="p-5 w-4/12 border-l-2 border-primary">
+
+              <div className="p-5 w-4/12 border-l-2 border-primary">
                 <div className="flex flex-col items-center">
                   <img
                     src={user.avatar}
                     alt="avatar"
-                    className="rounded-full w-1/3"
+                    className="rounded-full w-1/2"
                   />
                   <button className="font-bold text-primary text-xl">
                     Thay đổi
                   </button>
                 </div>
               </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
+      <FooterCustomer />
       {isOpenChangePassword && (
         <ChangePasswordDialog
           onClose={() => setIsOpenChangePassword(false)}
           userId={userId}
+          Role={user.role}
         />
       )}
       {isOpenChangeInfo && (

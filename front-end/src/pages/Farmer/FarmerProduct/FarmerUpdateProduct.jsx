@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../../../config/config";
 import { getCategoryById } from "../../../service/FarmerService/categoryService";
 import { getFarmByFarmId } from "../../../service/CustomerService/farmService";
 import { toast } from "react-toastify";
+import { formatDateInput } from "../../../utils/formatDate";
 
 export default function FarmerUpdateProduct({ onClose, product, userId, refreshProductList }) {
   const [productname, setProductName] = useState(product.productname);
@@ -67,7 +68,7 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
       }
     };
     fetchCategories();
-  }, [userId]);
+  }, [userId, categoryid, farmid]);
 
   const validateForm = () => {
     if (productname === "") {
@@ -191,11 +192,6 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
       }
     
   };
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
-  };
-  
 
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center m-auto">
@@ -408,7 +404,7 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
               </label>
               <input
                 type="date"
-                value={formatDate(expirydate)}
+                value={formatDateInput(expirydate)}
                 onChange={(e) => setExpirydate(e.target.value)}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />

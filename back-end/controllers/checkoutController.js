@@ -3,7 +3,6 @@ const pool = require("../config/dbConnect");
 // Các trạng thái đơn hàng: Đã tạo, Đã xác nhận, Đang giao, Đã giao, Đã hủy
 // Những trạng thái cập nhật số lượng trong bảng Product: Đã giao, Đã hủy
 // Các phương thức thanh toán: Thanh toán khi nhận hàng, Thanh toán qua thẻ
-
 const addCheckOut = async (req, res) => {
   const {
     userId,
@@ -138,33 +137,59 @@ const getShippingInfo = async (req, res) => {
   }
 };
 
-// get purcharse history by userId
+// get purchase history by userId
 const getPurchaseHistory = async (req, res) => {
   const { userId } = req.params;
-  const result = [];
-  try {
-    const getOrderIds = `
-  SELECT orderid FROM "Order" WHERE userid = $1
-`;
-    const orderIds = await pool.query(getOrderIds, [userId]);
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+  const offset = (page - 1) * pageSize;
 
-    for (const order of orderIds.rows) {
-      const orderId = order.orderid;
-      const getPurchasesHistorySQL = `SELECT * FROM purchaseshistory WHERE orderid = $1`;
-      const getPurchasesHistory = await pool.query(getPurchasesHistorySQL, [
-        orderId,
-      ]);
-      const getOrderSQL = `SELECT orderstatus FROM "Order" WHERE orderid = $1`;
-      const getOrder = await pool.query(getOrderSQL, [orderId]);
-      const temp = {
-        orderId: orderId,
-        purchaseDate: getPurchasesHistory.rows[0].purchasedate,
-        totalAmount: getPurchasesHistory.rows[0].totalamount,
-        orderStatus: getOrder.rows[0].orderstatus,
-      };
-      result.push(temp);
+  try {
+    // Fetch total count of orders
+    const totalCountResult = await pool.query(
+      `SELECT COUNT(*) FROM "Order" WHERE userid = $1`,
+      [userId]
+    );
+    const totalCount = parseInt(totalCountResult.rows[0].count);
+
+    // Fetch order IDs with pagination
+    const getOrderIds = `
+      SELECT orderid FROM "Order" WHERE userid = $1 LIMIT $2 OFFSET $3
+    `;
+    const orderIds = await pool.query(getOrderIds, [userId, pageSize, offset]);
+
+    if (orderIds.rows.length === 0) {
+      return res.status(400).json({ message: "No purchase history found" });
     }
-    res.json(result);
+
+    // Fetch purchase history and order status in a single query
+    const orderIdsArray = orderIds.rows.map((order) => order.orderid);
+    const getPurchasesHistorySQL = `
+      SELECT ph.orderid, ph.purchasedate, ph.totalamount, o.orderstatus
+      FROM purchaseshistory ph
+      JOIN "Order" o ON ph.orderid = o.orderid
+      WHERE ph.orderid = ANY($1::uuid[])
+    `;
+    const purchasesHistory = await pool.query(getPurchasesHistorySQL, [
+      orderIdsArray,
+    ]);
+
+    const result = purchasesHistory.rows.map((row) => ({
+      orderId: row.orderid,
+      purchaseDate: row.purchasedate,
+      totalAmount: row.totalamount,
+      orderStatus: row.orderstatus,
+    }));
+
+    res.json({
+      purchaseHistory: result,
+      pagination: {
+        totalItems: totalCount,
+        currentPage: page,
+        pageSize: pageSize,
+        totalPages: Math.ceil(totalCount / pageSize),
+      },
+    });
   } catch (error) {
     console.error("Error fetching purchase history:", error);
     res.status(500).json({ error: "Internal Server Error" });
