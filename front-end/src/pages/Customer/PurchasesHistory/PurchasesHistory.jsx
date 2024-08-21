@@ -8,6 +8,8 @@ import OrderDetailsDialog from "../../../components/CustomerComponent/OrderDetai
 import { formatDate } from './../../../utils/formatDate';
 import { useToast } from "../../../../context/ToastContext";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function PurchasesHistory() {
   const [purchasesHistory, setPurchasesHistory] = useState([]);
@@ -16,6 +18,14 @@ export default function PurchasesHistory() {
   const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userid;
+
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const [totalPages, setTotalPages] = useState(1);
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   useEffect(() => {
     const fetchPurchasesHistory = async () => {
       try {
@@ -24,14 +34,20 @@ export default function PurchasesHistory() {
           setToastMessage(null); 
         }
 
-        const response = await axios.get(`${API_BASE_URL}/purchase-history/${userId}`);
-        setPurchasesHistory(response.data);
+        const response = await axios.get(`${API_BASE_URL}/purchase-history/${userId}`, {
+          params: {
+            page,
+            pageSize,
+          },
+        });
+        setPurchasesHistory(response.data.purchaseHistory);
+        setTotalPages(response.data.pagination.totalPages);
       } catch (error) {
         console.error(error);
       }
     };
     fetchPurchasesHistory();
-  }, [userId]);
+  }, [userId, page, pageSize, toastMessage, setToastMessage]);
 
   const getOrderById = async (orderId) => {
     try {
@@ -69,13 +85,13 @@ export default function PurchasesHistory() {
         <h1 className="font-bold text-primary text-2xl">LỊCH SỬ MUA</h1>
       </div>
 
-      <div className="w-2/3 mx-auto bg-white rounded-md p-5 mt-5">
+      <div className="w-2/3 mx-auto mb-7 bg-white rounded-md p-5 mt-5">
         <table className="min-w-full divide-y divide-gray-900">
-          <thead className="bg-gray-50">
+          <thead className="bg-secondary">
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
+                className="px-6 py-4 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
               >
                 STT
               </th>
@@ -112,11 +128,11 @@ export default function PurchasesHistory() {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {purchasesHistory.map((purchase, index) => (
+          <tbody className="bg-white font-medium divide-y divide-gray-200">
+            {purchasesHistory ?  purchasesHistory.map((purchase, index) => (
               <tr key={purchase.orderId}>
 
-                <td className="px-5 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
+                <td className="px-5 py-3 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
                   {index + 1}
                 </td>
                 
@@ -138,9 +154,52 @@ export default function PurchasesHistory() {
             
                 </td>
               </tr>
-            ))}
+            )) : (
+              <tr>
+                <td colSpan="6" className="text-center text-lg text-gray-900 bg-fourth">
+                  Không có dữ liệu
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
+
+        {/* pagination */}
+        <div className="flex justify-center my-4">
+          <button
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page === 1}
+            className="text-primary border border-black font-bold px-4 py-2 rounded-l-xl"
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          {page > 1 && (
+            <button
+              className="text-primary border border-black font-bold px-4 py-2 "
+              onClick={() => handlePageChange(page - 1)}
+            >
+              {page - 1}
+            </button>
+          )}
+          <button className="bg-primary text-secondary border border-black font-bold px-4 py-2 ">
+            {page}
+          </button>
+          {page < totalPages && (
+            <button
+              className="text-primary border border-black font-bold px-4 py-2 "
+              onClick={() => handlePageChange(page + 1)}
+            >
+              {page + 1}
+            </button>
+          )}
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page === totalPages}
+            className="text-primary border border-black font-bold px-4 py-2 rounded-r-xl"
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
+        </div>
       </div>
       <FooterCustomer />
       {isDialogOpen && (

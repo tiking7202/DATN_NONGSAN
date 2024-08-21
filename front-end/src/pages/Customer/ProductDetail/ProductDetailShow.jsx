@@ -47,17 +47,16 @@ export default function ProductDetail() {
       })
       .catch((error) => console.error(error));
 
+    const fetchReviewCount = async () => {
+      try {
+        const reviewResponse = await getAmountOfReview(id);
+        setReviewCount(reviewResponse.data);
+      } catch (error) {
+        console.error("Error fetching review count:", error);
+      }
+    };
 
-      const fetchReviewCount = async () => {
-        try {
-          const reviewResponse = await getAmountOfReview(id);
-          setReviewCount(reviewResponse.data);
-        } catch (error) {
-          console.error('Error fetching review count:', error);
-        }
-      };
-  
-      fetchReviewCount();
+    fetchReviewCount();
   }, [id]);
 
   const [currentImage, setCurrentImage] = useState("");
@@ -212,7 +211,10 @@ export default function ProductDetail() {
                           className="ml-2"
                         />
                       </button>
-                      <button className="bg-primary text-white p-3 rounded-md mt-4 ml-3 w-1/2  hover:opacity-90">
+                      <button
+                        className="bg-primary text-white p-3 rounded-md mt-4 ml-3 w-1/2  hover:opacity-90"
+                        onClick={() => navigate("/cart")}
+                      >
                         Mua ngay{" "}
                         <FontAwesomeIcon
                           icon={faMoneyBillWave}
@@ -234,14 +236,16 @@ export default function ProductDetail() {
                       <span className="text-primary font-medium mr-1">
                         Bình luận:{" "}
                       </span>
-                      <span className="font-semibold ml-2">{reviewCount[5]} bình luận</span>
+                      <span className="font-semibold ml-2">
+                        {reviewCount[5]} bình luận
+                      </span>
                     </div>
                     <div className="flex m-2">
                       <span className="text-primary font-medium mr-1">
                         Đánh giá:{" "}
                       </span>
                       <span className="font-semibold ml-2">
-                      {reviewCount[6]}
+                        {reviewCount[6]}
                         <FontAwesomeIcon
                           icon={faStar}
                           color="#ffd700"
@@ -261,7 +265,9 @@ export default function ProductDetail() {
             </h1>
           </div>
           <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-2">
-            <p className="text-justify text-base m-3 font-medium ml-5">{product.overviewdes}</p>
+            <p className="text-justify text-base m-3 font-medium ml-5">
+              {product.overviewdes}
+            </p>
 
             {product.healtbenefit && (
               <>

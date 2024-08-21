@@ -10,6 +10,11 @@ import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer
 import { useNavigate } from "react-router-dom";
 import { updateQuantityCart } from "../../../service/CustomerService/cartService";
 import DeleteCartDialog from "./DeleteCartDialog";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -18,16 +23,30 @@ export default function CartPage() {
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userid;
 
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const [totalPages, setTotalPages] = useState(1);
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   useEffect(() => {
-    axios
-      .post(`${API_BASE_URL}/cart`, { userId })
-      .then((response) => {
-        setCart(response.data);
-      })
-      .catch((error) => {
+    const fetchCart = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/cart/${userId}`, {
+          params: {
+            page,
+            pageSize,
+          },
+        });
+        setCart(response.data.cartItems);
+        setTotalPages(response.data.pagination.totalPages);
+      } catch (error) {
         console.error("Error fetching cart:", error);
-      });
-  }, [userId]);
+      }
+    };
+    fetchCart();
+  }, [userId, page, pageSize]);
 
   // Dialog xác nhận xóa sản phẩm khỏi giỏ hàng
   const [isOpenDeleteCart, setIsOpenDeleteCart] = useState(false);
@@ -35,8 +54,10 @@ export default function CartPage() {
   const [productId, setProductId] = useState("");
   const refreshCart = async () => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/cart`, { userId });
-      setCart(response.data);
+      const response = await axios.get(`${API_BASE_URL}/cart`, { userId });
+      setCart(response.data.cartItems);
+      setTotalPages(response.data.pagination.totalPages);
+
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
@@ -99,7 +120,7 @@ export default function CartPage() {
         <h1 className="font-bold text-primary text-2xl">GIỎ HÀNG CỦA BẠN</h1>
       </div>
 
-      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-5">
+      <div className="w-4/5 mx-auto bg-white rounded-md p-5 my-5">
         <table className="min-w-full divide-y divide-gray-900">
           <thead className="bg-white">
             <tr>
@@ -222,6 +243,43 @@ export default function CartPage() {
             Tổng tiền: {calculateTotalPrice()}{" "}
           </span>
         </div> */}
+        {/* pagination */}
+        <div className="flex justify-center my-4">
+          <button
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page === 1}
+            className="text-primary border border-black font-bold px-4 py-2 rounded-l-xl"
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          {page > 1 && (
+            <button
+              className="text-primary border border-black font-bold px-4 py-2 "
+              onClick={() => handlePageChange(page - 1)}
+            >
+              {page - 1}
+            </button>
+          )}
+          <button className="bg-primary text-secondary border border-black font-bold px-4 py-2 ">
+            {page}
+          </button>
+          {page < totalPages && (
+            <button
+              className="text-primary border border-black font-bold px-4 py-2 "
+              onClick={() => handlePageChange(page + 1)}
+            >
+              {page + 1}
+            </button>
+          )}
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page === totalPages}
+            className="text-primary border border-black font-bold px-4 py-2 rounded-r-xl"
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
+        </div>
+        {/* Checkout */}
         <div className="flex justify-end">
           <button
             className="bg-primary text-white px-4 py-2 rounded-md m-2 font-bold"
@@ -229,9 +287,6 @@ export default function CartPage() {
           >
             Thanh toán
           </button>
-          {/* <button className="bg-red-500 text-white px-4 py-2 rounded-md m-2">
-            Bỏ chọn tất cả{" "}
-          </button> */}
         </div>
       </div>
 

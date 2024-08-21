@@ -14,7 +14,8 @@ const RegisterCustomerStep2 = () => {
   const [district, setDistrict] = useState("");
   const [province, setProvince] = useState("");
   const [identityCard, setIdentityCard] = useState("");
-  // const [avatar, setAvatar] = useState(null);
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [avatar, setAvatar] = useState("");
 
   // state dùng để lưu thông báo lỗi
   const [streetError, setStreetError] = useState("");
@@ -22,7 +23,9 @@ const RegisterCustomerStep2 = () => {
   const [districtError, setDistrictError] = useState("");
   const [provinceError, setProvinceError] = useState("");
   const [identityCardError, setIdentityCardError] = useState("");
-  // const [avatarError, setAvatarError] = useState("");
+  const [dateOfBirthError, setDateOfBirthError] = useState("");
+  const [avatarError, setAvatarError] = useState("");
+
 
   const validate = () => {
     let isValid = true;
@@ -61,7 +64,18 @@ const RegisterCustomerStep2 = () => {
     } else {
       setIdentityCardError("");
     }
-
+    if(!dateOfBirth){
+      setDateOfBirthError("Ngày sinh là bắt buộc");
+      isValid = false;
+    } else {
+      setDateOfBirthError("");
+    }
+    if (!avatar) {
+      setAvatarError("Ảnh đại diện là bắt buộc");
+      isValid = false;
+    } else {
+      setAvatarError("");
+    }
     return isValid;
   };
 
@@ -69,11 +83,6 @@ const RegisterCustomerStep2 = () => {
 
   const location = useLocation();
   const userId = new URLSearchParams(location.search).get("userid");
-  const handleAvatarChange = (event) => {
-    event.preventDefault();
-    // setAvatar(event.target.files[0]);
-  };
-
   const handleSubmit = async () => {
     try {
       if (!validate()) {
@@ -87,19 +96,15 @@ const RegisterCustomerStep2 = () => {
           province,
         },
         identityCard,
+        dateOfBirth,
+        avatar,
+        status: "true"
       };
       const response = await axios.post(
         `${API_BASE_URL}/auth/register/step2/${userId}`,
         additionalData
-        // {
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        // }
       );
-      response;
-      setToastMessage("Đăng ký thành công");
-      // toast.success("Đăng ký thành công");
+      setToastMessage(response.data.message);
       navigate("/login");
     } catch (error) {
       console.error("Error during registration:", error);
@@ -133,7 +138,7 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setStreet(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
-            {streetError && <p className="text-red-500">{streetError}</p>}
+            {streetError && <p className="text-red-500 italic">{streetError}</p>}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label
@@ -150,7 +155,7 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setCommune(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
-            {communeError && <p className="text-red-500">{communeError}</p>}
+            {communeError && <p className="text-red-500 italic">{communeError}</p>}
           </div>
         </div>
         <div className="flex justify-center px-5 my-3">
@@ -169,7 +174,7 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setDistrict(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
-            {districtError && <p className="text-red-500">{districtError}</p>}
+            {districtError && <p className="text-red-500 italic">{districtError}</p>}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label
@@ -186,7 +191,7 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setProvince(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
-            {provinceError && <p className="text-red-500">{provinceError}</p>}
+            {provinceError && <p className="text-red-500 italic">{provinceError}</p>}
           </div>
         </div>
         <div className="flex justify-center px-5 my-3">
@@ -206,10 +211,30 @@ const RegisterCustomerStep2 = () => {
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
             />
             {identityCardError && (
-              <p className="text-red-500">{identityCardError}</p>
+              <p className="text-red-500 italic">{identityCardError}</p>
             )}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
+            <label
+              htmlFor="identityCard"
+              className="block text-xl text-primary font-bold mb-2"
+            >
+              Ngày sinh
+            </label>
+            <input
+              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border "
+              type="date"
+              placeholder="Ngày sinh"
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+            />
+            {dateOfBirthError && (
+              <p className="text-red-500 italic">{dateOfBirthError}</p>
+            )}
+          </div>
+        </div>
+        <div className="flex justify-center px-5 my-3">
+          <div className="bg-secondary w-full mx-2 rounded-xl p-2">
             <label
               htmlFor="identityCard"
               className="block text-xl text-primary font-bold mb-2"
@@ -218,9 +243,14 @@ const RegisterCustomerStep2 = () => {
             </label>
             <input
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border "
-              type="file"
-              onChange={handleAvatarChange}
+              type="text"
+              placeholder="Chọn ảnh đại diện"
+              value={avatar}
+              onChange={(e) => setAvatar(e.target.value)}
             />
+            {avatarError && (
+              <p className="text-red-500 italic">{avatarError}</p>
+            )}
           </div>
         </div>
         <div className="flex items-center flex-col m-5">

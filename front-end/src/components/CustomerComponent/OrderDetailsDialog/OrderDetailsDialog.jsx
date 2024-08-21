@@ -1,6 +1,7 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
+import { truncateText } from "../../../utils/truncaseText";
 
 const OrderDetailsDialog = ({ order, onClose }) => {
   // Ensure order is an array
@@ -9,8 +10,8 @@ const OrderDetailsDialog = ({ order, onClose }) => {
   if (orderArray.length === 0) return null;
 
   return (
-    <div className="z-50 fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded shadow-lg w-1/2 m-auto text-primary">
+    <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center m-auto">
+      <div className="bg-white p-6 rounded-lg w-1/2 m-auto text-primary h-1/2 overflow-auto shadow-xl border border-primary">
         <div className="flex justify-end">
           <button
             className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold fixed"
@@ -34,7 +35,7 @@ const OrderDetailsDialog = ({ order, onClose }) => {
               <p className="w-1/6 text-center font-bold ">
                 {product.productname}
               </p>
-              <p className="w-1/2 text-left">{product.overview}</p>
+              <p className="w-1/2 text-left">{truncateText(product.overview, 200)}</p>
 
               <p className="w-1/6  text-center text-2xl">{product.quantity}</p>
             </li>

@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const avatarService = require("../services/avatarService");
 const { generateAccessToken, generateRefreshToken } = require("../utils/token");
-// const { use } = require("../routes/auth");
 
 // Đăng ký tài khoản b1
 const registerStep1 = async (req, res) => {
@@ -85,29 +84,28 @@ const registerStep1 = async (req, res) => {
 const registerStep2 = async (req, res) => {
   try {
     // Lưu trữ avatar vào thư mục và cập nhật đường dẫn vào cơ sở dữ liệu
-    avatarService.uploadAvatar(req, res, async (err) => {
-      if (err) {
-        console.error("Error uploading avatar:", err);
-        return res.status(500).send("Internal Server Error");
-      }
-      const { userId } = req.params;
-      const { address, identityCard } = req.body;
-      if (!address) {
-        return res.status(400).send("Địa chỉ không được gửi.");
-      }
-      const { street, commune, district, province } = address;
-      if (!street || !commune || !district || !province) {
-        return res.status(400).send("Địa chỉ không đầy đủ.");
-      }
-      // const avatarPath = req.file.path; // Đường dẫn tới file avatar
-      const avatarPath = null;
-      const updatedUser = await pool.query(
-        'UPDATE "User" SET street = $1, commune = $2, district = $3, province = $4, indentitycard = $5, avatar = $6 WHERE userid = $7 RETURNING *',
-        [street, commune, district, province, identityCard, avatarPath, userId]
-      );
+    const { userId } = req.params;
+    const { address, identityCard, dateOfBirth, avatar, status } = req.body;
+    if (!address) {
+      return res.status(400).send("Địa chỉ không được gửi.");
+    }
+    const { street, commune, district, province } = address;
+    if (!street || !commune || !district || !province) {
+      return res.status(400).send("Địa chỉ không đầy đủ.");
+    }
+    if (!identityCard) {
+      return res.status(400).send("Số CMND không được gửi.");
+    }
+    if (!dateOfBirth) {
+      return res.status(400).send("Ngày sinh không được gửi.");
+    }
 
-      res.json(updatedUser.rows[0]);
-    });
+    const updatedUser = await pool.query(
+      'UPDATE "User" SET street = $1, commune = $2, district = $3, province = $4, indentitycard = $5, dob = $6, avatar = $7, status = $8 WHERE userid = $9 RETURNING *',
+      [street, commune, district, province, identityCard, dateOfBirth, avatar, status, userId]
+    );
+
+    res.json({message: "Đăng ký thành công", user: updatedUser.rows[0]});
   } catch (error) {
     console.error("Error updating additional info:", error);
     res.status(500).send("Internal Server Error");
@@ -132,17 +130,17 @@ const login = async (req, res) => {
       return res.status(400).send("Mật khẩu không chính xác");
     }
 
-    // const role = user.rows[0].role;
-    // if (role !== "customer") {
-    //     return res.status(400).send("Đây không phải là tài khoản khách hàng");
-    // }
-
+    // Kiểm tra trạng thái tài khoản
+    if (user.rows[0].status === false) {
+      return res.status(400).send("Tài khoản chưa được kích hoạt hoặc đã bị khóa");
+    }
     // Generate access token and refresh token
     const accessToken = generateAccessToken(
       user.rows[0].userid,
       user.rows[0].username,
       user.rows[0].fullname,
-      user.rows[0].role
+      user.rows[0].role,
+      user.rows[0].avatar
     );
     const refreshToken = generateRefreshToken(user.rows[0].username);
 
@@ -152,7 +150,9 @@ const login = async (req, res) => {
       user.rows[0].userid,
     ]);
 
-    res.header("auth-token", accessToken).json({ accessToken, refreshToken });
+    res
+      .header("auth-token", accessToken)
+      .json({ accessToken, refreshToken, avatar: user.rows[0].avatar });
   } catch (error) {
     console.error("Lỗi khi đăng nhập:", error);
     res.status(500).send("Internal Server Error");

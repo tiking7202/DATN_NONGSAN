@@ -10,23 +10,29 @@ import axios from "axios";
 import { API_BASE_URL } from "../../../config/config";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "../../../utils/formatDate";
 import { getUserInfo } from "../../../service/CustomerService/userService";
+import { useToast } from "../../../../context/ToastContext";
 
 export default function CommentShow() {
+  const navigate = useNavigate();
+
   const [comments, setComments] = useState([]);
   const [amountOfReview, setAmountOfReview] = useState(0);
   const [newComment, setNewComment] = useState("");
   const [newRating, setNewRating] = useState(0);
   const [userInfo, setUserInfo] = useState({});
+  const [userId, setUserId] = useState("");
 
-  const token = localStorage.getItem("accessToken");
-  const decodedToken = jwtDecode(token);
-  const userId = decodedToken.userid;
   const { id } = useParams();
   useEffect(() => {
-    //Chuyển qua component cha để fix lỗi
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.userid);
+    }
+
     const fetchData = async () => {
       try {
         const [reviewsResponse, reviewCountResponse] = await Promise.all([
@@ -36,17 +42,6 @@ export default function CommentShow() {
 
         setComments(reviewsResponse.data);
         setAmountOfReview(reviewCountResponse.data);
-
-        // Get user info
-        const fetchUserInfo = async () => {
-          const userInfoMap = {};
-          for (const comment of comments) {
-            const data = await getUserInfo(comment.userid);
-            userInfoMap[comment.userid] = data;
-          }
-          setUserInfo(userInfoMap);
-        };
-        fetchUserInfo();
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -55,9 +50,29 @@ export default function CommentShow() {
     fetchData();
   }, [id]);
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const userInfoMap = {};
+      for (const comment of comments) {
+        const data = await getUserInfo(comment.userid);
+        userInfoMap[comment.userid] = data;
+      }
+      setUserInfo(userInfoMap);
+    };
+
+    if (comments.length > 0) {
+      fetchUserInfo();
+    }
+  }, [comments]);
+
+  const { setToastMessage } = useToast();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!userId) {
+        setToastMessage("Vui lòng đăng nhập để đánh giá sản phẩm");
+        navigate("/login");
+      }
       if (newRating === 0) {
         toast.error("Vui lòng chọn số sao trước khi gửi đánh giá");
         return;
@@ -227,7 +242,7 @@ export default function CommentShow() {
             >
               <div className="flex my-auto">
                 <p className="font-bold text-xl my-auto mx-5">
-                  {userInfo[comment.userid]?.fullname || "Luu Ha"}
+                  {userInfo[comment.userid]?.fullname}
                 </p>
 
                 <p className="font-light my-auto">

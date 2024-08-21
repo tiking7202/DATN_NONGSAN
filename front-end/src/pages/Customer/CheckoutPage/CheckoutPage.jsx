@@ -38,7 +38,6 @@ const CheckoutPage = () => {
         console.error("Failed to fetch user info:", error);
       }
     };
-
     fetchUserInfo();
   }, [userId]);
 
@@ -65,7 +64,7 @@ const CheckoutPage = () => {
           {item.productname}
         </h3>
         <p className="w-1/4 text-lg font-semibold text-primary">
-          ${item.productprice}
+          {item.productprice} VNĐ
         </p>
         <p className="w-1/4 text-lg font-semibold text-primary">
           {item.quantity}
@@ -107,11 +106,7 @@ const CheckoutPage = () => {
     const orderDetails = {
       userId: userId,
       paymentMethod: paymentMethod,
-      items: selectedItems.map((item) => ({
-        productId: item.productid,
-        quantity: item.quantity,
-        price: item.productprice,
-      })),
+      items: selectedItems,
       shippingAddress: shippingInfo.deliveryAddress,
       estimatedDeliveryTime: shippingInfo.estimatedDeliveryTime,
     };
@@ -131,8 +126,7 @@ const CheckoutPage = () => {
         }
       );
 
-      console.log("Checkout successful:", response.data);
-      setToastMessage("Đặt hàng thành công!");
+      setToastMessage(response.data.message);
       navigate("/purchase-history");
     } catch (error) {
       console.error("Checkout failed:", error);
@@ -148,7 +142,7 @@ const CheckoutPage = () => {
       <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-5 flex justify-center">
         <div className="w-1/2 justify-between">{InfoOrder()}</div>
 
-        <div className="w-1/3 bg-fourth rounded-sm flex flex-col justify-end text-center text-primary p-3">
+        <div className="w-1/3 bg-fourth rounded-sm flex flex-col justify-start text-center text-primary p-3">
           <h1 className="font-bold text-xl mb-4">THÔNG TIN THANH TOÁN</h1>
 
           <div className="space-y-2">

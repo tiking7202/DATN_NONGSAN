@@ -14,7 +14,6 @@ import FarmProductPage from "../pages/Customer/FarmProductPage/FarmProductPage";
 import FarmSeasonPage from "../pages/Customer/FarmSeasonPage/FarmSeasonPage";
 import NotFound from "../pages/NotFound/NotFound";
 import PurchasesHistory from "../pages/Customer/PurchasesHistory/PurchasesHistory";
-import ChangeInfo from "../pages/Customer/ChangeInfo/ChangeInfo";
 import AboutAgriPage from "../pages/Customer/AboutAgriPage/AboutAgriPage";
 import FarmerDashboard from "../pages/Farmer/FarmerDashboard/FarmerDashboard";
 import FarmerLogin from "../pages/Farmer/FarmerLogin/FarmerLogin";
@@ -25,6 +24,11 @@ import FarmerShowProducts from "../pages/Farmer/FarmerProduct/FarmerShowProducts
 import FarmerShowFarm from "../pages/Farmer/FarmerFarm/FarmerShowFarm";
 import FarmerCrop from "../pages/Farmer/FarmerCrop/FarmerCrop";
 import FarmerProfile from "../pages/Farmer/FarmerProfile/FarmerProfile";
+import FarmerShowOrders from "../pages/Farmer/FarmerOrder/FarmerShowOrders";
+import CheckoutDetailPage from "../pages/Customer/CheckoutDetailPage/CheckoutDetailPage";
+import FarmerDetailInfo from "../pages/Farmer/FarmerInfo/FarmerDetailInfo";
+import DetailInfoPage from "../pages/Customer/DetailInfoPage/DetailInfoPage";
+
 
 export default function AppRoutes() {
   return (
@@ -40,9 +44,10 @@ export default function AppRoutes() {
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path='/checkout-detail/:id' element={<CheckoutDetailPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/purchase-history" element={<PurchasesHistory />} />
-          <Route path="/change-info" element={<ChangeInfo />} />
+          <Route path="/detail-info" element={<DetailInfoPage />} />
           <Route path="/about-agri" element={<AboutAgriPage />} />
           <Route path="/farm/info/:id" element={<FarmInfoPage />} />
           <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
@@ -66,6 +71,9 @@ export default function AppRoutes() {
             path="/farmer/register/step3"
             element={<FarmerRegisterStep3 />}
           />
+          <Route path='/farmer/orders' element={<FarmerShowOrders />} />
+          <Route path="/farmer/profile" element={<FarmerDetailInfo />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

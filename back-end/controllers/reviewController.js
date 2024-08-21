@@ -13,7 +13,7 @@ const addReview = async (req, res) => {
 
   try {
     await pool.query(sql, values);
-    res.status(201).json({ message: "Review added successfully" });
+    res.status(201).json({ message: "Thêm đánh giá thành công" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });

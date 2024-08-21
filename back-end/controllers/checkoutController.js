@@ -11,17 +11,7 @@ const addCheckOut = async (req, res) => {
     shippingAddress,
     estimatedDeliveryTime,
   } = req.body;
-  const orderStatus = "Đã tạo";
-  const orderCreateTime = new Date();
-  const orderUpdateTime = new Date();
-  const paymentStatus = "Pending";
-  const paymentCreateTime = new Date();
-  const paymentUpdateTime = new Date();
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  // Validate input data
+
   if (
     !userId ||
     !paymentMethod ||
@@ -31,70 +21,88 @@ const addCheckOut = async (req, res) => {
     return res.status(400).json({ message: "Invalid input data" });
   }
 
+  const orderStatus = "Đã tạo";
+  const paymentStatus = "Đang chờ";
+  const currentTime = new Date();
+
+  function groupProductsByFarmId(products) {
+    const grouped = products.reduce((result, product) => {
+      let group = result.find((g) => g[0].farmid === product.farmid);
+      if (!group) {
+        group = [];
+        result.push(group);
+      }
+      group.push(product);
+      return result;
+    }, []);
+    return grouped;
+  }
+
   const sqlOrder = `INSERT INTO "Order" (userid, estimatedelivery, shippingaddress, orderstatus, ordercreatetime, orderupdatetime, totalamount) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING orderid`;
-  const valuesOrder = [
-    userId,
-    estimatedDeliveryTime,
-    shippingAddress,
-    orderStatus,
-    orderCreateTime,
-    orderUpdateTime,
-    total,
-  ];
-
   const sqlOrderItem = `INSERT INTO orderitem (orderid, productid, quantityofitem) VALUES ($1, $2, $3)`;
-
   const sqlPayment = `INSERT INTO payment (orderid, userid, paymentmethod, paymentstatus, paymentcreatetime, paymentupdatetime, totalamount) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING paymentid`;
+  const sqlUpdateProduct = `UPDATE product SET productquantity = productquantity - $1 WHERE productid = $2`;
+  const sqlDeleteCart = `DELETE FROM cart WHERE productid = $1`;
+  const sqlInsertHistory = `INSERT INTO purchaseshistory (orderid, paymentid, purchasedate, totalamount) VALUES ($1, $2, NOW(), $3)`;
+
+  const executeQuery = (query, values) => pool.query(query, values);
 
   try {
-    // Start transaction
     await pool.query(`START TRANSACTION`);
-    // Insert into Orders table
-    const resultOrder = await pool.query(sqlOrder, valuesOrder);
-    const orderId = resultOrder.rows[0].orderid;
-    // Prepare values for OrderItems table
-    const valuesOrderItems = items.map((item) => [
-      orderId,
-      item.productId,
-      item.quantity,
-    ]);
-    // Insert into OrderItems table
-    for (const valuesOrderItem of valuesOrderItems) {
-      await pool.query(sqlOrderItem, valuesOrderItem);
+
+    const itemsByFarm = groupProductsByFarmId(items);
+
+    for (const farmItems of itemsByFarm) {
+      const total = farmItems.reduce(
+        (sum, item) => sum + item.productprice * item.quantity,
+        0
+      );
+
+      const resultOrder = await executeQuery(sqlOrder, [
+        userId,
+        estimatedDeliveryTime,
+        shippingAddress,
+        orderStatus,
+        currentTime,
+        currentTime,
+        total,
+      ]);
+      const orderId = resultOrder.rows[0].orderid;
+
+      const orderItemsPromises = farmItems.map((item) =>
+        executeQuery(sqlOrderItem, [orderId, item.productid, item.quantity])
+      );
+      await Promise.all(orderItemsPromises);
+
+      const resultPayment = await executeQuery(sqlPayment, [
+        orderId,
+        userId,
+        paymentMethod,
+        paymentStatus,
+        currentTime,
+        currentTime,
+        total,
+      ]);
+      const paymentId = resultPayment.rows[0].paymentid;
+
+      const updateProductPromises = farmItems.map((item) =>
+        executeQuery(sqlUpdateProduct, [item.quantity, item.productId])
+      );
+      await Promise.all(updateProductPromises);
+
+      await executeQuery(sqlInsertHistory, [orderId, paymentId, total]);
+
+      for (const item of farmItems) {
+        await executeQuery(sqlDeleteCart, [item.productid]);
+      }
     }
-    // Insert into Payments table
-    const valuesPayment = [
-      orderId,
-      userId,
-      paymentMethod,
-      paymentStatus,
-      paymentCreateTime,
-      paymentUpdateTime,
-      total,
-    ];
-    const resultPayment = await pool.query(sqlPayment, valuesPayment);
-    const paymentId = resultPayment.rows[0].paymentid;
 
-    // Update product quantities in Product table
-    for (const item of items) {
-      const sqlUpdateProduct = `UPDATE product SET productquantity = productquantity - $1 WHERE productid = $2`;
-      await pool.query(sqlUpdateProduct, [item.quantity, item.productId]);
-    }
-
-    // Clear the cart for the user
-    const sqlClearCart = `DELETE FROM cart WHERE userid = $1`;
-    await pool.query(sqlClearCart, [userId]);
-
-    // Insert data into purchaseshistory table
-    const sqlInsertHistory = `INSERT INTO purchaseshistory (orderid, paymentid, purchasedate, totalamount) VALUES ($1, $2, NOW(), $3)`;
-    await pool.query(sqlInsertHistory, [orderId, paymentId, total]);
-    // Commit transaction
     await pool.query(`COMMIT`);
+    // Tra ve chi tiet don hang
 
     res.json({ message: "Đơn hàng đã được tạo thành công" });
   } catch (error) {
     console.error("Error occurred:", error);
-    // Rollback transaction in case of error
     await pool.query("ROLLBACK");
     res.status(500).json({ message: error.message });
   }
@@ -129,33 +137,59 @@ const getShippingInfo = async (req, res) => {
   }
 };
 
-// get purcharse history by userId
+// get purchase history by userId
 const getPurchaseHistory = async (req, res) => {
   const { userId } = req.params;
-  const result = [];
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+  const offset = (page - 1) * pageSize;
+
   try {
+    // Fetch total count of orders
+    const totalCountResult = await pool.query(
+      `SELECT COUNT(*) FROM "Order" WHERE userid = $1`,
+      [userId]
+    );
+    const totalCount = parseInt(totalCountResult.rows[0].count);
+
+    // Fetch order IDs with pagination
     const getOrderIds = `
-  SELECT orderid FROM "Order" WHERE userid = $1
-`;
-    const orderIds = await pool.query(getOrderIds, [userId]);
-    
-    for (const order of orderIds.rows) {
-      const orderId = order.orderid; 
-      const getPurchasesHistorySQL = `SELECT * FROM purchaseshistory WHERE orderid = $1`;
-      const getPurchasesHistory = await pool.query(getPurchasesHistorySQL, [
-        orderId,
-      ]);
-      const getOrderSQL = `SELECT orderstatus FROM "Order" WHERE orderid = $1`;
-      const getOrder = await pool.query(getOrderSQL, [orderId]);
-      const temp = {
-        orderId: orderId,
-        purchaseDate: getPurchasesHistory.rows[0].purchasedate,
-        totalAmount: getPurchasesHistory.rows[0].totalamount,
-        orderStatus: getOrder.rows[0].orderstatus,
-      };
-      result.push(temp);
+      SELECT orderid FROM "Order" WHERE userid = $1 LIMIT $2 OFFSET $3
+    `;
+    const orderIds = await pool.query(getOrderIds, [userId, pageSize, offset]);
+
+    if (orderIds.rows.length === 0) {
+      return res.status(400).json({ message: "No purchase history found" });
     }
-    res.json(result);
+
+    // Fetch purchase history and order status in a single query
+    const orderIdsArray = orderIds.rows.map((order) => order.orderid);
+    const getPurchasesHistorySQL = `
+      SELECT ph.orderid, ph.purchasedate, ph.totalamount, o.orderstatus
+      FROM purchaseshistory ph
+      JOIN "Order" o ON ph.orderid = o.orderid
+      WHERE ph.orderid = ANY($1::uuid[])
+    `;
+    const purchasesHistory = await pool.query(getPurchasesHistorySQL, [
+      orderIdsArray,
+    ]);
+
+    const result = purchasesHistory.rows.map((row) => ({
+      orderId: row.orderid,
+      purchaseDate: row.purchasedate,
+      totalAmount: row.totalamount,
+      orderStatus: row.orderstatus,
+    }));
+
+    res.json({
+      purchaseHistory: result,
+      pagination: {
+        totalItems: totalCount,
+        currentPage: page,
+        pageSize: pageSize,
+        totalPages: Math.ceil(totalCount / pageSize),
+      },
+    });
   } catch (error) {
     console.error("Error fetching purchase history:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -173,7 +207,7 @@ const getOrderItemById = async (req, res) => {
       const getProductSQL = `SELECT * FROM product WHERE productid = $1`;
       const product = await pool.query(getProductSQL, [item.productid]);
       //Viết để tránh trường hợp sản phẩm đã bị xóa khỏi bảng product
-      if(product.rows.length === 0) {
+      if (product.rows.length === 0) {
         continue;
       }
       const temp = {
@@ -192,4 +226,155 @@ const getOrderItemById = async (req, res) => {
   }
 };
 
-module.exports = { addCheckOut, getShippingInfo, getPurchaseHistory, getOrderItemById };
+// farmer show orders
+const getAllOrdersByFarmer = async (req, res) => {
+  const { farmerId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  try {
+    const farmIdQuery = `SELECT farmid FROM farm WHERE userid = $1`;
+    const farmIdResult = await pool.query(farmIdQuery, [farmerId]);
+    if (farmIdResult.rows.length === 0) {
+      return res.status(400).json({ error: "Farmer not found" });
+    }
+
+    const productIds = await Promise.all(
+      farmIdResult.rows.map(async (farm) => {
+        const productQuery = `SELECT productid FROM product WHERE farmid = $1`;
+        const productResult = await pool.query(productQuery, [farm.farmid]);
+        return productResult.rows.map((product) => product.productid);
+      })
+    ).then((results) => results.flat());
+
+    if (productIds.length === 0) {
+      return res.status(400).json({ error: "Product not found" });
+    }
+
+    const orderItems = await Promise.all(
+      productIds.map(async (productId) => {
+        const orderItemQuery = `SELECT * FROM orderitem WHERE productid = $1`;
+        const orderItemResult = await pool.query(orderItemQuery, [productId]);
+        return orderItemResult.rows;
+      })
+    ).then((results) => results.flat());
+
+    const uniqueOrderItems = Array.from(
+      new Set(orderItems.map((item) => item.orderid))
+    ).map((orderId) => orderItems.find((item) => item.orderid === orderId));
+
+    const totalItemsQuery = `SELECT COUNT(*) FROM "Order" WHERE orderid = ANY($1::uuid[])`;
+    const totalItemsResult = await pool.query(totalItemsQuery, [uniqueOrderItems.map(item => item.orderid)]);
+    const totalItems = parseInt(totalItemsResult.rows[0].count);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const ordersQuery = `
+      SELECT o.*, u.fullname
+      FROM "Order" o
+      JOIN "User" u ON o.userid = u.userid
+      WHERE o.orderid = ANY($1::uuid[])
+      ORDER BY o.orderid
+      LIMIT $2 OFFSET $3
+    `;
+    const ordersResult = await pool.query(ordersQuery, [uniqueOrderItems.map(item => item.orderid), limit, offset]);
+
+    res.json({
+      totalItems,
+      totalPages,
+      currentPage: page,
+      orders: ordersResult.rows,
+    });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getOrderDetailFarmer = async (req, res) => {
+  const { orderId } = req.params;
+  try {
+    const orderQuery = `SELECT * FROM "Order" WHERE orderid = $1`;
+    const orderResult = await pool.query(orderQuery, [orderId]);
+    if (orderResult.rows.length === 0) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    const order = orderResult.rows[0];
+    const orderItemQuery = `SELECT * FROM orderitem WHERE orderid = $1`;
+    const orderItemResult = await pool.query(orderItemQuery, [orderId]);
+    const orderItems = orderItemResult.rows;
+    const items = await Promise.all(
+      orderItems.map(async (item) => {
+        const productQuery = `SELECT * FROM product WHERE productid = $1`;
+        const productResult = await pool.query(productQuery, [item.productid]);
+        const product = productResult.rows[0];
+        return {
+          productId: product.productid,
+          productName: product.productname,
+          productImage: product.productimage1,
+          quantity: item.quantityofitem,
+          price: product.productprice,
+          unitofmeasure: product.unitofmeasure,
+          overviewdes: product.overviewdes,
+        };
+      })
+    );
+    const userQuery = `SELECT * FROM "User" WHERE userid = $1`;
+    const userResult = await pool.query(userQuery, [order.userid]);
+    const user = userResult.rows[0];
+    const paymentQuery = `SELECT * FROM payment WHERE orderid = $1`;
+    const paymentResult = await pool.query(paymentQuery, [orderId]);
+    const payment = paymentResult.rows[0];
+    const returnResult = {
+      orderId: order.orderid,
+      orderStatus: order.orderstatus,
+      orderCreateTime: order.ordercreatetime,
+      orderUpdateTime: order.orderupdatetime,
+      totalAmount: order.totalamount,
+      deliveryAddress: order.shippingaddress,
+      estimatedDeliveryTime: order.estimatedelivery,
+      paymentMethod: payment.paymentmethod,
+      paymentStatus: payment.paymentstatus,
+      paymentCreateTime: payment.paymentcreatetime,
+      paymentUpdateTime: payment.paymentupdatetime,
+      user: {
+        userId: user.userid,
+        fullName: user.fullname,
+        email: user.email,
+        phonenumber: user.phonenumber,
+      },
+      items,
+    };
+    res.json(returnResult);
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const updateStatusOrder = async (req, res) => {
+  const { orderId, status } = req.body;
+  const currentTime = new Date();
+  const sql = `UPDATE "Order" SET orderstatus = $1, orderupdatetime = $2 WHERE orderid = $3`;
+  try {
+    await pool.query(sql, [status, currentTime, orderId]);
+
+    res.json({
+      message: "Cập nhật thành công",
+      updateTime: currentTime,
+    });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  addCheckOut,
+  getShippingInfo,
+  getPurchaseHistory,
+  getOrderItemById,
+  getAllOrdersByFarmer,
+  getOrderDetailFarmer,
+  updateStatusOrder,
+};
