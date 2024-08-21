@@ -207,9 +207,16 @@ const registerFarmerStep1 = async (req, res) => {
       dob,
       role,
       status,
+      street,
+      commune,
+      district,
+      province,
     } = req.body;
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
+    if (!street || !commune || !district || !province) {
+      return res.status(400).send("Địa chỉ không đầy đủ.");
+    }
     // Check for existing username
     const existingUsername = await pool.query(
       'SELECT * FROM "User" WHERE username = $1',
@@ -252,7 +259,7 @@ const registerFarmerStep1 = async (req, res) => {
 
     // Lưu thông tin cơ bản vào cơ sở dữ liệu
     const newUser = await pool.query(
-      'INSERT INTO "User" (username, password, email, fullname, phonenumber, indentitycard, dob, role, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      'INSERT INTO "User" (username, password, email, fullname, phonenumber, indentitycard, dob, role, status, street, commune, district, province) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
       [
         username,
         hashedPassword,
@@ -263,6 +270,10 @@ const registerFarmerStep1 = async (req, res) => {
         dob,
         role,
         status,
+        street,
+        commune,
+        district,
+        province,
       ]
     );
 

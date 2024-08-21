@@ -24,6 +24,10 @@ function FarmerRegisterStep1() {
   const [phonenumber, setPhonenumber] = useState("");
   const [indentitycard, setIndentitycard] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [street, setStreet] = useState("");
+  const [commune, setCommune] = useState("");
+  const [district, setDistrict] = useState("");
+  const [province, setProvince] = useState("");
 
   // khởi tạo tb lỗi
   const [usernameError, setUsernameError] = useState("");
@@ -34,58 +38,92 @@ function FarmerRegisterStep1() {
   const [phonenumberError, setPhonenumberError] = useState("");
   const [indentitycardError, setIndentitycardError] = useState("");
   const [dobError, setDobError] = useState("");
+  const [streetError, setStreetError] = useState("");
+  const [communeError, setCommuneError] = useState("");
+  const [districtError, setDistrictError] = useState("");
+  const [provinceError, setProvinceError] = useState("");
 
   const navigate = useNavigate();
 
   const validate = () => {
     let isValid = true;
     if (username === "") {
-      setUsernameError("Username is required");
+      setUsernameError("Tên đăng nhập là bắt buộc");
       isValid = false;
     } else {
       setUsernameError("");
     }
     if (email === "") {
-      setEmailError("Email is required");
+      setEmailError("Email là bắt buộc");
       isValid = false;
     } else {
       setEmailError("");
     }
     if (password === "") {
-      setPasswordError("Password is required");
+      setPasswordError("Mật khẩu là bắt buộc");
       isValid = false;
     } else {
       setPasswordError("");
     }
     if (confirmPassword === "" || confirmPassword !== password) {
-      setConfirmPasswordError("Confirm password is required or does not match");
+      setConfirmPasswordError(
+        "Xác nhận mật khẩu là bắt buộc hoặc mật khẩu không khớp"
+      );
       isValid = false;
     } else {
       setConfirmPasswordError("");
     }
     if (fullname === "") {
-      setFullnameError("Full name is required");
+      setFullnameError("Họ và tên là bắt buộc");
       isValid = false;
     } else {
       setFullnameError("");
     }
     if (indentitycard === "") {
-      setIndentitycardError("Address is required");
+      setIndentitycardError("CCCD/CMND là bắt buộc");
       isValid = false;
     } else {
       setIndentitycardError("");
     }
     if (dob === "") {
-      setDobError("Date of birth is required");
+      setDobError("Ngày sinh là bắt buộc");
       isValid = false;
     } else {
       setDobError("");
     }
     if (phonenumber === "") {
-      setPhonenumberError("Phone number is required");
+      setPhonenumberError("Số điện thoại là bắt buộc");
       isValid = false;
     } else {
       setPhonenumberError("");
+    }
+
+    if (!street) {
+      setStreetError("Tên đường là bắt buộc");
+      isValid = false;
+    } else {
+      setStreetError("");
+    }
+
+    if (!commune) {
+      setCommuneError("Tên phường/xã là bắt buộc");
+      isValid = false;
+    } else {
+      setCommuneError("");
+    }
+
+    if (!district) {
+      setDistrictError("Quận/Huyện là bắt buộc");
+      isValid = false;
+    } else {
+      setDistrictError("");
+    }
+
+    if (!province) {
+      setProvinceError("Tỉnh/Thành phố là bắt buộc");
+      isValid = false;
+    } else {
+      setProvinceError("");
     }
     return isValid;
   };
@@ -111,6 +149,10 @@ function FarmerRegisterStep1() {
         indentitycard,
         role: "farmer",
         status: "false",
+        street,
+        commune,
+        district,
+        province,
       };
 
       // Gửi yêu cầu API cho giai đoạn 1 (nhập thông tin cơ bản)
@@ -197,10 +239,10 @@ function FarmerRegisterStep1() {
                   placeholder="email@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="border border-gray-500 rounded-md py-1 px-2 w-full bg-ebffeb text-gray-500"
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {emailError && (
-                  <p className="text-gray-900 text-sm">{emailError}</p>
+                  <p className="text-red-500 text-sm">{emailError}</p> // Changed to red
                 )}
               </div>
               <div className="mb-3">
@@ -216,10 +258,10 @@ function FarmerRegisterStep1() {
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="border border-gray-500 rounded-md py-1 px-2 w-full bg-ebffeb text-gray-500"
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {usernameError && (
-                  <p className="text-gray-900  text-sm">{usernameError}</p>
+                  <p className="text-red-500  text-sm">{usernameError}</p> // Changed to red
                 )}
               </div>
               <div className="mb-3 relative">
@@ -236,19 +278,18 @@ function FarmerRegisterStep1() {
                     placeholder="Mật khẩu"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="border border-gray-500 rounded-md py-1 px-2 w-full bg-ebffeb text-gray-500 pr-10" // Add padding to the right
+                    className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500 pr-10" // Add padding to the right
                   />
                   <FontAwesomeIcon
                     icon={showPassword ? faEyeSlash : faEye}
                     onClick={handlePasswordVisibility}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-sm text-gray-500"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
                   />
                 </div>
                 {passwordError && (
-                  <p className="text-gray-900 text-sm">{passwordError}</p>
+                  <p className="text-red-500  text-sm">{passwordError}</p> // Changed to red
                 )}
               </div>
-
               <div className="mb-3 relative">
                 <label
                   htmlFor="confirmPassword"
@@ -263,40 +304,35 @@ function FarmerRegisterStep1() {
                     placeholder="Xác nhận mật khẩu"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="border border-gray-500 rounded-md py-1 px-2 w-full bg-ebffeb text-gray-500 pr-10" // Add padding to the right
+                    className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500 pr-10" // Add padding to the right
                   />
                   <FontAwesomeIcon
                     icon={showPassword ? faEyeSlash : faEye}
-                    onClick={(e) =>
-                      handlePasswordVisibility(e, "confirmPassword")
-                    }
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-sm text-gray-500"
+                    onClick={handlePasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
                   />
                 </div>
                 {confirmPasswordError && (
-                  <p className="text-gray-900 text-sm">
-                    {confirmPasswordError}
-                  </p>
+                  <p className="text-red-500 text-sm">{confirmPasswordError}</p> // Changed to red
                 )}
               </div>
-
               <div className="mb-3">
                 <label
                   htmlFor="fullname"
                   className="block text-gray-700 font-bold mb-2 text-sm"
                 >
-                  Họ và tên:
+                  Tên đầy đủ:
                 </label>
                 <input
                   type="text"
                   id="fullname"
-                  placeholder="Họ và tên"
+                  placeholder="Tên đầy đủ"
                   value={fullname}
                   onChange={(e) => setFullname(e.target.value)}
-                  className="border border-gray-500 rounded-md py-1 px-2 w-full bg-ebffeb text-gray-500"
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {fullnameError && (
-                  <p className="text-gray-900 text-sm">{fullnameError}</p>
+                  <p className="text-red-500  text-sm">{fullnameError}</p> // Changed to red
                 )}
               </div>
               <div className="mb-3">
@@ -304,36 +340,36 @@ function FarmerRegisterStep1() {
                   htmlFor="dob"
                   className="block text-gray-700 font-bold mb-2 text-sm"
                 >
-                  Ngày tháng năm sinh:
+                  Ngày sinh:
                 </label>
                 <input
                   type="date"
                   id="dob"
                   value={dob}
                   onChange={(e) => setDob(e.target.value)}
-                  className="border border-gray-500 rounded-md py-1 px-2 w-full bg-ebffeb text-gray-500"
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {dobError && (
-                  <p className="text-gray-900 text-sm">{dobError}</p>
+                  <p className="text-red-500  text-sm">{dobError}</p> // Changed to red
                 )}
               </div>
               <div className="mb-3">
                 <label
-                  htmlFor="phoneNumber"
+                  htmlFor="phonenumber"
                   className="block text-gray-700 font-bold mb-2 text-sm"
                 >
                   Số điện thoại:
                 </label>
                 <input
                   type="text"
-                  id="phoneNumber"
+                  id="phonenumber"
                   placeholder="Số điện thoại"
                   value={phonenumber}
                   onChange={(e) => setPhonenumber(e.target.value)}
-                  className="border border-gray-500 rounded-md py-1 px-2 w-full bg-ebffeb text-gray-500"
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {phonenumberError && (
-                  <p className="text-gray-900 text-sm">{phonenumberError}</p>
+                  <p className="text-red-500  text-sm">{phonenumberError}</p> // Changed to red
                 )}
               </div>
               <div className="mb-3">
@@ -341,46 +377,116 @@ function FarmerRegisterStep1() {
                   htmlFor="indentitycard"
                   className="block text-gray-700 font-bold mb-2 text-sm"
                 >
-                  CCCD/CMND:
+                  Số CMND/CCCD:
                 </label>
                 <input
                   type="text"
                   id="indentitycard"
-                  placeholder="CCCD/CMND"
+                  placeholder="Số CMND/CCCD"
                   value={indentitycard}
                   onChange={(e) => setIndentitycard(e.target.value)}
-                  className="border border-gray-500 rounded-md py-1 px-2 w-full bg-ebffeb text-gray-500"
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {indentitycardError && (
-                  <p className="text-gray-900 text-sm">{indentitycardError}</p>
+                  <p className="text-red-500 text-sm">{indentitycardError}</p> // Changed to red
                 )}
               </div>
-              <div className="flex justify-center w-full">
+              <div className="mb-3">
+                <label
+                  htmlFor="street"
+                  className="block text-gray-700 font-bold mb-2 text-sm"
+                >
+                  Street:
+                </label>
+                <input
+                  type="text"
+                  id="street"
+                  placeholder="Street"
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                />
+                {streetError && (
+                  <p className="text-red-500 text-sm">{streetError}</p> // Changed to red
+                )}
+              </div>
+              <div className="mb-3">
+                <label
+                  htmlFor="commune"
+                  className="block text-gray-700 font-bold mb-2 text-sm"
+                >
+                  Commune:
+                </label>
+                <input
+                  type="text"
+                  id="commune"
+                  placeholder="Commune"
+                  value={commune}
+                  onChange={(e) => setCommune(e.target.value)}
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                />
+                {communeError && (
+                  <p className="text-red-500 text-sm">{communeError}</p> // Changed to red
+                )}
+              </div>
+              <div className="mb-3">
+                <label
+                  htmlFor="district"
+                  className="block text-gray-700 font-bold mb-2 text-sm"
+                >
+                  District:
+                </label>
+                <input
+                  type="text"
+                  id="district"
+                  placeholder="District"
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                />
+                {districtError && (
+                  <p className="text-red-500 text-sm">{districtError}</p> // Changed to red
+                )}
+              </div>
+              <div className="mb-3">
+                <label
+                  htmlFor="province"
+                  className="block text-gray-700 font-bold mb-2 text-sm"
+                >
+                  Province:
+                </label>
+                <input
+                  type="text"
+                  id="province"
+                  placeholder="Province"
+                  value={province}
+                  onChange={(e) => setProvince(e.target.value)}
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                />
+                {provinceError && (
+                  <p className="text-red-500 text-sm">{provinceError}</p> // Changed to red
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
                 <button
                   onClick={handleNext}
-                  className="bg-primary text-gray- py-2 px-4 rounded-md text-sm"
+                  className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg w-full mt-5 mb-5"
                 >
                   Tiếp tục
                 </button>
               </div>
-
-              <div className="flex justify-center w-full mt-2">
-                <p className="text-gray-900 text-sm">Hoặc</p>
-              </div>
-
-              <div className="flex justify-center w-full mt-2">
-                <button
-                  onClick={handleNext}
-                  className="bg-gray-800 text-white py-2 px-4 rounded-md text-sm"
-                >
-                  Đăng ký với Google
-                </button>
-              </div>
-
-              <div className="flex justify-center w-full mt-4">
-                <p className="text-sm text-gray-700">
+              <p className="text-center text-gray-600">Hoặc</p>
+              <button
+                onClick={handleNext}
+                className="bg-white text-gray-600 border-2 border-gray-500 font-bold py-2 px-4 rounded-lg w-full"
+              >
+                Đăng ký với Google
+              </button>
+              <div className="flex justify-center">
+                <p className="text-gray-600 mt-4">
                   Đã có tài khoản bán hàng?{" "}
-                  <a href="/farmer/login" className="text-blue-500 underline">
+                  <a href="/farmer/login" className="text-green-500 font-bold">
                     Đăng nhập
                   </a>
                 </p>
@@ -388,7 +494,7 @@ function FarmerRegisterStep1() {
             </div>
           </div>
 
-          {/* Right Block - Text and Image */}
+          {/* Right Block - Image */}
           <div className="w-1/2 flex flex-col justify-center items-center p-6">
             <div className="mb-4 text-center">
               <p className="font-bold text-2xl text-primary">

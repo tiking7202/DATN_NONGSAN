@@ -220,10 +220,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="Tên trang trại"
                 value={farmName}
                 onChange={(e) => setFarmName(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full bg-ebffeb text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {farmNameError && (
-                <p className="text-gray-900 text-sm">{farmNameError}</p>
+                <p className="text-red-500 text-sm">{farmNameError}</p>
               )}
             </div>
 
@@ -240,10 +240,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="Loại trang trại"
                 value={farmType}
                 onChange={(e) => setFarmType(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full bg-ebffeb text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {farmTypeError && (
-                <p className="text-gray-900 text-sm">{farmTypeError}</p>
+                <p className="text-red-500 text-sm">{farmTypeError}</p>
               )}
             </div>
 
@@ -260,10 +260,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="Email trang trại"
                 value={farmemail}
                 onChange={(e) => setFarmemail(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full bg-ebffeb text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {farmemailError && (
-                <p className="text-gray-900 text-sm">{farmemailError}</p>
+                <p className="text-red-500 text-sm">{farmemailError}</p>
               )}
             </div>
             <div className="mb-4">
@@ -279,10 +279,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="Street"
                 value={farmstreet}
                 onChange={(e) => setStreet(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full bg-ebffeb text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {streetError && (
-                <p className="text-gray-900 text-sm">{streetError}</p>
+                <p className="text-red-500 text-sm">{streetError}</p>
               )}
             </div>
 
@@ -299,10 +299,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="Commune"
                 value={farmcommune}
                 onChange={(e) => setCommune(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full bg-ebffeb text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {communeError && (
-                <p className="text-gray-900 text-sm">{communeError}</p>
+                <p className="text-red-500 text-sm">{communeError}</p>
               )}
             </div>
 
@@ -319,10 +319,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="District"
                 value={farmdistrict}
                 onChange={(e) => setDistrict(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full bg-ebffeb text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {districtError && (
-                <p className="text-gray-900 text-sm">{districtError}</p>
+                <p className="text-red-500 text-sm">{districtError}</p>
               )}
             </div>
 
@@ -339,10 +339,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="Province"
                 value={farmprovince}
                 onChange={(e) => setProvince(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full bg-ebffeb text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {provinceError && (
-                <p className="text-gray-900 text-sm">{provinceError}</p>
+                <p className="text-red-500 text-sm">{provinceError}</p>
               )}
             </div>
 
@@ -359,10 +359,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="Quy mô trang trại (m2)"
                 value={farmArea}
                 onChange={(e) => setFarmArea(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full bg-ebffeb text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {farmAreaError && (
-                <p className="text-gray-900 text-sm">{farmAreaError}</p>
+                <p className="text-red-500 text-sm">{farmAreaError}</p>
               )}
             </div>
 
@@ -378,10 +378,10 @@ export default function FarmerRegisterStep2() {
                 placeholder="Mô tả trang trại"
                 value={farmDescription}
                 onChange={(e) => setFarmDescription(e.target.value)}
-                className="border border-gray-500 rounded-md py-2 px-3 w-full h-40 bg-ebffeb resize-none text-gray-500"
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full h-40 bg-ebffeb resize-none text-gray-500"
               ></textarea>
               {farmDescriptionError && (
-                <p className="text-gray-900 text-sm">{farmDescriptionError}</p>
+                <p className="text-red-500 text-sm">{farmDescriptionError}</p>
               )}
             </div>
 

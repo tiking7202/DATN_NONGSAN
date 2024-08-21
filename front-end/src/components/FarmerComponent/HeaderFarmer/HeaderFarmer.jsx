@@ -27,6 +27,7 @@ export default function HeaderFarmer() {
       setAvatar(decodedToken?.avatar);
       if (!isFarmer(token)) {
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         navigate("/farmer/login");
       }
     }
@@ -93,7 +94,6 @@ export default function HeaderFarmer() {
                 />
                 <p className="ml-2">{fullName}</p>
               </div>
-
               {isOpen && (
                 <div className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                   <div
@@ -104,7 +104,7 @@ export default function HeaderFarmer() {
                     aria-labelledby="options-menu"
                   >
                     <a
-                      href="/farmer"
+                      href="/farmer/profile"
                       className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
                       role="menuitem"
                     >
