@@ -23,6 +23,8 @@ import FarmerRegisterStep2 from "../pages/Farmer/FarmerRegister/FarmerRegisterSt
 import FarmerRegisterStep3 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep3/FarmerRegisterStep3";
 import FarmerShowProducts from "../pages/Farmer/FarmerProduct/FarmerShowProducts";
 import FarmerShowFarm from "../pages/Farmer/FarmerFarm/FarmerShowFarm";
+import FarmerCrop from "../pages/Farmer/FarmerCrop/FarmerCrop";
+import FarmerProfile from "../pages/Farmer/FarmerProfile/FarmerProfile";
 
 export default function AppRoutes() {
   return (
@@ -30,7 +32,6 @@ export default function AppRoutes() {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
-
           {/* Route cho customer  */}
           <Route path="/register/step1" element={<RegisterCustomerStep1 />} />
           <Route path="/register/step2" element={<RegisterCustomerStep2 />} />
@@ -46,12 +47,13 @@ export default function AppRoutes() {
           <Route path="/farm/info/:id" element={<FarmInfoPage />} />
           <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
           <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
-
           {/* Route cho farmer */}
           <Route path="/farmer/login" element={<FarmerLogin />} />
           <Route path="/farmer" element={<FarmerDashboard />} />
           <Route path="/farmer/products" element={<FarmerShowProducts />} />
           <Route path="/farmer/farms" element={<FarmerShowFarm />} />
+          <Route path="/farmer/farms/crop" element={<FarmerCrop />} />
+          <Route path="/farmer/profile" element={<FarmerProfile />} />;
           <Route
             path="/farmer/register/step1"
             element={<FarmerRegisterStep1 />}

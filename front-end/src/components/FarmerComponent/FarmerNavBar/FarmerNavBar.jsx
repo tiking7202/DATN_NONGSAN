@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from "react-router-dom";
 
 const FarmerNavBar = () => {
   const location = useLocation();
@@ -9,23 +9,29 @@ const FarmerNavBar = () => {
         <Link
           to="/farmer"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
-            location.pathname === '/farmer' ? 'bg-primary font-bold text-secondary hover:opacity-85' : ''
+            location.pathname === "/farmer"
+              ? "bg-primary font-bold text-secondary hover:opacity-85"
+              : ""
           }`}
         >
           Thống kê
         </Link>
         <Link
-          to="/farmer/farms"
+          to="/farmer/farms/crop"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
-            location.pathname === '/farmer/farms' ? 'bg-primary font-bold text-secondary hover:opacity-85' : ''
+            location.pathname === "/farmer/farms/crop"
+              ? "bg-primary font-bold text-secondary hover:opacity-85"
+              : ""
           }`}
         >
-          Quản lý vườn
+          Quản lý vụ mùa
         </Link>
         <Link
           to="/farmer/products"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
-            location.pathname === '/farmer/products' ? 'bg-primary font-bold text-secondary hover:opacity-85' : ''
+            location.pathname === "/farmer/products"
+              ? "bg-primary font-bold text-secondary hover:opacity-85"
+              : ""
           }`}
         >
           Quản lý sản phẩm
@@ -33,7 +39,9 @@ const FarmerNavBar = () => {
         <Link
           to="/farmer/orders"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
-            location.pathname === '/farmer/orders' ? 'bg-primary font-bold text-secondary hover:opacity-85' : ''
+            location.pathname === "/farmer/orders"
+              ? "bg-primary font-bold text-secondary hover:opacity-85"
+              : ""
           }`}
         >
           Quản lý đơn hàng
@@ -41,7 +49,9 @@ const FarmerNavBar = () => {
         <Link
           to="/farmer/payments"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
-            location.pathname === '/farmer/payments' ? 'bg-primary font-bold text-secondary hover:opacity-85' : ''
+            location.pathname === "/farmer/payments"
+              ? "bg-primary font-bold text-secondary hover:opacity-85"
+              : ""
           }`}
         >
           Quản lý thanh toán
@@ -49,7 +59,9 @@ const FarmerNavBar = () => {
         <Link
           to="/farmer/profile"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
-            location.pathname === '/farmer/profile' ? 'bg-primary font-bold text-secondary hover:opacity-85' : ''
+            location.pathname === "/farmer/profile"
+              ? "bg-primary font-bold text-secondary hover:opacity-85"
+              : ""
           }`}
         >
           Thông tin cá nhân

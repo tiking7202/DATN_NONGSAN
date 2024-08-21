@@ -19,13 +19,13 @@ export default function HeaderFarmer() {
     fullName = decodedToken?.fullname;
   }
   useEffect(() => {
-    if(!token) {
+    if (!token) {
       navigate("/farmer/login");
     }
-    
+
     //Kiểm tra có phải là customer hay không
-    if(token) {
-      if(!isFarmer(token)) {
+    if (token) {
+      if (!isFarmer(token)) {
         localStorage.removeItem("accessToken");
         navigate("/farmer/login");
       }
@@ -42,7 +42,7 @@ export default function HeaderFarmer() {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         setToastMessage("Đăng xuất thành công!");
-        
+
         navigate("/farmer/login");
         // console.log(response);
       } else {
@@ -53,7 +53,7 @@ export default function HeaderFarmer() {
       }
     } catch (error) {
       console.error("Error during logout:", error);
-      toast.error(error,{
+      toast.error(error, {
         position: "top-right",
         time: 500,
       });
@@ -80,50 +80,52 @@ export default function HeaderFarmer() {
 
           <div className="flex items-center">
             <div className="relative inline-block text-left">
-            <p className="cursor-pointer"  onClick={() => setIsOpen(!isOpen)}>{fullName}</p>
+              <p className="cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
+                {fullName}
+              </p>
 
-            {isOpen && (
-                  <div className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                    <div
-                      className="py-1"
-                      style={{ zIndex: 9999 }}
-                      role="menu"
-                      aria-orientation="vertical"
-                      aria-labelledby="options-menu"
+              {isOpen && (
+                <div className="z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div
+                    className="py-1"
+                    style={{ zIndex: 9999 }}
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="options-menu"
+                  >
+                    <a
+                      href="/farmer/profile"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
                     >
-                      <a
-                        href="/farmer"
-                        className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                      >
-                        Thay đổi thông tin
-                      </a>
-                      <a
-                        href="/farmer"
-                        className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                      >
-                        Thay đổi mật khẩu
-                      </a>
-                      <a
-                        href="/farmer"
-                        className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                      >
-                        Yêu cầu hỗ trợ
-                      </a>                    
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                        onClick={handleLogout}
-                      >
-                        Đăng xuất
-                      </a>
-                    </div>
+                      Thay đổi thông tin
+                    </a>
+                    <a
+                      href="/farmer"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
+                    >
+                      Thay đổi mật khẩu
+                    </a>
+                    <a
+                      href="/farmer"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
+                    >
+                      Yêu cầu hỗ trợ
+                    </a>
+                    <a
+                      href="#"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
+                      onClick={handleLogout}
+                    >
+                      Đăng xuất
+                    </a>
                   </div>
-                )}
                 </div>
+              )}
+            </div>
           </div>
         </section>
       </nav>
