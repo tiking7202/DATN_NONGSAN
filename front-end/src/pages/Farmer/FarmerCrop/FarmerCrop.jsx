@@ -69,7 +69,8 @@ export default function FarmerShowCrop() {
       setIsViewCropDialogOpen(true);
       setSelectedCrop(response.data);
     } catch (error) {
-      console.error("Error fetching product details:", error);
+      console.log(cropid);
+      // console.error("Error fetching product details:", error);
     }
   };
 
@@ -131,7 +132,7 @@ export default function FarmerShowCrop() {
                 onClick={openCreateCropDialog}
               >
                 <FontAwesomeIcon icon={faPlus} className="text-xl mr-2" />
-                Thêm Vụ Mùa
+                Thêm vụ mùa
               </button>
             </div>
 

@@ -6,15 +6,23 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../../../../App.css";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useToast } from "../../../../../context/ToastContext";
+import { useEffect } from "react";
 function RegisterFarmerStep3() {
-  const { setToastMessage } = useToast();
   const navigate = useNavigate();
+
+  const { toastMessage, setToastMessage } = useToast();
+  useEffect(() => {
+    if (toastMessage) {
+      toast.success(toastMessage);
+      setToastMessage(null);
+    }
+  }, [toastMessage, setToastMessage, navigate]);
+
   const handleNext = async () => {
-    setToastMessage("Gửi yêu cầu thành công");
+    setToastMessage("Gửi yêu cầu thành công, chờ xác nhận từ AgriMart");
     navigate(`/farmer/login`);
-    // navigate("/farmer/statistic");
   };
   return (
     <div className="h-screen  bg-fourth flex flex-col">

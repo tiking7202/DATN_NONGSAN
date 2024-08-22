@@ -354,26 +354,26 @@ export default function FarmerUpdateCrop({
               >
                 Mô tả
               </label>
-              <input
+              <textarea
                 type="text"
                 placeholder="Mô tả"
                 value={cropdes}
                 onChange={(e) => setCropDes(e.target.value)}
-                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500 h-32"
               />
               <p className="mt-1 text-red-500 text-xs italic">{cropdesErrol}</p>
             </div>
           </div>
           <div className="flex justify-end mt-5">
             <button
-              className="bg-red-600 hover:opacity-90 text-white text-xl font-bold py-2 px-4 rounded-xl w-1/3"
+              className="bg-red-600 hover:opacity-90 text-white text-xl font-bold py-2 px-4 rounded-xl"
               onClick={onClose}
             >
               Hủy
             </button>
 
             <button
-              className="bg-primary hover:bg-primary-700 text-white text-xl font-bold py-2 px-4 rounded-xl ml-5 w-1/3"
+              className="bg-primary hover:bg-primary-700 text-white text-xl font-bold py-2 px-4 rounded-xl ml-5"
               onClick={() => {
                 onUpdateCrop(crop.cropid);
               }}

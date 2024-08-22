@@ -17,14 +17,12 @@ import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer
 export default function FarmProductPage() {
   const navigate = useNavigate();
   let { id } = useParams(); // Lấy farmid từ URL
-  console.log(id);
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     axios
       .get(`${API_BASE_URL}/farm/productdetail/${id}`)
       .then((response) => {
-        console.log(response);
         setProducts(response.data);
       })
       .catch((error) => {
@@ -63,7 +61,7 @@ export default function FarmProductPage() {
 
       {/* Nội dung chính của trang */}
       <div className="bg-fourth m-auto flex flex-wrap justify-center">
-        <div className=" w-4/5 mt-5 rounded-md bg-white m-auto flex flex-wrap justify-center">
+        <div className=" w-4/5 mt-5 mb-10 rounded-md bg-white m-auto flex flex-wrap justify-center">
           {products.map((product) => {
             const currentDate = new Date();
             const expireDate = new Date(product.expirydate);
@@ -88,38 +86,44 @@ export default function FarmProductPage() {
                   />
                 </Link>
                 <div className="px-6 py-4 text-primary">
-                  <div className="font-bold text-center text-2xl mb-2 ">
-                    {product.productname}
-                  </div>
-                  <p className="m-2 text-primary">
-                    Có thể sử dụng trong:
-                    <span className="text-primary font-bold">
-                      {" "}
-                      {remainingDays} ngày
-                    </span>
-                  </p>
-                  <p className="text-sm m-2 text-primary">
-                    Số lượng còn lại:{" "}
-                    <span className="text-primary font-bold">
-                      {" "}
-                      {product.productquantity}kg
-                    </span>
-                  </p>
-                  <p className="text-2xl m-3 font-bold italic text-green-500">
-                    {product.productprice}đ
-                  </p>
-                  <div className="flex justify-between items-center mt-4">
-                    <div className="text-primary font-bold">
-                      <div className="flex items-center">
-                        <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-                        <p className="ml-2">{product.farmaddress}</p>
-                      </div>
-                      <div className="flex items-center mt-2">
-                        <FontAwesomeIcon icon={faTractor} size="lg" />
-                        <p className="ml-2">{product.farmname}</p>
-                      </div>
+                  <Link
+                    to={`/product/${product.productid}`}
+                    key={product.productid}
+                  >
+                    <div className="font-bold text-center text-2xl mb-2 ">
+                      {product.productname}
                     </div>
-
+                    <p className="m-2 text-primary">
+                      Có thể sử dụng trong:
+                      <span className="text-primary font-bold">
+                        {" "}
+                        {remainingDays} ngày
+                      </span>
+                    </p>
+                    <p className="text-sm m-2 text-primary">
+                      Số lượng còn lại:{" "}
+                      <span className="text-primary font-bold">
+                        {" "}
+                        {product.productquantity}kg
+                      </span>
+                    </p>
+                    <p className="text-2xl m-3 font-bold italic text-green-500">
+                      {product.productprice}đ
+                    </p>
+                  </Link>
+                  <div className="flex justify-between items-center mt-4">
+                    <Link to={`/farm/info/${product.farmid}`}>
+                      <div className="text-primary font-bold">
+                        <div className="flex items-center">
+                          <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
+                          <p className="ml-2">{product.farmprovince}</p>
+                        </div>
+                        <div className="flex items-center mt-2">
+                          <FontAwesomeIcon icon={faTractor} size="lg" />
+                          <p className="ml-2">{product.farmname}</p>
+                        </div>
+                      </div>
+                    </Link>
                     <button
                       className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200"
                       onClick={() => handleAddToCart(product.productid)}

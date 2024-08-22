@@ -9,7 +9,7 @@ export default function FarmerDetailCrop({ crop, onClose }) {
         {/* Close Button */}
         <div className="flex justify-end">
           <button
-            className="text-primary px-4 hover:bg-red-600 hover:text-white rounded-full"
+            className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold"
             onClick={onClose}
           >
             <FontAwesomeIcon icon={faTimes} className="text-2xl" />
@@ -26,7 +26,7 @@ export default function FarmerDetailCrop({ crop, onClose }) {
           <img
             src={crop.cropimage}
             alt={crop.cropname}
-            className="w-48 h-48 object-cover rounded-lg shadow-md"
+            className="w-1/2 object-cover rounded-lg shadow-md"
           />
         </div>
 
@@ -44,10 +44,10 @@ export default function FarmerDetailCrop({ crop, onClose }) {
               key={index}
               className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm"
             >
-              <p className="font-semibold text-xl text-gray-700">
+              <p className="font-semibold text-xl text-gray-700 w-1/6 ">
                 {item.label}
               </p>
-              <p className="text-lg text-gray-600">{item.value}</p>
+              <p className="text-lg text-gray-600 w-5/6 text-justify">{item.value}</p>
             </div>
           ))}
         </div>

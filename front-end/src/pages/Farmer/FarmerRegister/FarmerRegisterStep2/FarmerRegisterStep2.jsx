@@ -4,15 +4,15 @@ import {
   faShoppingCart,
   faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
-// import { Link } from "react-router-dom";
 import "../../../../App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-// import Map from './components/Map'
-// const key = 'yourKey'
+import { API_BASE_URL } from './../../../../config/config';
+import { useToast } from "../../../../../context/ToastContext";
+
 export default function FarmerRegisterStep2() {
   const [farmName, setFarmName] = useState("");
   const [farmType, setFarmType] = useState("");
@@ -30,7 +30,6 @@ export default function FarmerRegisterStep2() {
   const [farmemailError, setFarmemailError] = useState("");
   const [farmAreaError, setFarmAreaError] = useState("");
   const [farmDescriptionError, setFarmDescriptionError] = useState("");
-  // const [addressErrol, setAddressErrol] = useState("");
 
   const [streetError, setStreetError] = useState("");
   const [communeError, setCommuneError] = useState("");
@@ -40,6 +39,13 @@ export default function FarmerRegisterStep2() {
   const location = useLocation();
   const userId = new URLSearchParams(location.search).get("userid");
   const navigate = useNavigate();
+  const { toastMessage, setToastMessage } = useToast();
+  useEffect(() => {
+    if (toastMessage) {
+      toast.success(toastMessage);
+      setToastMessage(null);
+    }
+  }, [toastMessage, setToastMessage, navigate]);
 
   const validate = () => {
     let isValid = true;
@@ -132,13 +138,14 @@ export default function FarmerRegisterStep2() {
 
       // Gửi yêu cầu API cho giai đoạn 1 (nhập thông tin cơ bản)
       const response = await axios.post(
-        `http://localhost:3000/api/auth/farmer/register/step2/${userId}`,
+        `${API_BASE_URL}/auth/farmer/register/step2/${userId}`,
         farmData
       );
 
       const farmId = response.data.farmid;
-      console.log("Farm ID:", farmId);
+      
       // Điều hướng sang trang nhập thông tin phụ
+      setToastMessage("Đăng ký trang trại thành công");
       navigate(`/farmer/register/step3?farmId=${farmId}`);
     } catch (error) {
       console.error("Error during registration:", error);
@@ -149,15 +156,7 @@ export default function FarmerRegisterStep2() {
     }
   };
 
-  const handlePrevious = async () => {
-    const confirmed = window.confirm(
-      "Bạn có chắc chắn muốn quay lại bước trước đó không?"
-    );
-    if (confirmed) {
-      // Nếu người dùng xác nhận, điều hướng đến bước trước đó
-      navigate("/farmer/register/step1");
-    }
-  };
+  
   return (
     <div className="h-screen bg-fourth flex flex-col">
       <ToastContainer />
@@ -187,7 +186,7 @@ export default function FarmerRegisterStep2() {
               icon={faShoppingCart}
               className=" text-green-600 text-4xl"
             />
-            <p className="text-center text-green-600 mt-2">Đăng ký gian hàng</p>
+            <p className="text-center text-green-600 mt-2">Đăng ký trang trại</p>
             {/* Đường kẻ */}
             <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-500 w-40"></div>
           </div>
@@ -223,7 +222,7 @@ export default function FarmerRegisterStep2() {
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {farmNameError && (
-                <p className="text-red-500 text-sm">{farmNameError}</p>
+                <p className="text-red-500 text-sm italic">{farmNameError}</p>
               )}
             </div>
 
@@ -243,7 +242,7 @@ export default function FarmerRegisterStep2() {
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {farmTypeError && (
-                <p className="text-red-500 text-sm">{farmTypeError}</p>
+                <p className="text-red-500 text-sm italic">{farmTypeError}</p>
               )}
             </div>
 
@@ -257,13 +256,13 @@ export default function FarmerRegisterStep2() {
               <input
                 type="text"
                 id="farmemail"
-                placeholder="Email trang trại"
+                placeholder="Email của trang trại"
                 value={farmemail}
                 onChange={(e) => setFarmemail(e.target.value)}
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {farmemailError && (
-                <p className="text-red-500 text-sm">{farmemailError}</p>
+                <p className="text-red-500 text-sm italic">{farmemailError}</p>
               )}
             </div>
             <div className="mb-4">
@@ -271,18 +270,18 @@ export default function FarmerRegisterStep2() {
                 htmlFor="farmstreet"
                 className="block text-gray-700 font-bold mb-2"
               >
-                Street:
+                Tên đường:
               </label>
               <input
                 type="text"
                 id="farmstreet"
-                placeholder="Street"
+                placeholder="Tên đường"
                 value={farmstreet}
                 onChange={(e) => setStreet(e.target.value)}
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {streetError && (
-                <p className="text-red-500 text-sm">{streetError}</p>
+                <p className="text-red-500 text-sm italic">{streetError}</p>
               )}
             </div>
 
@@ -291,18 +290,18 @@ export default function FarmerRegisterStep2() {
                 htmlFor="farmommune"
                 className="block text-gray-700 font-bold mb-2"
               >
-                Commune:
+                Tên xã/phường:
               </label>
               <input
                 type="text"
                 id="farmcommune"
-                placeholder="Commune"
+                placeholder="Xã/Phường"
                 value={farmcommune}
                 onChange={(e) => setCommune(e.target.value)}
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {communeError && (
-                <p className="text-red-500 text-sm">{communeError}</p>
+                <p className="text-red-500 text-sm italic">{communeError}</p>
               )}
             </div>
 
@@ -311,18 +310,18 @@ export default function FarmerRegisterStep2() {
                 htmlFor="farmdistrict"
                 className="block text-gray-700 font-bold mb-2"
               >
-                District:
+                Tên quận/huyện:
               </label>
               <input
                 type="text"
                 id="farmdistrict"
-                placeholder="District"
+                placeholder="Quận/Huyện"
                 value={farmdistrict}
                 onChange={(e) => setDistrict(e.target.value)}
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {districtError && (
-                <p className="text-red-500 text-sm">{districtError}</p>
+                <p className="text-red-500 text-sm italic">{districtError}</p>
               )}
             </div>
 
@@ -331,18 +330,18 @@ export default function FarmerRegisterStep2() {
                 htmlFor="farmprovince"
                 className="block text-gray-700 font-bold mb-2"
               >
-                Province:
+                Tên tỉnh/thành phố:
               </label>
               <input
                 type="text"
                 id="farmprovince"
-                placeholder="Province"
+                placeholder="Tỉnh/Thành phố"
                 value={farmprovince}
                 onChange={(e) => setProvince(e.target.value)}
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {provinceError && (
-                <p className="text-red-500 text-sm">{provinceError}</p>
+                <p className="text-red-500 text-sm italic">{provinceError}</p>
               )}
             </div>
 
@@ -362,7 +361,7 @@ export default function FarmerRegisterStep2() {
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
               {farmAreaError && (
-                <p className="text-red-500 text-sm">{farmAreaError}</p>
+                <p className="text-red-500 text-sm italic">{farmAreaError}</p>
               )}
             </div>
 
@@ -381,20 +380,14 @@ export default function FarmerRegisterStep2() {
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full h-40 bg-ebffeb resize-none text-gray-500"
               ></textarea>
               {farmDescriptionError && (
-                <p className="text-red-500 text-sm">{farmDescriptionError}</p>
+                <p className="text-red-500 text-sm italic">{farmDescriptionError}</p>
               )}
             </div>
 
-            <div className="flex justify-between mt-4">
-              <button
-                onClick={handlePrevious}
-                className="bg-primary text-white py-2 px-4 rounded-md"
-              >
-                Quay lại
-              </button>
+            <div className="flex mt-4 w-full justify-end">
               <button
                 onClick={handleNext}
-                className="bg-primary text-white py-2 px-4 rounded-md"
+                className="bg-primary text-white font-bold hover:opacity-95 py-2 w-full px-4 rounded-xl"
               >
                 Tiếp tục
               </button>

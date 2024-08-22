@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { API_BASE_URL } from "../../../config/config";
 import FarmInfoShow from "../../../components/CustomerComponent/FarmInfoShow/FarmInfoShow.jsx";
 import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer.jsx"; // Import FooterCustomer
@@ -29,7 +29,7 @@ export default function FarmSeasonPage() {
 
       {/* Nội dung chính của trang */}
       <div className="bg-fourth m-auto flex flex-wrap justify-center">
-        <div className=" w-4/5 mt-5 rounded-md bg-white m-auto flex flex-wrap justify-center">
+        <div className=" w-4/5 mt-5 mb-10 rounded-md bg-white m-auto flex flex-wrap justify-center">
           {crops.map((crop) => {
             const plantingDate = moment(crop.plantdate).format("DD/MM/YYYY");
             const harvestDate = moment(crop.harvestdate).format("DD/MM/YYYY");
@@ -38,13 +38,13 @@ export default function FarmSeasonPage() {
                 key={crop.productid}
                 className="w-1/4 bg-fourth max-w-xs rounded overflow-hidden shadow-lg m-4 cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1"
               >
-                <Link to={`/product/${crop.productid}`} key={crop.productid}>
+                
                   <img
                     className="w-full h-64 object-cover hover:opacity-80"
                     src={crop.cropimage}
                     alt={crop.cropimage}
                   />
-                </Link>
+                
                 <div className="px-6 py-4 text-primary">
                   <div className="font-bold text-center text-2xl mb-2 ">
                     {crop.cropname}

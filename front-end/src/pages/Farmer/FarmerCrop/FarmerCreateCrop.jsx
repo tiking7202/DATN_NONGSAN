@@ -34,7 +34,7 @@ const CreateCrop = ({ onClose, userId, refreshCropList }) => {
 
     // Validate tên vụ mùa
     if (cropname.trim() === "") {
-      setCropNameErrol("Tên vụ mùa là bắt buộc");
+      setCropNameErrol("Tên cây trồng là bắt buộc");
       isValid = false;
     } else {
       setCropNameErrol("");
@@ -42,7 +42,7 @@ const CreateCrop = ({ onClose, userId, refreshCropList }) => {
 
     // Validate mô tả vụ mùa
     if (cropdes.trim() === "") {
-      setCropDesErrol("Mô tả vụ mùa là bắt buộc");
+      setCropDesErrol("Mô tả cây trồng là bắt buộc");
       isValid = false;
     } else {
       setCropDesErrol("");
@@ -78,7 +78,7 @@ const CreateCrop = ({ onClose, userId, refreshCropList }) => {
       isNaN(estimatedyield) ||
       Number(estimatedyield) <= 0
     ) {
-      setEstimatedYieldErrol("Sản lượng ước tính hợp lệ là bắt buộc");
+      setEstimatedYieldErrol("Sản lượng ước tính là bắt buộc");
       isValid = false;
     } else {
       setEstimatedYieldErrol("");
@@ -176,7 +176,7 @@ const CreateCrop = ({ onClose, userId, refreshCropList }) => {
 
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center m-auto">
-      <div className="bg-white p-6 rounded w-1/2 m-auto text-primary h-3/4 overflow-auto shadow-xl">
+      <div className="bg-white p-3 rounded w-1/2 m-auto text-primary h-3/4 overflow-auto shadow-xl">
         <div className="flex justify-end">
           <button
             className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold"
@@ -387,13 +387,13 @@ const CreateCrop = ({ onClose, userId, refreshCropList }) => {
               >
                 Mô tả
               </label>
-              <input
+              <textarea
                 id="cropdes"
                 placeholder="Mô tả"
                 type="text"
                 value={cropdes}
                 onChange={(e) => setCropDes(e.target.value)}
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500  h-32"
               />
               {cropdesErrol && (
                 <p className="text-red-500 mt-1 text-xs italic">

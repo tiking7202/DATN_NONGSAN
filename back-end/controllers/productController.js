@@ -156,10 +156,21 @@ exports.getProductsByFarmId = async (req, res) => {
     );
     if (products.rows.length === 0) {
       return res
-        .status(404)
+        .status(409)
         .json({ message: "No products found for this farm ID" });
     }
-    res.json(products.rows);
+    // Lấy thêm farmname và farmprovince
+    const productsWithFarm = await Promise.all(
+      products.rows.map(async (product) => {
+        const farm = await pool.query(
+          "SELECT * FROM farm WHERE farmid = $1",
+          [product.farmid]
+        );
+        return { ...product, farmname: farm.rows[0].farmname, farmprovince: farm.rows[0].farmprovince };
+      })
+    );
+
+    res.json(productsWithFarm);
   } catch (error) {
     console.error("Error fetching products by farm ID:", error);
     res.status(500).json({ message: "Internal Server Error" });
