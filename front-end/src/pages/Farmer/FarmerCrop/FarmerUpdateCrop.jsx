@@ -366,14 +366,14 @@ export default function FarmerUpdateCrop({
           </div>
           <div className="flex justify-end mt-5">
             <button
-              className="bg-red-600 hover:opacity-90 text-white text-xl font-bold py-2 px-4 rounded-xl"
+              className="bg-red-600 hover:opacity-90 text-white text-xl font-bold py-2 px-4 rounded-xl w-1/6"
               onClick={onClose}
             >
               Hủy
             </button>
 
             <button
-              className="bg-primary hover:bg-primary-700 text-white text-xl font-bold py-2 px-4 rounded-xl ml-5"
+              className="bg-primary hover:bg-primary-700 text-white text-xl font-bold py-2 px-4 rounded-xl ml-5 w-1/6"
               onClick={() => {
                 onUpdateCrop(crop.cropid);
               }}

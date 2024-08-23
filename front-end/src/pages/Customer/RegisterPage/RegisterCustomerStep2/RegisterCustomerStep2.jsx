@@ -128,15 +128,15 @@ const RegisterCustomerStep2 = () => {
               htmlFor="street"
               className="block text-xl text-primary font-bold mb-2"
             >
-              Street:
+              Tên đường:
             </label>
             <input
               id="street"
               type="text"
-              placeholder="Street"
+              placeholder="Tên đường"
               value={street}
               onChange={(e) => setStreet(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
             {streetError && <p className="text-red-500 italic">{streetError}</p>}
           </div>
@@ -145,15 +145,15 @@ const RegisterCustomerStep2 = () => {
               htmlFor="commune"
               className="block text-xl text-primary font-bold mb-2"
             >
-              Commune:
+              Phường/Xã:
             </label>
             <input
               id="commune"
               type="text"
-              placeholder="Commune"
+              placeholder="Tên phường/xã"
               value={commune}
               onChange={(e) => setCommune(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
             {communeError && <p className="text-red-500 italic">{communeError}</p>}
           </div>
@@ -164,7 +164,7 @@ const RegisterCustomerStep2 = () => {
               htmlFor="district"
               className="block text-xl text-primary font-bold mb-2"
             >
-              District:
+              Quận/Huyện:
             </label>
             <input
               id="district"
@@ -172,7 +172,7 @@ const RegisterCustomerStep2 = () => {
               placeholder="District"
               value={district}
               onChange={(e) => setDistrict(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
             {districtError && <p className="text-red-500 italic">{districtError}</p>}
           </div>
@@ -181,15 +181,15 @@ const RegisterCustomerStep2 = () => {
               htmlFor="province"
               className="block text-xl text-primary font-bold mb-2"
             >
-              Province:
+              Tỉnh/Thành phố:
             </label>
             <input
               id="province"
               type="text"
-              placeholder="Province"
+              placeholder="Tỉnh/Thành phố"
               value={province}
               onChange={(e) => setProvince(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
             {provinceError && <p className="text-red-500 italic">{provinceError}</p>}
           </div>
@@ -200,15 +200,15 @@ const RegisterCustomerStep2 = () => {
               htmlFor="identityCard"
               className="block text-xl text-primary font-bold mb-2"
             >
-              Identity Card:
+              Số CMND/CCCD:
             </label>
             <input
               id="identityCard"
               type="text"
-              placeholder="Identity Card"
+              placeholder="Số CMND/CCCD"
               value={identityCard}
               onChange={(e) => setIdentityCard(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
             {identityCardError && (
               <p className="text-red-500 italic">{identityCardError}</p>
@@ -222,7 +222,7 @@ const RegisterCustomerStep2 = () => {
               Ngày sinh
             </label>
             <input
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border "
+              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               type="date"
               placeholder="Ngày sinh"
               value={dateOfBirth}
@@ -242,7 +242,7 @@ const RegisterCustomerStep2 = () => {
               Chọn ảnh đại diện:
             </label>
             <input
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border "
+              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               type="text"
               placeholder="Chọn ảnh đại diện"
               value={avatar}
@@ -256,7 +256,7 @@ const RegisterCustomerStep2 = () => {
         <div className="flex items-center flex-col m-5">
           <button
             onClick={handleSubmit}
-            className="bg-primary hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-3 rounded-xl w-1/2"
+            className="bg-primary hover:opacity-90 text-white font-bold text-xl py-2 px-6 m-3 rounded-xl w-1/2"
           >
             Hoàn tất
           </button>

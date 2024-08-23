@@ -44,10 +44,10 @@ export default function FarmerDetailCrop({ crop, onClose }) {
               key={index}
               className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm"
             >
-              <p className="font-semibold text-xl text-gray-700 w-1/6 ">
+              <p className="font-semibold text-xl text-gray-700 w-1/3">
                 {item.label}
               </p>
-              <p className="text-lg text-gray-600 w-5/6 text-justify">{item.value}</p>
+              <p className="text-lg text-gray-600 text-justify w-2/3">{item.value}</p>
             </div>
           ))}
         </div>
