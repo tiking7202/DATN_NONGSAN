@@ -124,7 +124,7 @@ export default function DetailInfoPage() {
                   <img
                     src={user.avatar}
                     alt="avatar"
-                    className="rounded-full w-1/2"
+                    className="rounded-full w-60 h-60 object-cover"
                   />
                   <button className="font-bold text-primary text-xl">
                     Thay đổi

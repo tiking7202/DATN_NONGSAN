@@ -253,10 +253,10 @@ const RegisterCustomerStep2 = () => {
             )}
           </div>
         </div>
-        <div className="flex items-center flex-col m-5">
+        <div className="flex items-center flex-col m-3">
           <button
             onClick={handleSubmit}
-            className="bg-primary hover:opacity-90 text-white font-bold text-xl py-2 px-6 m-3 rounded-xl w-1/2"
+            className="bg-primary hover:opacity-90 text-white font-bold text-xl py-2 px-6 m-2 rounded-xl w-1/2"
           >
             Hoàn tất
           </button>

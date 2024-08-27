@@ -212,16 +212,16 @@ const LoginCustomer = () => {
           </div>
         </div>
 
-        <div className="flex items-center flex-col mx-5 mb-5">
+        <div className="flex items-center flex-col mx-5 mb-3">
           <button
             type="submit"
             onClick={handleSubmit}
-            className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full"
+            className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-2 rounded-xl w-full"
           >
             Đăng nhập
           </button>
-          <p className="text-primary text-xl m-2">Hoặc</p>
-          <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full">
+          <p className="text-primary text-xl m-1">Hoặc</p>
+          <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-2 rounded-xl w-full">
             Đăng nhập với google
           </button>
           <p className="text-primary">

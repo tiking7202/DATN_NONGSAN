@@ -146,7 +146,7 @@ export default function FarmerShowCrop() {
                     <th className="py-3 w-1/10">Trang trại</th>
                     <th className="py-3 w-1/10">Sản lượng dự kiến</th>
                     <th className="py-3 w-1/10">Ngày gieo trồng</th>
-                    <th className="py-3 w-1/10">ngày thu hoạch</th>
+                    <th className="py-3 w-1/10">Ngày thu hoạch</th>
                     <th className="py-3 w-1/10">Trạng thái</th>
                     <th className="py-3 w-2/12"></th>
                   </tr>

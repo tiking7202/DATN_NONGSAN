@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { API_BASE_URL } from "../../../../config/config";
 import { toast, ToastContainer } from "react-toastify";
+import { useToast } from "../../../../../context/ToastContext";
 
 const RegisterCustomerStep1 = () => {
   const [username, setUsername] = useState("");
@@ -24,6 +25,7 @@ const RegisterCustomerStep1 = () => {
   const [phonenumberError, setPhonenumberError] = useState("");
 
   const navigate = useNavigate();
+  const { setToastMessage } = useToast();
 
   const validate = () => {
     let isValid = true;
@@ -88,6 +90,7 @@ const RegisterCustomerStep1 = () => {
       );
       const userId = response.data.userid;
       // Điều hướng sang trang nhập thông tin phụ
+      setToastMessage("Đăng ký bước 1 thành công, nhập các thông tin bước 2 để hoàn tất!");
       navigate(`/register/step2?userid=${userId}`);
     } catch (error) {
       console.error("Error during registration:", error);
@@ -238,17 +241,17 @@ const RegisterCustomerStep1 = () => {
             {fullnameError && <p className="text-red-500">{fullnameError}</p>}
           </div>
         </div>
-        <div className="flex items-center flex-col m-5">
+        <div className="flex items-center flex-col m-3">
           <button
             onClick={handleNext}
-            className="bg-primary hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-3 rounded-xl w-1/2"
+            className="bg-primary hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-2 rounded-xl w-1/2"
           >
             Tiếp theo
           </button>
           <p className="text-primary text-xl m-2">Hoặc</p>
           <button
             onClick={handleNext}
-            className="bg-third hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-3 rounded-xl w-1/2"
+            className="bg-third hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-2 rounded-xl w-1/2"
           >
             Đăng ký với google
           </button>

@@ -45,7 +45,6 @@ export default function HeaderFarmer() {
         setToastMessage("Đăng xuất thành công!");
 
         navigate("/farmer/login");
-        // console.log(response);
       } else {
         toast.error("Đăng xuất thất bại. Vui lòng thử lại.", {
           position: "top-right",
@@ -78,7 +77,6 @@ export default function HeaderFarmer() {
         <section className="flex space-x-2 text-xl">
           <div className="flex items-center cursor-pointer mx-5">
             <FontAwesomeIcon icon={faBell} />
-            {/* <p>Thông báo</p> */}
           </div>
 
           <div className="flex items-center ml-3">
@@ -109,13 +107,6 @@ export default function HeaderFarmer() {
                       role="menuitem"
                     >
                       Thay đổi thông tin
-                    </a>
-                    <a
-                      href="/farmer"
-                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
-                      role="menuitem"
-                    >
-                      Thay đổi mật khẩu
                     </a>
                     <a
                       href="/farmer"

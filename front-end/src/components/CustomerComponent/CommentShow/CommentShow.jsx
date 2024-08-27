@@ -241,11 +241,12 @@ export default function CommentShow() {
               className="w-full my-2 bg-white p-1 rounded-lg"
             >
               <div className="flex my-auto">
-                <p className="font-bold text-xl my-auto mx-5">
+                <img src={userInfo[comment.userid]?.avatar} alt="avatar" className="mx-3 my-auto w-8 h-8 rounded-full" />
+                <p className="font-bold text-xl my-auto">
                   {userInfo[comment.userid]?.fullname}
                 </p>
 
-                <p className="font-light my-auto">
+                <p className="font-light my-auto mx-3">
                   {formatDate(comment.reviewtime)}
                 </p>
               </div>
