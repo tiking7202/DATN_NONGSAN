@@ -4,7 +4,7 @@ const authenticateToken = require("../middlewares/authMiddlewares");
 const authMiddlewares = require("../middlewares/authMiddlewares");
 
 router.post("/register/step1", authController.registerStep1);
-router.post("/register/step2/:userId", authController.registerStep2);
+router.post("/register/step2/:userId", authController.upload.single('avatar') ,authController.registerStep2);
 router.post("/login", authController.login);
 router.post("/refresh-token", authController.refreshToken);
 

@@ -2,8 +2,15 @@ require("dotenv").config();
 const pool = require("../config/dbConnect");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const avatarService = require("../services/avatarService");
 const { generateAccessToken, generateRefreshToken } = require("../utils/token");
+const { storage } = require("../config/firebase");
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
+const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
+// Cấu hình Multer để xử lý upload
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
 
 // Đăng ký tài khoản b1
 const registerStep1 = async (req, res) => {
@@ -83,29 +90,55 @@ const registerStep1 = async (req, res) => {
 // Đăng ký tài khoản b2
 const registerStep2 = async (req, res) => {
   try {
-    // Lưu trữ avatar vào thư mục và cập nhật đường dẫn vào cơ sở dữ liệu
     const { userId } = req.params;
-    const { address, identityCard, dateOfBirth, avatar, status } = req.body;
+    const { address, identityCard, dateOfBirth, status } = req.body;
+    const avatar = req.file;
+
+    // Kiểm tra tính hợp lệ của địa chỉ
     if (!address) {
       return res.status(400).send("Địa chỉ không được gửi.");
     }
-    const { street, commune, district, province } = address;
+    const parsedAddress = JSON.parse(address);
+    const { street, commune, district, province } = parsedAddress;
+    
     if (!street || !commune || !district || !province) {
       return res.status(400).send("Địa chỉ không đầy đủ.");
     }
+
+    // Kiểm tra tính hợp lệ của các trường khác
     if (!identityCard) {
       return res.status(400).send("Số CMND không được gửi.");
     }
     if (!dateOfBirth) {
       return res.status(400).send("Ngày sinh không được gửi.");
     }
+    let avatarUrl = null;
+    if (avatar) {
+      const avatarBuffer = avatar.buffer;
+      const avatarFileName = `avatars/${uuidv4()}`;
+      const avatarRef = ref(storage, avatarFileName);
 
+      await uploadBytes(avatarRef, avatarBuffer, { contentType: avatar.mimetype });
+      avatarUrl = await getDownloadURL(avatarRef);
+    }
+    // Cập nhật thông tin người dùng trong PostgreSQL
     const updatedUser = await pool.query(
       'UPDATE "User" SET street = $1, commune = $2, district = $3, province = $4, indentitycard = $5, dob = $6, avatar = $7, status = $8 WHERE userid = $9 RETURNING *',
-      [street, commune, district, province, identityCard, dateOfBirth, avatar, status, userId]
+      [
+        street,
+        commune,
+        district,
+        province,
+        identityCard,
+        dateOfBirth,
+        avatarUrl,
+        status,
+        userId,
+      ]
     );
 
-    res.json({message: "Đăng ký thành công", user: updatedUser.rows[0]});
+    // Trả về kết quả
+    res.json({ message: "Đăng ký thành công", user: updatedUser.rows[0] });
   } catch (error) {
     console.error("Error updating additional info:", error);
     res.status(500).send("Internal Server Error");
@@ -132,7 +165,9 @@ const login = async (req, res) => {
 
     // Kiểm tra trạng thái tài khoản
     if (user.rows[0].status === false) {
-      return res.status(400).send("Tài khoản chưa được kích hoạt hoặc đã bị khóa");
+      return res
+        .status(400)
+        .send("Tài khoản chưa được kích hoạt hoặc đã bị khóa");
     }
     // Generate access token and refresh token
     const accessToken = generateAccessToken(
@@ -335,6 +370,7 @@ const registerFarmerStep3 = async (req, res) => {};
 module.exports = {
   registerStep1,
   registerStep2,
+  upload,
   login,
   refreshToken,
   logout,

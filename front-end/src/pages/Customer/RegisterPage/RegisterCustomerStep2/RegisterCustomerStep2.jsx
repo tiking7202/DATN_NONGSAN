@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../../../App.css";
@@ -15,7 +15,7 @@ const RegisterCustomerStep2 = () => {
   const [province, setProvince] = useState("");
   const [identityCard, setIdentityCard] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   // state dùng để lưu thông báo lỗi
   const [streetError, setStreetError] = useState("");
@@ -25,7 +25,6 @@ const RegisterCustomerStep2 = () => {
   const [identityCardError, setIdentityCardError] = useState("");
   const [dateOfBirthError, setDateOfBirthError] = useState("");
   const [avatarError, setAvatarError] = useState("");
-
 
   const validate = () => {
     let isValid = true;
@@ -64,7 +63,7 @@ const RegisterCustomerStep2 = () => {
     } else {
       setIdentityCardError("");
     }
-    if(!dateOfBirth){
+    if (!dateOfBirth) {
       setDateOfBirthError("Ngày sinh là bắt buộc");
       isValid = false;
     } else {
@@ -79,30 +78,84 @@ const RegisterCustomerStep2 = () => {
     return isValid;
   };
 
-  const { setToastMessage } = useToast();
-
   const location = useLocation();
   const userId = new URLSearchParams(location.search).get("userid");
+  const { toastMessage, setToastMessage } = useToast();
+  useEffect(() => {
+    if (toastMessage) {
+      toast.success(toastMessage);
+      setToastMessage(null);
+    }
+  }, [toastMessage, setToastMessage]);
+
+  const handleFileChange = (e) => {
+    setAvatar(e.target.files[0]);
+  };
+
+  // const handleSubmit = async () => {
+
+  //   if (!validate()) {
+  //     return;
+  //   }
+
+  //   const additionalData = {
+  //     address: {
+  //       street,
+  //       commune,
+  //       district,
+  //       province,
+  //     },
+  //     identityCard,
+  //     dateOfBirth,
+  //     avatar,
+  //     status: "true"
+  //   };
+
+  //   try {
+  //     const response = await axios.post(
+  //       `${API_BASE_URL}/auth/register/step2/${userId}`,
+  //       additionalData,
+  //     );
+  //     setToastMessage(response.data.message);
+  //     navigate("/login");
+  //   } catch (error) {
+  //     console.error("Error during registration:", error);
+  //     toast.error(error.response.data, {
+  //       position: "top-right",
+  //       time: 500,
+  //     });
+  //   }
+  // };
+
   const handleSubmit = async () => {
+    if (!validate()) {
+      return;
+    }
+    const address = {
+      street: street,
+      commune: commune,
+      district: district,
+      province: province
+    };
+    const formData = new FormData();
+    formData.append("address", JSON.stringify(address));
+    formData.append("identityCard", identityCard);
+    formData.append("dateOfBirth", dateOfBirth);
+    formData.append("status", "true");
+
+    if (avatar) {
+      formData.append("avatar", avatar);
+    }
+
     try {
-      if (!validate()) {
-        return;
-      }
-      const additionalData = {
-        address: {
-          street,
-          commune,
-          district,
-          province,
-        },
-        identityCard,
-        dateOfBirth,
-        avatar,
-        status: "true"
-      };
       const response = await axios.post(
         `${API_BASE_URL}/auth/register/step2/${userId}`,
-        additionalData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       setToastMessage(response.data.message);
       navigate("/login");
@@ -138,7 +191,9 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setStreet(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
-            {streetError && <p className="text-red-500 italic">{streetError}</p>}
+            {streetError && (
+              <p className="text-red-500 italic">{streetError}</p>
+            )}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label
@@ -155,7 +210,9 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setCommune(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
-            {communeError && <p className="text-red-500 italic">{communeError}</p>}
+            {communeError && (
+              <p className="text-red-500 italic">{communeError}</p>
+            )}
           </div>
         </div>
         <div className="flex justify-center px-5 my-3">
@@ -174,7 +231,9 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setDistrict(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
-            {districtError && <p className="text-red-500 italic">{districtError}</p>}
+            {districtError && (
+              <p className="text-red-500 italic">{districtError}</p>
+            )}
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label
@@ -191,7 +250,9 @@ const RegisterCustomerStep2 = () => {
               onChange={(e) => setProvince(e.target.value)}
               className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
             />
-            {provinceError && <p className="text-red-500 italic">{provinceError}</p>}
+            {provinceError && (
+              <p className="text-red-500 italic">{provinceError}</p>
+            )}
           </div>
         </div>
         <div className="flex justify-center px-5 my-3">
@@ -216,12 +277,13 @@ const RegisterCustomerStep2 = () => {
           </div>
           <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
             <label
-              htmlFor="identityCard"
+              htmlFor="dateOfBirth"
               className="block text-xl text-primary font-bold mb-2"
             >
               Ngày sinh
             </label>
             <input
+              id="dateOfBirth"
               className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               type="date"
               placeholder="Ngày sinh"
@@ -236,17 +298,17 @@ const RegisterCustomerStep2 = () => {
         <div className="flex justify-center px-5 my-3">
           <div className="bg-secondary w-full mx-2 rounded-xl p-2">
             <label
-              htmlFor="identityCard"
+              htmlFor="avatar"
               className="block text-xl text-primary font-bold mb-2"
             >
               Chọn ảnh đại diện:
             </label>
             <input
+              id="avatar"
               className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
-              type="text"
+              type="file"
               placeholder="Chọn ảnh đại diện"
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
+              onChange={handleFileChange}
             />
             {avatarError && (
               <p className="text-red-500 italic">{avatarError}</p>

@@ -21,7 +21,7 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
   const [expirydate, setExpirydate] = useState("");
   const [overviewdes, setOverviewdes] = useState("");
   const [storagemethod, setStoragemethod] = useState("");
-  const [healthbenefit, setHealthbenefit] = useState("");
+  const [healtbenefit, setHealtbenefit] = useState("");
   const [cookingmethod, setCookingmethod] = useState("");
 
   //error state
@@ -37,7 +37,7 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
   const [expirydateError, setExpirydateError] = useState("");
   const [overviewdesError, setOverviewdesError] = useState("");
   const [storagemethodError, setStoragemethodError] = useState("");
-  const [healthbenefitError, setHealthbenefitError] = useState("");
+  const [healthbenefitError, setHealtbenefitError] = useState("");
   const [cookingmethodError, setCookingmethodError] = useState("");
 
   const [categories, setCategories] = useState([]);
@@ -133,11 +133,11 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
     } else {
       setStoragemethodError("");
     }
-    if (healthbenefit === "") {
-      setHealthbenefitError("Lợi ích đối với sức khỏe không được để trống");
+    if (healtbenefit === "") {
+      setHealtbenefitError("Lợi ích đối với sức khỏe không được để trống");
       return false;
     } else {
-      setHealthbenefitError("");
+      setHealtbenefitError("");
     }
     if (cookingmethod === "") {
       setCookingmethodError("Phương pháp chế biến không được để trống");
@@ -166,7 +166,7 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
         expirydate,
         overviewdes,
         storagemethod,
-        healthbenefit,
+        healtbenefit,
         cookingmethod,
       };
 
@@ -480,8 +480,8 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
               <textarea
                 id="healthbenefit"
                 placeholder="Lợi ích đối với sức khỏe"
-                value={healthbenefit}
-                onChange={(e) => setHealthbenefit(e.target.value)}
+                value={healtbenefit}
+                onChange={(e) => setHealtbenefit(e.target.value)}
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500 h-40"
               />
               {healthbenefitError && (
