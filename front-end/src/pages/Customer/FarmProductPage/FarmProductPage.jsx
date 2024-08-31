@@ -90,11 +90,16 @@ export default function FarmProductPage() {
                     to={`/product/${product.productid}`}
                     key={product.productid}
                   >
-                    <div className="font-bold text-center text-2xl mb-2 ">
-                      {product.productname}
+                    <div className="flex justify-center mb-2 ">
+                      <p className="font-bold text-center text-2xl">
+                        {product.productname}
+                      </p>
+                      <p className="ml-2 my-auto italic">
+                        Loại {product.productquality}
+                      </p>
                     </div>
                     <p className="m-2 text-primary">
-                      Có thể sử dụng trong:
+                    Hạn sử dụng còn:{" "}
                       <span className="text-primary font-bold">
                         {" "}
                         {remainingDays} ngày
@@ -108,12 +113,12 @@ export default function FarmProductPage() {
                       </span>
                     </p>
                     <p className="text-2xl m-3 font-bold italic text-green-500">
-                      {product.productprice}đ
+                      {product.productprice}đ <span className="text-sm">/kg</span>
                     </p>
                   </Link>
                   <div className="flex justify-between items-center mt-4">
                     <Link to={`/farm/info/${product.farmid}`}>
-                      <div className="text-primary font-bold">
+                      <div className="text-primary font-bold italic">
                         <div className="flex items-center">
                           <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
                           <p className="ml-2">{product.farmprovince}</p>

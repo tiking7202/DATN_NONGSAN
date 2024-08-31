@@ -112,8 +112,8 @@ export default function HeaderCustomer() {
       <ToastContainer />
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
-          <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToLoginFarmer}>Kênh nhà cung cấp</p>
-          <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToRegisterFarmer}>Trở thành nhà cung cấp</p>
+          <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToLoginFarmer}>Kênh người nông dân</p>
+          <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToRegisterFarmer}>Trở thành người nông dân</p>
         </section>
         <section className="flex space-x-2 sm:space-x-4 mt-2 sm:mt-4">
           <div className="flex items-center space-x-1 sm:space-x-2 cursor-pointer mx-1 sm:mx-2">

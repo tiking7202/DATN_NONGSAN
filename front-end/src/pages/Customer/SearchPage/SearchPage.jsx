@@ -83,7 +83,7 @@ function SearchPage() {
                 <img
                   className="w-full h-64 object-cover hover:opacity-80"
                   src={product.productimage1}
-                  alt={product.productimage1}
+                  alt={product.productname}
                 />
               </Link>
               <div className="px-3 py-2 text-primary">
@@ -91,12 +91,17 @@ function SearchPage() {
                   to={`/product/${product.productid}`}
                   key={product.productid}
                 >
-                  <div className="font-bold text-center text-2xl mb-2 ">
-                    {product.productname}
+                  <div className="flex justify-center mb-2 ">
+                    <p className="font-bold text-center text-2xl">
+                      {product.productname}
+                    </p>
+                    <p className="ml-2 my-auto italic">
+                      Loại {product.productquality}
+                    </p>
                   </div>
 
                   <p className="m-2 text-primary">
-                    Có thể sử dụng trong:
+                    Hạn sử dụng còn:{" "}
                     <span className="text-primary font-bold">
                       {" "}
                       {remainingDays} ngày
@@ -106,7 +111,7 @@ function SearchPage() {
                     Số lượng còn lại:{" "}
                     <span className="text-primary font-bold">
                       {" "}
-                      {product.productquantity}kg
+                      {product.productquantity}kg <span className="text-sm">/kg</span>
                     </span>
                   </p>
                   <p className="text-2xl m-2 font-bold italic text-green-500">
@@ -115,7 +120,7 @@ function SearchPage() {
                 </Link>
                 <div className="flex justify-between items-center mt-4">
                   <Link to={`/farm/info/${product.farmid}`}>
-                    <div className="text-primary font-bold">
+                    <div className="text-primary font-bold italic">
                       <div className="flex items-center">
                         <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
                         <p className="ml-2">{product.farmprovince}</p>
