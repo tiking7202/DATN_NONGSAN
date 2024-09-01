@@ -71,7 +71,7 @@ export default function HeaderFarmer() {
             <Link to="/farmer">AgriMart</Link>
           </h1>
           <div className="text-2xl font-medium">
-            <p className="">Kênh nhà cung cấp</p>
+            <p className="">Kênh nhà nông dân</p>
           </div>
         </section>
         <section className="flex space-x-2 text-xl">
