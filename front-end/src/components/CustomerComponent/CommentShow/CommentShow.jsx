@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "../../../utils/formatDate";
 import { getUserInfo } from "../../../service/CustomerService/userService";
-import { useToast } from "../../../../context/ToastContext";
+import { useToast } from "../../../context/ToastContext";
 
 export default function CommentShow() {
   const navigate = useNavigate();

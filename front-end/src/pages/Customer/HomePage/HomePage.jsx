@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useToast } from "../../../../context/ToastContext";
 import CategoryShow from "../../../components/CustomerComponent/CategoryShow/CategoryShow";
 import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer";
 import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
@@ -8,6 +7,7 @@ import ProductShowHome from "../../../components/CustomerComponent/ProductShowHo
 import SlideShow from "../../../components/CustomerComponent/SlideShow/SlideShow";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../../context/ToastContext";
 
 function HomePage() {
   const navigate = useNavigate();

@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import OrderDetailsDialog from "../../../components/CustomerComponent/OrderDetailsDialog/OrderDetailsDialog";
 import { formatDate } from './../../../utils/formatDate';
-import { useToast } from "../../../../context/ToastContext";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { useToast } from "../../../context/ToastContext";
 
 export default function PurchasesHistory() {
   const [purchasesHistory, setPurchasesHistory] = useState([]);

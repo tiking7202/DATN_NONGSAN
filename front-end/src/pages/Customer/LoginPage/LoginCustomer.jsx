@@ -6,7 +6,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
-import { useToast } from "../../../../context/ToastContext";
+import { useToast } from "../../../context/ToastContext";
 import { jwtDecode } from "jwt-decode";
 
 const LoginCustomer = () => {
@@ -29,7 +29,6 @@ const LoginCustomer = () => {
       setToastMessage(null);
     }
   }, [toastMessage, setToastMessage]);
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -1,6 +1,9 @@
+import HeaderDistributor from "../components/HeaderDistributor";
 
 export default function HomePage() {
   return (
-    <div>HomePage</div>
+    <>
+      <HeaderDistributor />
+    </>
   )
 }

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { getShippingInfo } from "../../../service/CustomerService/checkoutService";
 import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/formatDate";
-import { useToast } from "../../../../context/ToastContext";
+import { useToast } from "../../../context/ToastContext";
 
 const CheckoutPage = () => {
   const location = useLocation();

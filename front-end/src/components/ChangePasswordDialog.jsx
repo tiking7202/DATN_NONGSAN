@@ -4,8 +4,8 @@ import axios from "axios";
 import { PropTypes } from "prop-types";
 import { useState } from "react";
 import { API_BASE_URL } from "../config/config";
-import { useToast } from "../../context/ToastContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 
 export default function ChangePasswordDialog({ onClose, userId, Role }) {
   const navigate = useNavigate();

@@ -11,7 +11,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { API_BASE_URL } from './../../../../config/config';
-import { useToast } from "../../../../../context/ToastContext";
+import { useToast } from "../../../../context/ToastContext";
 
 export default function FarmerRegisterStep2() {
   const [farmName, setFarmName] = useState("");

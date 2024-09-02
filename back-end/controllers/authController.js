@@ -367,6 +367,41 @@ const registerFarmerStep2 = async (req, res) => {
 
 const registerFarmerStep3 = async (req, res) => {};
 
+const loginDistributor = async (req, res) => {
+  try {
+    const { usernameOrEmail, password } = req.body;
+
+    const distributor = await pool.query(
+      'SELECT * FROM distributor WHERE username = $1 OR email = $1',
+      [usernameOrEmail]
+    );
+
+    if (distributor.rows.length === 0) {
+      return res.status(400).send("Tên đăng nhập hoặc email không tồn tại");
+    }
+
+    const validPassword = await bcrypt.compare(password, distributor.rows[0].password);
+    if (!validPassword) {
+      return res.status(400).send("Mật khẩu không chính xác");
+    }
+
+    // Đăng ký token
+    const token = jwt.sign(
+      { distributorid: distributor.rows[0].distributorid },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+    
+    res.json({ token });
+    
+  } catch (error) {
+    console.error("Lỗi khi đăng nhập:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = {
   registerStep1,
   registerStep2,
@@ -377,4 +412,5 @@ module.exports = {
   registerFarmerStep1,
   registerFarmerStep2,
   registerFarmerStep3,
+  loginDistributor,
 };

@@ -11,8 +11,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { useToast } from "../../../../../context/ToastContext";
 import { API_BASE_URL } from "../../../../config/config";
+import { useToast } from "../../../../context/ToastContext";
 
 function FarmerRegisterStep1() {
   // Khởi tạo các biến và cách nhập

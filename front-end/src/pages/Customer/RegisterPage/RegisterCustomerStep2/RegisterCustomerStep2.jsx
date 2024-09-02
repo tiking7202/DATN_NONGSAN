@@ -4,7 +4,7 @@ import axios from "axios";
 import "../../../../App.css";
 import { API_BASE_URL } from "../../../../config/config";
 import { toast, ToastContainer } from "react-toastify";
-import { useToast } from "../../../../../context/ToastContext";
+import { useToast } from "../../../../context/ToastContext";
 
 const RegisterCustomerStep2 = () => {
   const navigate = useNavigate();

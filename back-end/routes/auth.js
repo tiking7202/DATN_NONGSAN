@@ -18,4 +18,7 @@ router.post(
   "/farmer/register/step2/:userId",
   authController.registerFarmerStep2
 );
+
+router.post("/distributor/login", authController.loginDistributor);
+
 module.exports = router;

@@ -1,5 +1,4 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ToastProvider } from "../../context/ToastContext";
 import CartPage from "../pages/Customer/CartPage/CartPage";
 import CategoryPage from "../pages/Customer/CategoryPage/CategoryPage";
 import CheckoutPage from "../pages/Customer/CheckoutPage/CheckoutPage";
@@ -27,6 +26,7 @@ import FarmerShowOrders from "../pages/Farmer/FarmerOrder/FarmerShowOrders";
 import CheckoutDetailPage from "../pages/Customer/CheckoutDetailPage/CheckoutDetailPage";
 import FarmerDetailInfo from "../pages/Farmer/FarmerInfo/FarmerDetailInfo";
 import DetailInfoPage from "../pages/Customer/DetailInfoPage/DetailInfoPage";
+import { ToastProvider } from "../context/ToastContext";
 
 
 export default function AppRoutes() {

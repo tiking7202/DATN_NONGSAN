@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { API_BASE_URL } from "../../../../config/config";
 import { toast, ToastContainer } from "react-toastify";
-import { useToast } from "../../../../../context/ToastContext";
+import { useToast } from "../../../../context/ToastContext";
 
 const RegisterCustomerStep1 = () => {
   const [username, setUsername] = useState("");
