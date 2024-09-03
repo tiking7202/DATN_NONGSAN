@@ -16,4 +16,8 @@ router.post("/farmer/create/product", productController.createProduct);
 router.put("/farmer/update/product/:productid", productController.updateProduct);
 router.delete("/farmer/delete/product/:productid", productController.deleteProduct);
 
+// Cho distributor quản lý sản phẩm
+router.get("/distributor/products", productController.getAllProductsToDistributor);
+
+
 module.exports = router;

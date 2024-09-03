@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+// import { toast, ToastContainer } from 'react-toastify';
+import { API_BASE_URL } from "../config/config";
+import axios  from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from "../context/ToastContext";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
   const [credentials, setCredentials] = useState({
     usernameOrEmail: "",
     password: "",
@@ -16,19 +24,43 @@ export default function LoginPage() {
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const {toastMessage,setToastMessage} = useToast();
 
+
+  useEffect (() => {
+    if (toastMessage) {
+      toast.success(toastMessage);
+    }
+  }, [toastMessage]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!credentials.usernameOrEmail || !credentials.password) {
       console.log("Vui lòng nhập đầy đủ thông tin đăng nhập.");
+      return;
     }
-  
+    
+    // Call API here
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/distributor/login`,
+        credentials
+      );
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
+        setToastMessage("Đăng nhập thành công");
+        navigate("/");
+      }
+    } catch (error) {
+      // Hiển thị thông báo đăng nhập thất bại
+      console.log(error);
+    }
   }
 
   return (
     <div className="h-screen bg-fourth p-2 flex items-center justify-center">
-      <div className="w-1/3 m-auto bg-white rounded-xl  shadow-2xl p-3">
-        <h1 className="text-primary font-bold text-center text-3xl">
+      <ToastContainer />
+      <div className="w-1/3 m-auto bg-white rounded-xl shadow-2xl p-3">
+        <h1 className="text-primary font-bold text-center text-2xl">
           Đăng nhập cho nhà phân phối
         </h1>
         <div className="p-3">

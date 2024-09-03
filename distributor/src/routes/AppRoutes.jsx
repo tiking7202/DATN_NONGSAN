@@ -4,18 +4,21 @@ import ProductPage from "../pages/Product/ProductPage";
 import CategoryPage from "../pages/Category/CategoryPage";
 import OrderPage from "../pages/Order/OrderPage";
 import LoginPage from "../pages/LoginPage";
+import { ToastProvider } from "../context/ToastContext";
 
 export default function AppRoutes() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/category" element={<CategoryPage />} />
-        <Route path="/product" element={<ProductPage />} />
-        <Route path="/order" element={<OrderPage />} />
-        <Route path="*" element={<div>404</div>} />
-      </Routes>
-    </Router>
+    <ToastProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/category" element={<CategoryPage />} />
+          <Route path="/product" element={<ProductPage />} />
+          <Route path="/order" element={<OrderPage />} />
+          <Route path="*" element={<div>404</div>} />
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
 }

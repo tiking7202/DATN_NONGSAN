@@ -10,7 +10,7 @@ const routes = require("./routes");
 
 // Cấu hình CORS
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'http://localhost:5000'],
   optionsSuccessStatus: 200 
 }
 app.use(cors(corsOptions));

@@ -182,8 +182,7 @@ exports.getProductsByFarmId = async (req, res) => {
 // Lấy tất cả sản phẩm theo farmid
 exports.getAllProductsByFarmId = async (req, res) => {
   const { userid } = req.params;
-  const { page = 1, pageSize = 10 } = req.query; // Lấy tham số phân trang từ query, mặc định page = 1 và pageSize = 10
-
+  const { page = 1, pageSize = 10 } = req.query; 
   const offset = (page - 1) * pageSize;
   const limit = parseInt(pageSize, 10);
 
@@ -365,3 +364,39 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 }
+
+// distributor controller
+exports.getAllProductsToDistributor = async (req, res) => {
+  const { page = 1, pageSize = 10 } = req.query; 
+  const offset = (page - 1) * pageSize;
+  const limit = parseInt(pageSize, 10);
+
+  try {
+    // Lấy tổng số sản phẩm
+    const totalProductsResult = await pool.query("SELECT COUNT(*) FROM product");
+    const totalProducts = parseInt(totalProductsResult.rows[0].count, 10);
+
+    // Lấy sản phẩm với thông tin farmname và categoryname
+    const productsQuery = `
+      SELECT p.*, f.farmname, c.categoryname
+      FROM product p
+      JOIN farm f ON p.farmid = f.farmid
+      JOIN category c ON p.categoryid = c.categoryid
+      LIMIT $1 OFFSET $2
+    `;
+    const productsResult = await pool.query(productsQuery, [limit, offset]);
+
+    res.json({
+      products: productsResult.rows,
+      pagination: {
+        totalProducts,
+        currentPage: parseInt(page, 10),
+        pageSize: limit,
+        totalPages: Math.ceil(totalProducts / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
