@@ -54,7 +54,7 @@ const addCheckOut = async (req, res) => {
 
     for (const farmItems of itemsByFarm) {
       const total = farmItems.reduce(
-        (sum, item) => sum + item.productprice * item.quantity,
+        (sum, item) => sum + item.productprice * (1-0.01*item.promotion) * item.quantity,
         0
       );
 

@@ -8,7 +8,6 @@ import { API_BASE_URL } from "../../../config/config";
 import { toast } from "react-toastify";
 
 const CreateProduct = ({ onClose, userId, refreshProductList }) => {
-
   const [productname, setProductname] = useState("");
   const [categoryid, setCategoryid] = useState("");
   const [farmid, setFarmid] = useState("");
@@ -23,6 +22,8 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
   const [storagemethod, setStoragemethod] = useState("");
   const [healtbenefit, setHealtbenefit] = useState("");
   const [cookingmethod, setCookingmethod] = useState("");
+  const [productsize, setProductsize] = useState("");
+  const [isdistributorview, setIsdistributorview] = useState(false);
 
   //error state
   const [productnameError, setProductnameError] = useState("");
@@ -39,6 +40,7 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
   const [storagemethodError, setStoragemethodError] = useState("");
   const [healthbenefitError, setHealtbenefitError] = useState("");
   const [cookingmethodError, setCookingmethodError] = useState("");
+  const [productsizeError, setProductsizeError] = useState("");
 
   const [categories, setCategories] = useState([]);
   const [farms, setFarms] = useState([]);
@@ -145,6 +147,12 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
     } else {
       setCookingmethodError("");
     }
+    if (productsize === "") {
+      setProductsizeError("Kích cỡ sản phẩm không được để trống");
+      return false;
+    } else {
+      setProductsizeError("");
+    }
     return true;
   };
   const handleSubmit = async () => {
@@ -152,32 +160,36 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
       if (!validateForm()) {
         return;
       }
-
-      const productData = {
-        productname,
-        categoryid,
-        farmid,
-        productimage1,
-        productimage2,
-        productimage3,
-        productquantity,
-        unitofmeasure,
-        productprice,
-        expirydate,
-        overviewdes,
-        storagemethod,
-        healtbenefit,
-        cookingmethod,
-      };
-
+      const productData = new FormData();
+      productData.append("productname", productname);
+      productData.append("categoryid", categoryid);
+      productData.append("farmid", farmid);
+      productData.append("productimage1", productimage1);
+      productData.append("productimage2", productimage2);
+      productData.append("productimage3", productimage3);
+      productData.append("productquantity", productquantity);
+      productData.append("unitofmeasure", unitofmeasure);
+      productData.append("productprice", productprice);
+      productData.append("expirydate", expirydate);
+      productData.append("overviewdes", overviewdes);
+      productData.append("storagemethod", storagemethod);
+      productData.append("healtbenefit", healtbenefit);
+      productData.append("cookingmethod", cookingmethod);
+      productData.append("productsize", productsize);
+      productData.append("isdistributorview", isdistributorview);
       // Gửi yêu cầu API tạo sản phẩm
       const response = await axios.post(
         `${API_BASE_URL}/farmer/create/product`,
-        productData
+        productData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       if (response.status === 200) {
         onClose();
-        if (toast && typeof toast.success === 'function') {
+        if (toast && typeof toast.success === "function") {
           toast.success("Thêm sản phẩm thành công");
           refreshProductList();
         } else {
@@ -224,7 +236,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               />
               {productnameError && (
-                <p className="text-red-500 mt-1 text-xs italic">{productnameError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {productnameError}
+                </p>
               )}
             </div>
             <div className="w-1/2 mx-2">
@@ -239,7 +253,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
                 onChange={(e) => setCategoryid(e.target.value)}
               >
-                <option value="" className="bg-secondary">Chọn danh mục</option>
+                <option value="" className="bg-secondary">
+                  Chọn danh mục
+                </option>
                 {categories.map((category) => (
                   <option
                     key={category.categoryid}
@@ -251,7 +267,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 ))}
               </select>
               {categoryidError && (
-                <p className="text-red-500 mt-1 text-xs italic">{categoryidError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {categoryidError}
+                </p>
               )}
             </div>
           </div>
@@ -269,7 +287,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
                 onChange={(e) => setFarmid(e.target.value)}
               >
-                <option value="" className="bg-secondary">Chọn trang trại</option>
+                <option value="" className="bg-secondary">
+                  Chọn trang trại
+                </option>
                 {farms.map((farm) => (
                   <option
                     key={farm.farmid}
@@ -280,7 +300,11 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                   </option>
                 ))}
               </select>
-              {farmidError && <p className="text-red-500 mt-1 text-xs italic">{farmidError}</p>}
+              {farmidError && (
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {farmidError}
+                </p>
+              )}
             </div>
             <div className="w-1/2 mx-2">
               <label
@@ -291,14 +315,16 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
               </label>
               <input
                 id="productimage1"
-                type="text"
+                type="file"
                 placeholder="Hình ảnh 1"
-                value={productimage1}
-                onChange={(e) => setProductimage1(e.target.value)}
+                // value={productimage1}
+                onChange={(e) => setProductimage1(e.target.files[0])}
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               />
               {productimage1Error && (
-                <p className="text-red-500 mt-1 text-xs italic">{productimage1Error}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {productimage1Error}
+                </p>
               )}
             </div>
           </div>
@@ -314,13 +340,15 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
               <input
                 id="productimage2"
                 placeholder="Hình ảnh 2"
-                type="text"
-                value={productimage2}
-                onChange={(e) => setProductimage2(e.target.value)}
+                type="file"
+                // value={productimage2}
+                onChange={(e) => setProductimage2(e.target.files[0])}
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               />
               {productimage2Error && (
-                <p className="text-red-500 mt-1 text-xs italic">{productimage2Error}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {productimage2Error}
+                </p>
               )}
             </div>
             <div className="w-1/2 mx-2">
@@ -333,13 +361,15 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
               <input
                 id="productimage3"
                 placeholder="Hình ảnh 3"
-                type="text"
-                value={productimage3}
-                onChange={(e) => setProductimage3(e.target.value)}
+                type="file"
+                // value={productimage3}
+                onChange={(e) => setProductimage3(e.target.files[0])}
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               />
               {productimage3Error && (
-                <p className="text-red-500 mt-1 text-xs italic">{productimage3Error}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {productimage3Error}
+                </p>
               )}
             </div>
           </div>
@@ -361,7 +391,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               />
               {productquantityError && (
-                <p className="text-red-500 mt-1 text-xs italic">{productquantityError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {productquantityError}
+                </p>
               )}
             </div>
             <div className="w-1/2 mx-2">
@@ -380,11 +412,55 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               />
               {unitofmeasureError && (
-                <p className="text-red-500 mt-1 text-xs italic">{unitofmeasureError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {unitofmeasureError}
+                </p>
               )}
             </div>
           </div>
-
+          {/* 4.5 */}
+          <div className="flex justify-between my-2">
+            <div className="w-1/2 mx-2">
+              <label
+                htmlFor="productquantity"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Hiển thị cho nhà phân phối
+              </label>
+              <select
+                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                onChange={(e) => setIsdistributorview(e.target.value)}
+              >
+                <option value="false" className="bg-secondary">
+                  Không
+                </option>
+                <option value="true" className="bg-secondary">
+                  Có
+                </option>
+              </select>
+            </div>
+            <div className="w-1/2 mx-2">
+              <label
+                htmlFor="unitofmeasure"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Kích cỡ sản phẩm
+              </label>
+              <input
+                id="productsize"
+                placeholder="Kích cỡ sản phẩm"
+                type="text"
+                value={productsize}
+                onChange={(e) => setProductsize(e.target.value)}
+                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+              />
+              {productsizeError && (
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {productsizeError}
+                </p>
+              )}
+            </div>
+          </div>
           {/* 5 */}
           <div className="flex justify-between my-2">
             <div className="w-1/2 mx-2">
@@ -403,7 +479,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               />
               {productpriceError && (
-                <p className="text-red-500 mt-1 text-xs italic">{productpriceError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {productpriceError}
+                </p>
               )}
             </div>
             <div className="w-1/2 mx-2">
@@ -422,7 +500,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
               />
               {expirydateError && (
-                <p className="text-red-500 mt-1 text-xs italic">{expirydateError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {expirydateError}
+                </p>
               )}
             </div>
           </div>
@@ -439,13 +519,14 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
               <textarea
                 id="overviewdes"
                 placeholder="Mô tả sản phẩm"
-                
                 value={overviewdes}
                 onChange={(e) => setOverviewdes(e.target.value)}
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500 h-40"
               />
               {overviewdesError && (
-                <p className="text-red-500 mt-1 text-xs italic">{overviewdesError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {overviewdesError}
+                </p>
               )}
             </div>
             <div className="w-1/2 mx-2">
@@ -463,7 +544,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500 h-40"
               />
               {storagemethodError && (
-                <p className="text-red-500 mt-1 text-xs italic">{storagemethodError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {storagemethodError}
+                </p>
               )}
             </div>
           </div>
@@ -485,7 +568,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500 h-40"
               />
               {healthbenefitError && (
-                <p className="text-red-500 mt-1 text-xs italic">{healthbenefitError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {healthbenefitError}
+                </p>
               )}
             </div>
             <div className="w-1/2 mx-2">
@@ -503,7 +588,9 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                 className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500 h-40"
               />
               {cookingmethodError && (
-                <p className="text-red-500 mt-1 text-xs italic">{cookingmethodError}</p>
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {cookingmethodError}
+                </p>
               )}
             </div>
           </div>

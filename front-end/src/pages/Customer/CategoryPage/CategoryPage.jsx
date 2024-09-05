@@ -97,9 +97,13 @@ function CategoryPage() {
                     key={product.productid}
                   >
                     <div className="flex justify-center mb-2 ">
-                  <p className="font-bold text-center text-2xl">{product.productname}</p> 
-                  <p className="ml-2 my-auto italic">Loại {product.productquality}</p>
-                </div>
+                      <p className="font-bold text-center text-2xl">
+                        {product.productname}
+                        <span className="ml-2 my-auto text-sm font-normal italic block">
+                          {product.productquality}
+                        </span>
+                      </p>
+                    </div>
 
                     <p className="m-2 text-primary">
                       Hạn sử dụng còn:{" "}
@@ -115,20 +119,27 @@ function CategoryPage() {
                         {product.productquantity}kg
                       </span>
                     </p>
-                    <p className="text-2xl m-2 font-bold italic text-green-500">
-                      {product.productprice}đ <span className="text-sm">/kg</span>
-                    </p>
+                    <div className="flex justify-between  m-3">
+                      <del className="text-2xl italic text-green-500">
+                        {product.productprice}đ
+                      </del>
+                      <p className="text-2xl text-left font-bold">
+                        {product.productprice -
+                          product.productprice * product.promotion * 0.01}
+                        đ
+                      </p>
+                    </div>
                   </Link>
                   <div className="flex justify-between items-center mt-4">
                     <Link to={`/farm/info/${product.farmid}`}>
                       <div className="text-primary font-bold italic">
                         <div className="flex items-center">
                           <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-                          <p className="ml-2">{product.farm.farmprovince}</p>
+                          <p className="ml-2">{product.farmprovince}</p>
                         </div>
                         <div className="flex items-center mt-2">
                           <FontAwesomeIcon icon={faTractor} size="lg" />
-                          <p className="ml-2">{product.farm.farmname}</p>
+                          <p className="ml-2">{product.farmname}</p>
                         </div>
                       </div>
                     </Link>

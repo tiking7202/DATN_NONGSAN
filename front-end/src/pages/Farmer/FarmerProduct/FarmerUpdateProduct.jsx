@@ -9,14 +9,21 @@ import { getFarmByFarmId } from "../../../service/CustomerService/farmService";
 import { toast } from "react-toastify";
 import { formatDateInput } from "../../../utils/formatDate";
 
-export default function FarmerUpdateProduct({ onClose, product, userId, refreshProductList }) {
+export default function FarmerUpdateProduct({
+  onClose,
+  product,
+  userId,
+  refreshProductList,
+}) {
   const [productname, setProductName] = useState(product.productname);
   const [categoryid, setCategoryid] = useState(product.categoryid);
   const [farmid, setFarmid] = useState(product.farmid);
   const [productimage1, setProductimage1] = useState(product.productimage1);
   const [productimage2, setProductimage2] = useState(product.productimage2);
   const [productimage3, setProductimage3] = useState(product.productimage3);
-  const [productquantity, setProductquantity] = useState(product.productquantity);
+  const [productquantity, setProductquantity] = useState(
+    product.productquantity
+  );
   const [unitofmeasure, setUnitofmeasure] = useState(product.unitofmeasure);
   const [productprice, setProductprice] = useState(product.productprice);
   const [expirydate, setExpirydate] = useState(product.expirydate);
@@ -24,7 +31,10 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
   const [storagemethod, setStoragemethod] = useState(product.storagemethod);
   const [healtbenefit, setHealtbenefit] = useState(product.healtbenefit);
   const [cookingmethod, setCookingmethod] = useState(product.cookingmethod);
-
+  const [isdistributorview, setIsdistributorview] = useState(
+    product.isdistributorview
+  );
+  const [productsize, setProductsize] = useState(product.productsize);
   //error state
   const [productnameError, setProductnameError] = useState("");
   const [categoryidError, setCategoryidError] = useState("");
@@ -40,6 +50,7 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
   const [storagemethodError, setStoragemethodError] = useState("");
   const [healthbenefitError, setHealthbenefitError] = useState("");
   const [cookingmethodError, setCookingmethodError] = useState("");
+  const [productsizeError, setProductsizeError] = useState("");
 
   const [categories, setCategories] = useState([]);
   const [farms, setFarms] = useState([]);
@@ -155,6 +166,12 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
     } else {
       setCookingmethodError("");
     }
+    if (productsize === "") {
+      setProductsizeError("Kích cỡ sản phẩm không được để trống");
+      return false;
+    } else {
+      setProductsizeError("");
+    }
     return true;
   };
 
@@ -162,35 +179,42 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
     if (!validateForm()) {
       return;
     }
-      try {
-        const response = await axios.put(
-          `${API_BASE_URL}/farmer/update/product/${productid}`,
-          {
-            productname,
-            categoryid,
-            farmid,
-            productimage1,
-            productimage2,
-            productimage3,
-            productquantity,
-            unitofmeasure,
-            productprice,
-            expirydate,
-            overviewdes,
-            storagemethod,
-            healtbenefit,
-            cookingmethod,
-          }
-        );
-        if (response.status === 200) {
-          onClose();
-          toast.success("Cập nhật sản phẩm thành công");
-          refreshProductList();
+    try {
+      const formData = new FormData();
+      formData.append("productname", productname);
+      formData.append("categoryid", categoryid);
+      formData.append("farmid", farmid);
+      formData.append("productimage1", productimage1);
+      formData.append("productimage2", productimage2);
+      formData.append("productimage3", productimage3);
+      formData.append("productquantity", productquantity);
+      formData.append("unitofmeasure", unitofmeasure);
+      formData.append("productprice", productprice);
+      formData.append("expirydate", expirydate);
+      formData.append("overviewdes", overviewdes);
+      formData.append("storagemethod", storagemethod);
+      formData.append("healtbenefit", healtbenefit);
+      formData.append("cookingmethod", cookingmethod);
+      formData.append("isdistributorview", isdistributorview);
+      formData.append("productsize", productsize);
+
+      const response = await axios.put(
+        `${API_BASE_URL}/farmer/update/product/${productid}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      } catch (error) {
-        console.error(error);
+      );
+      if (response.status === 200) {
+        onClose();
+        toast.success("Cập nhật sản phẩm thành công");
+        refreshProductList();
       }
-    
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -219,7 +243,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
                 onChange={(e) => setProductName(e.target.value)}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />
-              <p className="text-red-500 mt-1 text-xs italic">{productnameError}</p>
+              <p className="text-red-500 mt-1 text-xs italic">
+                {productnameError}
+              </p>
             </div>
             <div className="w-1/2 mx-2">
               <label
@@ -278,7 +304,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
                   </option>
                 ))}
               </select>
-              {farmidError && <p className="mt-1 text-red-500">{farmidError}</p>}
+              {farmidError && (
+                <p className="mt-1 text-red-500">{farmidError}</p>
+              )}
             </div>
             <div className="w-1/2 mx-2">
               <label
@@ -288,10 +316,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
                 Hình ảnh 1
               </label>
               <input
-                type="text"
+                type="file"
                 placeholder="Hình ảnh 1"
-                value={productimage1}
-                onChange={(e) => setProductimage1(e.target.value)}
+                onChange={(e) => setProductimage1(e.target.files[0])}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />
               <p className="mt-1 text-red-500 text-xs italic">
@@ -309,10 +336,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
                 Hình ảnh 2
               </label>
               <input
-                type="text"
+                type="file"
                 placeholder="Hình ảnh 2"
-                value={productimage2}
-                onChange={(e) => setProductimage2(e.target.value)}
+                onChange={(e) => setProductimage2(e.target.files[0])}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />
               <p className="mt-1 text-red-500 text-xs italic">
@@ -327,10 +353,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
                 Hình ảnh 3
               </label>
               <input
-                type="text"
+                type="file"
                 placeholder="Hình ảnh 3"
-                value={productimage3}
-                onChange={(e) => setProductimage3(e.target.value)}
+                onChange={(e) => setProductimage3(e.target.files[0])}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />
               <p className="mt-1 text-red-500 text-xs italic">
@@ -377,6 +402,45 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
               </p>
             </div>
           </div>
+          {/* 4.5 */}
+          <div className="flex justify-between my-2">
+            <div className="w-1/2 mx-2">
+              <label
+                htmlFor="isdistributorview"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Hiển thị cho nhà phân phối
+              </label>
+              <select
+                value={isdistributorview}
+                onChange={(e) =>
+                  setIsdistributorview(e.target.value === "true")
+                }
+                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              >
+                <option value="true">Có</option>
+                <option value="false">Không</option>
+              </select>
+            </div>
+            <div className="w-1/2 mx-2">
+              <label
+                htmlFor="productsize"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Kích cỡ sản phẩm
+              </label>
+              <input
+                type="text"
+                placeholder="Kích cỡ sản phẩm"
+                value={productsize}
+                onChange={(e) => setProductsize(e.target.value)}
+                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              />
+              <p className="mt-1 text-red-500 text-xs italic">
+                {productsizeError}
+              </p>
+            </div>
+          </div>
           {/* 5 */}
           <div className="flex justify-between my-2">
             <div className="w-1/2 mx-2">
@@ -393,7 +457,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
                 onChange={(e) => setProductprice(e.target.value)}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />
-              <p className="mt-1 text-red-500 text-xs italic">{productpriceError}</p>
+              <p className="mt-1 text-red-500 text-xs italic">
+                {productpriceError}
+              </p>
             </div>
             <div className="w-1/2 mx-2">
               <label
@@ -408,7 +474,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
                 onChange={(e) => setExpirydate(e.target.value)}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />
-              <p className="mt-1 text-red-500 text-xs italic">{expirydateError}</p>
+              <p className="mt-1 text-red-500 text-xs italic">
+                {expirydateError}
+              </p>
             </div>
           </div>
           {/* 6 */}
@@ -426,7 +494,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
                 onChange={(e) => setOverviewdes(e.target.value)}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500 h-40"
               />
-              <p className="mt-1 text-red-500 text-xs italic">{overviewdesError}</p>
+              <p className="mt-1 text-red-500 text-xs italic">
+                {overviewdesError}
+              </p>
             </div>
             <div className="w-1/2 mx-2">
               <label
@@ -493,7 +563,9 @@ export default function FarmerUpdateProduct({ onClose, product, userId, refreshP
 
             <button
               className="bg-primary hover:bg-primary-700 text-white text-xl font-bold py-2 px-4 rounded-xl ml-5 w-1/6"
-              onClick={() => {onUpdateProduct(product.productid)}}
+              onClick={() => {
+                onUpdateProduct(product.productid);
+              }}
             >
               Cập nhật
             </button>

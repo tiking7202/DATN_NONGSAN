@@ -94,9 +94,9 @@ function SearchPage() {
                   <div className="flex justify-center mb-2 ">
                     <p className="font-bold text-center text-2xl">
                       {product.productname}
-                    </p>
-                    <p className="ml-2 my-auto italic">
-                      Loại {product.productquality}
+                      <span className="ml-2 my-auto text-sm font-normal italic block">
+                        {product.productquality}
+                      </span>
                     </p>
                   </div>
 
@@ -111,12 +111,20 @@ function SearchPage() {
                     Số lượng còn lại:{" "}
                     <span className="text-primary font-bold">
                       {" "}
-                      {product.productquantity}kg <span className="text-sm">/kg</span>
+                      {product.productquantity}kg{" "}
+                      <span className="text-sm">/kg</span>
                     </span>
                   </p>
-                  <p className="text-2xl m-2 font-bold italic text-green-500">
-                    {product.productprice}đ
-                  </p>
+                  <div className="flex justify-between  m-3">
+                    <del className="text-2xl italic text-green-500">
+                      {product.productprice}đ
+                    </del>
+                    <p className="text-2xl text-left font-bold">
+                      {product.productprice -
+                        product.productprice * product.promotion * 0.01}
+                      đ
+                    </p>
+                  </div>
                 </Link>
                 <div className="flex justify-between items-center mt-4">
                   <Link to={`/farm/info/${product.farmid}`}>

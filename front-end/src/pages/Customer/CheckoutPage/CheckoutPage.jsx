@@ -44,7 +44,8 @@ const CheckoutPage = () => {
   const calculateTotalPrice = () => {
     let totalPrice = 0;
     selectedItems.forEach((item) => {
-      totalPrice += item.productprice * item.quantity;
+      totalPrice +=
+        item.productprice * (1 - 0.01 * item.promotion) * item.quantity;
     });
     return totalPrice;
   };
@@ -98,7 +99,7 @@ const CheckoutPage = () => {
       return;
     }
     setShippingInfo({ ...shippingInfo, deliveryAddress: newAddress });
-    
+
     setIsEditing(false);
   };
 
