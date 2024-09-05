@@ -13,7 +13,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../../../../front-end/src/config/config";
 import { formatDate } from "../../utils/formatDate";
 import { truncateText } from "../../utils/truncaseText";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 export default function ProductPage() {
   const [products, setProducts] = useState([]);
 
@@ -80,7 +80,7 @@ export default function ProductPage() {
               {products && products.length > 0 ? (
                 products.map((product) => (
                   <tr
-                    key={product.id}
+                    key={product.productid}
                     className="border border-black text-center font-medium"
                   >
                     <td className="w-1/12 text-center">
@@ -147,40 +147,40 @@ export default function ProductPage() {
             </tbody>
           </table>
           <div className="flex justify-center my-4">
-                <button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                  className="text-primary border border-black font-bold px-4 py-2 rounded-l-xl"
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} />
-                </button>
-                {page > 1 && (
-                  <button
-                    className="text-primary border border-black font-bold px-4 py-2 "
-                    onClick={() => handlePageChange(page - 1)}
-                  >
-                    {page - 1}
-                  </button>
-                )}
-                <button className="bg-primary text-secondary border border-black font-bold px-4 py-2 ">
-                  {page}
-                </button>
-                {page < totalPages && (
-                  <button
-                    className="text-primary border border-black font-bold px-4 py-2 "
-                    onClick={() => handlePageChange(page + 1)}
-                  >
-                    {page + 1}
-                  </button>
-                )}
-                <button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page === totalPages}
-                  className="text-primary border border-black font-bold px-4 py-2 rounded-r-xl"
-                >
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </button>
-              </div>
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1}
+              className="text-primary border border-black font-bold px-4 py-2 rounded-l-xl"
+            >
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </button>
+            {page > 1 && (
+              <button
+                className="text-primary border border-black font-bold px-4 py-2 "
+                onClick={() => handlePageChange(page - 1)}
+              >
+                {page - 1}
+              </button>
+            )}
+            <button className="bg-primary text-secondary border border-black font-bold px-4 py-2 ">
+              {page}
+            </button>
+            {page < totalPages && (
+              <button
+                className="text-primary border border-black font-bold px-4 py-2 "
+                onClick={() => handlePageChange(page + 1)}
+              >
+                {page + 1}
+              </button>
+            )}
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === totalPages}
+              className="text-primary border border-black font-bold px-4 py-2 rounded-r-xl"
+            >
+              <FontAwesomeIcon icon={faChevronRight} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
