@@ -68,7 +68,7 @@ export default function UpdateCategory({
   };
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center m-auto">
-      <div className="bg-white p-2 rounded w-1/2 m-auto text-primary h-3/5 overflow-auto shadow-xl">
+      <div className="bg-white p-2 rounded w-1/2 m-auto text-primary h-5/12 overflow-auto shadow-xl">
         <div className="flex justify-end">
           <button
             className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold "
@@ -106,7 +106,6 @@ export default function UpdateCategory({
               <input
                 type="file"
                 placeholder="Hình ảnh"
-                // value={categoryimage}
                 onChange={(e) => setCategoryimage(e.target.files[0])}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />

@@ -6,18 +6,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
 
-// import { useEffect} from "react";
-
 const CreateCategory = ({ onClose, refreshCategoryList }) => {
   const [categoryname, setCategoryname] = useState("");
   const [categoryimage, setCategoryimage] = useState("");
   const [categorydes, setCategorydes] = useState("");
-  //   const [farmid, setFarmid] = useState("");
+
 
   const [categorynameErrol, setCategorynameErrol] = useState("");
-  // const [categoryimageErrol, setCategoryimageErrol] = useState("");
   const [categorydesErrol, setCategorydesErrol] = useState("");
-  //   const [farmidError, setFarmidError] = useState("");
 
   const validateForm = () => {
     let isValid = true;
@@ -84,7 +80,7 @@ const CreateCategory = ({ onClose, refreshCategoryList }) => {
 
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center m-auto">
-      <div className="bg-white px-3 rounded w-1/2 m-auto text-primary h-3/5 overflow-auto shadow-xl">
+      <div className="bg-white p-3 rounded w-1/2 m-auto text-primary h-5/12 overflow-auto shadow-xl">
         <div className="flex justify-end">
           <button
             className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold"

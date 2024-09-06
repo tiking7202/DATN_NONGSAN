@@ -4,7 +4,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 export default function DetailCategory({ category, onClose }) {
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg w-1/2 h-3/4 overflow-auto shadow-2xl">
+      <div className="bg-white p-8 rounded-lg w-5/12 h-7/12 overflow-auto shadow-2xl">
         {/* Close Button */}
         <div className="flex justify-end">
           <button
@@ -16,7 +16,7 @@ export default function DetailCategory({ category, onClose }) {
         </div>
 
         {/* Crop Title */}
-        <h2 className="text-4xl font-bold text-center text-primary mb-4">
+        <h2 className="text-3xl font-bold text-center mb-4">
           {category.categoryname}
         </h2>
 
@@ -37,11 +37,11 @@ export default function DetailCategory({ category, onClose }) {
                 key={index}
                 className="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm"
               >
-                <p className="font-semibold text-xl text-gray-700 w-1/3">
+                <p className="font-semibold text-xl text-gray-700">
                   {item.label}
-                </p>
-                <p className="text-lg text-gray-600 text-justify w-2/3">
+                <span className="text-lg font-normal text-gray-600 text-justify ml-3">
                   {item.value}
+                </span>
                 </p>
               </div>
             )

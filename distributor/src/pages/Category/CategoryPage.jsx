@@ -15,7 +15,7 @@ import CategoryCreate from "./CategoryCreate";
 import CategoryDetail from "./CategoryDetail";
 import CategoryDelete from "./CategoryDelete";
 import CategoryUpdate from "./CategoryUpdate";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function CategoryShow() {
   const [categories, setCategories] = useState([]);
@@ -122,9 +122,10 @@ export default function CategoryShow() {
     <div>
       <HeaderDistributor />
       <div className="flex">
-        <div className="bg-secondary w-full h-screen right-0 top-0 mt-20">
-          <div className="w-11/12 m-auto bg-white rounded-lg shadow-lg px-6 py-1 mt-5">
-            <div className="flex justify-between items-center my-4">
+        <ToastContainer />
+        <div className="bg-secondary w-full right-0 top-0 mt-20">
+          <div className="w-10/12 m-auto bg-white rounded-lg px-3 mt-5">
+            <div className="flex justify-between items-center my-3">
               <h2 className="text-2xl font-bold">Danh mục sản phẩm</h2>
               <button
                 className="bg-primary hover:bg-green-600 text-white px-4 py-2 rounded-lg"
@@ -138,10 +139,10 @@ export default function CategoryShow() {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-primary text-white">
-                    <th className="w-1/6 py-3  border">Tên danh mục</th>
-                    <th className="w-1/6 py-3  border">Hình ảnh</th>
-                    <th className="w-1/2 py-3  border">Mô tả</th>
-                    <th className="w-1/6 py-3  border">Hành động</th>
+                    <th className="w-1/6 py-2">Tên danh mục</th>
+                    <th className="w-1/6 py-2">Hình ảnh</th>
+                    <th className="w-1/2 py-2">Mô tả</th>
+                    <th className="w-1/6 py-2">Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -149,21 +150,21 @@ export default function CategoryShow() {
                     categories.map((category) => (
                       <tr
                         key={category.categoryid}
-                        className="text-center border border-black"
+                        className="text-center font-medium border border-black"
                       >
                         <td className="w-1/6">{category.categoryname}</td>
                         <td>
                           <img
                             src={category.categoryimage}
                             alt={category.categoryname}
-                            className="w-1/2 h-20 m-auto"
+                            className="w-2/3 h-16 m-auto"
                           />
                         </td>
-                        <td className="py-3 px-4">{category.categorydes}</td>
-                        <td className="py-3 px-4">
+                        <td className="py-2 px-4 text-justify">{category.categorydes}</td>
+                        <td className="py-2 px-4">
                           <div className="flex justify-center space-x-4">
                             <button
-                              className="text-black hover:text-blue-600 "
+                              className="text-black hover:text-primary px-1 text-2xl"
                               onClick={() =>
                                 openViewCategoryDialog(category.categoryid)
                               }
@@ -171,7 +172,7 @@ export default function CategoryShow() {
                               <FontAwesomeIcon icon={faEye} />
                             </button>
                             <button
-                              className="text-black hover:text-green-600 px-3"
+                              className="text-black hover:text-primary px-1 text-2xl"
                               onClick={() =>
                                 openEditCategoryDialog(category.categoryid)
                               }
@@ -179,7 +180,7 @@ export default function CategoryShow() {
                               <FontAwesomeIcon icon={faEdit} />
                             </button>
                             <button
-                              className="text-black hover:text-red-600"
+                              className="text-black hover:text-red-600 px-1 text-2xl"
                               onClick={() =>
                                 openDeleteCategoryDialog(category.categoryid)
                               }

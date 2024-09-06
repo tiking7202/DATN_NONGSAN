@@ -93,19 +93,28 @@ exports.updateCategoryforDistributor = async (req, res) => {
     const { id } = req.params;
     const { categoryname, categorydes } = req.body;
     const categoryimage = req.file;
-
-    let categoryimageUrl = null;
-    if (categoryimage) {
-      const categoryimageBuffer = categoryimage.buffer;
-      const categoryimageFileName = `categories/${uuidv4()}`;
-      const categoryimageRef = ref(storage, categoryimageFileName);
-
-      await uploadBytes(categoryimageRef, categoryimageBuffer, {
-        contentType: categoryimage.mimetype,
-      });
-      categoryimageUrl = await getDownloadURL(categoryimageRef);
+    // Kiểm tra xem có category nào tồn tại hay không
+    const categoryResult = await pool.query(
+      `SELECT * FROM category WHERE categoryid = $1`,
+      [id]
+    );
+    if (categoryResult.rows.length === 0) {
+      return res.status(400).json({ message: "Danh mục không tồn tại" });
     }
+    existingCategory = categoryResult.rows[0];
+    let categoryimageUrl = null;
+    const uploadImage = async (image) => {
+      if (!image) return null;
+      const imageBuffer = image.buffer;
+      const imageFileName = `categories/${uuidv4()}`;
+      const imageRef = ref(storage, imageFileName);
 
+      await uploadBytes(imageRef, imageBuffer, { contentType: image.mimetype });
+      return await getDownloadURL(imageRef);
+    };
+    categoryimageUrl = categoryimage
+      ? await uploadImage(categoryimage, categoryname)
+      : existingCategory.categoryimage;
     // Cập nhật category
     const updatedCategory = await pool.query(
       `UPDATE category SET categoryname = $1, categorydes = $2, categoryimage = $3 WHERE categoryid = $4 RETURNING *`,
