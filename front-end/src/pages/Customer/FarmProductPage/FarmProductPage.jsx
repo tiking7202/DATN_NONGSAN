@@ -93,13 +93,13 @@ export default function FarmProductPage() {
                     <div className="flex justify-center mb-2 ">
                       <p className="font-bold text-center text-2xl">
                         {product.productname}
-                      </p>
-                      <p className="ml-2 my-auto italic">
-                        Loại {product.productquality}
+                        <span className="ml-2 my-auto text-sm font-normal italic block">
+                          {product.productquality}
+                        </span>
                       </p>
                     </div>
                     <p className="m-2 text-primary">
-                    Hạn sử dụng còn:{" "}
+                      Hạn sử dụng còn:{" "}
                       <span className="text-primary font-bold">
                         {" "}
                         {remainingDays} ngày
@@ -112,9 +112,16 @@ export default function FarmProductPage() {
                         {product.productquantity}kg
                       </span>
                     </p>
-                    <p className="text-2xl m-3 font-bold italic text-green-500">
-                      {product.productprice}đ <span className="text-sm">/kg</span>
-                    </p>
+                    <div className="flex justify-between  m-3">
+                      <del className="text-2xl italic text-green-500">
+                        {product.productprice}đ
+                      </del>
+                      <p className="text-2xl text-left font-bold">
+                        {product.productprice -
+                          product.productprice * product.promotion * 0.01}
+                        đ
+                      </p>
+                    </div>
                   </Link>
                   <div className="flex justify-between items-center mt-4">
                     <Link to={`/farm/info/${product.farmid}`}>

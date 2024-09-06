@@ -133,8 +133,9 @@ export default function FarmerShowProducts() {
                     <th className="py-3 w-1/12">Trang trại</th>
                     <th className="py-3 w-1/12">Số lượng</th>
                     <th className="py-3 w-1/12">Giá</th>
-                    <th className="py-3 w-3/12">Mô tả</th>
+                    <th className="py-3 w-2/12">Mô tả</th>
                     <th className="py-3 w-1/12">Ngày hết hạn</th>
+                    <th className="py-3 w-1/12">Hiển thị NPP</th>
                     <th className="py-3 w-2/12"></th>
                   </tr>
                 </thead>
@@ -167,11 +168,14 @@ export default function FarmerShowProducts() {
                         <td className="w-1/12 text-center">
                           {product.productprice} VNĐ
                         </td>
-                        <td className="w-3/12 text-center">
+                        <td className="w-2/12 text-center">
                           {truncateText(product.overviewdes, 40)}
                         </td>
                         <td className="w-1/12 text-center">
                           {formatDate(product.expirydate)}
+                        </td>
+                        <td className="w-1/12 text-center">
+                          {product.isdistributorview ? "Có hiển thị" : "Không hiển thị"}
                         </td>
                         <td className="w-1/6">
                           <div className="flex justify-center">

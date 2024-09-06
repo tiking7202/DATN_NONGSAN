@@ -1,11 +1,18 @@
-import { PropTypes } from "prop-types";
-import { formatDate } from "../../../utils/formatDate";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-export default function FarmerDetailProduct({ product, onClose }) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PropTypes } from "prop-types";
+import { useEffect } from "react";
+import { formatDate } from "../../utils/formatDate";
+
+export default function DetailProductDialog({ onClose, product }) {
+  useEffect(() => {
+    if (product) {
+      console.log(product);
+    }
+  }, [product]);
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center m-auto">
-      <div className="bg-white p-6 rounded w-1/2 m-auto text-primary h-2/3 overflow-auto shadow-xl">
+      <div className="bg-white p-6 rounded w-1/2 m-auto h-3/4 overflow-auto shadow-xl">
         <div className="flex justify-end">
           <button
             className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold fixed"
@@ -36,18 +43,20 @@ export default function FarmerDetailProduct({ product, onClose }) {
                 className="w-1/3"
               />
             </div>
+
             <div className="flex my-2">
               <div className="flex w-1/2">
-                <p className="font-bold text-xl">Danh mục sản phẩm:</p>
+                <p className="font-medium text-xl">Danh mục sản phẩm:</p>
                 <p className="text-lg ml-2">{product.categoryname}</p>
               </div>
               <div className="flex w-1/2">
-                <p className="font-bold text-xl">Trang trại:</p>
+                <p className="font-medium text-xl">Trang trại:</p>
                 <p className="text-lg ml-2">
                   {product.farmname} ({product.farmprovince})
                 </p>
               </div>
             </div>
+
             <div className="flex my-2">
               <div className="flex w-1/2">
                 <p className="font-medium text-xl">Số lượng còn lại:</p>
@@ -62,6 +71,16 @@ export default function FarmerDetailProduct({ product, onClose }) {
             </div>
             <div className="flex my-2">
               <div className="flex w-1/2">
+                <p className="font-medium text-xl">Giá:</p>
+                <p className="text-lg ml-2">{product.productprice} VNĐ</p>
+              </div>
+              <div className="flex w-1/2">
+                <p className="font-medium text-xl">Giảm giá:</p>
+                <p className="text-lg ml-2">{product.promotion} %</p>
+              </div>
+            </div>
+            <div className="flex my-2">
+              <div className="flex w-1/2">
                 <p className="font-medium text-xl">Chất lượng sản phẩm:</p>
                 <p className="text-lg ml-2">{product.productquality}</p>
               </div>
@@ -70,36 +89,26 @@ export default function FarmerDetailProduct({ product, onClose }) {
                 <p className="text-lg ml-2">{product.productsize}</p>
               </div>
             </div>
+
             <div className="flex my-2">
-              <p className="font-medium text-xl">
-                Mô tả:
-                <span className="text-lg ml-2 font-normal">
-                  {product.overviewdes}
-                </span>
+              <p className="font-medium text-xl">Mô tả:
+              <span className="text-lg ml-2 font-normal">{product.overviewdes}</span>
               </p>
             </div>
             <div className="flex my-2">
               <p className="font-medium text-xl">
                 Lợi ích đối với sức khỏe:
-                <span className="text-lg ml-2 font-normal">
-                  {product.healtbenefit}
-                </span>
+              <span className="text-lg ml-2 font-normal">{product.healtbenefit}</span>
               </p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl">
-                Phương pháp chế biến:
-                <span className="text-lg ml-2 font-normal">
-                  {product.cookingmethod}
-                </span>
+              <p className="font-medium text-xl">Phương pháp chế biến:
+              <span className="text-lg ml-2 font-normal">{product.cookingmethod}</span>
               </p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl">
-                Cách bảo quản:
-                <span className="text-lg ml-2 font-normal">
-                  {product.storagemethod}
-                </span>
+              <p className="font-medium text-xl">Cách bảo quản:
+              <span className="text-lg ml-2 font-normal">{product.storagemethod}</span>
               </p>
             </div>
           </div>
@@ -109,7 +118,7 @@ export default function FarmerDetailProduct({ product, onClose }) {
   );
 }
 
-FarmerDetailProduct.propTypes = {
-  product: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
+DetailProductDialog.propTypes = {
+  onClose: PropTypes.func,
+  product: PropTypes.object,
 };

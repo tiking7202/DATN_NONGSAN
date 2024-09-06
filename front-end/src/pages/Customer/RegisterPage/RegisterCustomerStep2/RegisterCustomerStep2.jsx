@@ -92,41 +92,6 @@ const RegisterCustomerStep2 = () => {
     setAvatar(e.target.files[0]);
   };
 
-  // const handleSubmit = async () => {
-
-  //   if (!validate()) {
-  //     return;
-  //   }
-
-  //   const additionalData = {
-  //     address: {
-  //       street,
-  //       commune,
-  //       district,
-  //       province,
-  //     },
-  //     identityCard,
-  //     dateOfBirth,
-  //     avatar,
-  //     status: "true"
-  //   };
-
-  //   try {
-  //     const response = await axios.post(
-  //       `${API_BASE_URL}/auth/register/step2/${userId}`,
-  //       additionalData,
-  //     );
-  //     setToastMessage(response.data.message);
-  //     navigate("/login");
-  //   } catch (error) {
-  //     console.error("Error during registration:", error);
-  //     toast.error(error.response.data, {
-  //       position: "top-right",
-  //       time: 500,
-  //     });
-  //   }
-  // };
-
   const handleSubmit = async () => {
     if (!validate()) {
       return;
