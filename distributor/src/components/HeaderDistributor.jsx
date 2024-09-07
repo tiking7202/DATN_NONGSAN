@@ -39,6 +39,12 @@ export default function HeaderDistributor() {
             to="/category"
             className="btn btn-primary font-medium hover:text-fourth m-2"
           >
+            Nông dân
+          </Link>
+          <Link
+            to="/category"
+            className="btn btn-primary font-medium hover:text-fourth m-2"
+          >
             Danh mục
           </Link>
           <Link

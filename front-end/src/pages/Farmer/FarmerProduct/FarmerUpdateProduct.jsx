@@ -35,6 +35,9 @@ export default function FarmerUpdateProduct({
     product.isdistributorview
   );
   const [productsize, setProductsize] = useState(product.productsize);
+  const [plantingdate, setPlantingdate] = useState(product.plantingdate);
+  const [harvestdate, setHarvestdate] = useState(product.harvestdate);
+
   //error state
   const [productnameError, setProductnameError] = useState("");
   const [categoryidError, setCategoryidError] = useState("");
@@ -51,6 +54,8 @@ export default function FarmerUpdateProduct({
   const [healthbenefitError, setHealthbenefitError] = useState("");
   const [cookingmethodError, setCookingmethodError] = useState("");
   const [productsizeError, setProductsizeError] = useState("");
+  const [plantingdateError, setPlantingdateError] = useState("");
+  const [harvestdateError, setHarvestdateError] = useState("");
 
   const [categories, setCategories] = useState([]);
   const [farms, setFarms] = useState([]);
@@ -172,6 +177,19 @@ export default function FarmerUpdateProduct({
     } else {
       setProductsizeError("");
     }
+    if (plantingdate === "") {
+      setPlantingdateError("Ngày gieo trồng không được để trống");
+      return false;
+    } else {
+      setPlantingdateError("");
+    }
+    if (harvestdate === "") {
+      setHarvestdateError("Ngày thu hoạch không được để trống");
+      return false;
+    } else {
+      setHarvestdateError("");
+    }
+
     return true;
   };
 
@@ -197,7 +215,8 @@ export default function FarmerUpdateProduct({
       formData.append("cookingmethod", cookingmethod);
       formData.append("isdistributorview", isdistributorview);
       formData.append("productsize", productsize);
-
+      formData.append("plantingdate", plantingdate);
+      formData.append("harvestdate", harvestdate);
       const response = await axios.put(
         `${API_BASE_URL}/farmer/update/product/${productid}`,
         formData,
@@ -476,6 +495,43 @@ export default function FarmerUpdateProduct({
               />
               <p className="mt-1 text-red-500 text-xs italic">
                 {expirydateError}
+              </p>
+            </div>
+          </div>
+          {/* 5.5 */}
+          <div className="flex justify-between my-2">
+            <div className="w-1/2 mx-2">
+              <label
+                htmlFor="plantingdate"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Ngày gieo trồng
+              </label>
+              <input
+                type="date"
+                value={formatDateInput(plantingdate)}
+                onChange={(e) => setPlantingdate(e.target.value)}
+                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              />
+              <p className="mt-1 text-red-500 text-xs italic">
+                {plantingdateError}
+              </p>
+            </div>
+            <div className="w-1/2 mx-2">
+              <label
+                htmlFor="harvestdate"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Ngày thu hoạch
+              </label>
+              <input
+                type="date"
+                value={formatDateInput(harvestdate)}
+                onChange={(e) => setHarvestdate(e.target.value)}
+                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              />
+              <p className="mt-1 text-red-500 text-xs italic">
+                {harvestdateError}
               </p>
             </div>
           </div>

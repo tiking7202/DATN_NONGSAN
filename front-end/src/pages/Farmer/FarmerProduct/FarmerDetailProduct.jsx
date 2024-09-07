@@ -71,6 +71,16 @@ export default function FarmerDetailProduct({ product, onClose }) {
               </div>
             </div>
             <div className="flex my-2">
+              <div className="flex w-1/2">
+                <p className="font-medium text-xl">Ngày gieo trồng:</p>
+                <p className="text-lg ml-2">{formatDate(product.plantingdate)}</p>
+              </div>
+              <div className="flex w-1/2">
+                <p className="font-medium text-xl">Ngày thu hoạch:</p>
+                <p className="text-lg ml-2">{formatDate(product.harvestdate)}</p>
+              </div>
+            </div>
+            <div className="flex my-2">
               <p className="font-medium text-xl">
                 Mô tả:
                 <span className="text-lg ml-2 font-normal">

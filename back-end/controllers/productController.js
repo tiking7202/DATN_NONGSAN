@@ -9,7 +9,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
 });
 exports.upload = upload;
-// lấy tất cả sản phẩm
+// Lấy tất cả sản phẩm
 exports.getProducts = async (req, res) => {
   try {
     const query = `
@@ -274,6 +274,8 @@ exports.createProduct = async (req, res) => {
     storagemethod,
     productsize,
     isdistributorview,
+    platingdate, 
+    harvestdate
   } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
@@ -287,7 +289,9 @@ exports.createProduct = async (req, res) => {
     !overviewdes ||
     !expirydate ||
     !productsize ||
-    !isdistributorview
+    !isdistributorview ||
+    !plantingdate ||
+    !harvestdate
   ) {
     return res.status(400).json({ message: "Các trường ko được để trống" });
   }
@@ -310,8 +314,8 @@ exports.createProduct = async (req, res) => {
 
     // Tạo sản phẩm mới
     const newProduct = await pool.query(
-      `INSERT INTO product (productname, productimage1, productimage2, productimage3, categoryid, farmid, productquantity, unitofmeasure, productprice, overviewdes, expirydate, healtbenefit, cookingmethod, storagemethod, productsize, isdistributorview, promotion, productquality, isvisibleweb) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+      `INSERT INTO product (productname, productimage1, productimage2, productimage3, categoryid, farmid, productquantity, unitofmeasure, productprice, overviewdes, expirydate, healtbenefit, cookingmethod, storagemethod, productsize, isdistributorview, promotion, productquality, isvisibleweb, plantingdate, harvestdate) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
         RETURNING *`,
       [
         productname,
@@ -333,6 +337,8 @@ exports.createProduct = async (req, res) => {
         0,
         "Tươi",
         false,
+        plantingdate,
+        harvestdate
       ]
     );
 
@@ -364,6 +370,8 @@ exports.updateProduct = async (req, res) => {
     storagemethod,
     isdistributorview,
     productsize,
+    plantingdate,
+    harvestdate
   } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
@@ -376,7 +384,9 @@ exports.updateProduct = async (req, res) => {
     !productprice ||
     !overviewdes ||
     !expirydate ||
-    !productsize
+    !productsize ||
+    !plantingdate ||
+    !harvestdate 
   ) {
     return res.status(400).json({ message: "Các trường ko được để trống" });
   }
@@ -411,8 +421,8 @@ exports.updateProduct = async (req, res) => {
     // Sửa thông tin sản phẩm
     const updatedProduct = await pool.query(
       `UPDATE product
-        SET productname = $1, productimage1 = $2, productimage2 = $3, productimage3 = $4, categoryid = $5, farmid = $6, productquantity = $7, unitofmeasure = $8, productprice = $9, overviewdes = $10, expirydate = $11, healtbenefit = $12, cookingmethod = $13, storagemethod = $14, isdistributorview = $15, productsize = $16
-        WHERE productid = $17
+        SET productname = $1, productimage1 = $2, productimage2 = $3, productimage3 = $4, categoryid = $5, farmid = $6, productquantity = $7, unitofmeasure = $8, productprice = $9, overviewdes = $10, expirydate = $11, healtbenefit = $12, cookingmethod = $13, storagemethod = $14, isdistributorview = $15, productsize = $16, plantingdate = $17, harvestdate = $18
+        WHERE productid = $19
         RETURNING *`,
       [
         productname,
@@ -431,6 +441,8 @@ exports.updateProduct = async (req, res) => {
         storagemethod,
         isdistributorview,
         productsize,
+        plantingdate,
+        harvestdate,
         productid,
       ]
     );

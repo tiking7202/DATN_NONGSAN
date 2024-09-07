@@ -24,6 +24,8 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
   const [cookingmethod, setCookingmethod] = useState("");
   const [productsize, setProductsize] = useState("");
   const [isdistributorview, setIsdistributorview] = useState(false);
+  const [plantingdate, setPlantingdate] = useState("");
+  const [harvestdate, setHarvestdate] = useState("");
 
   //error state
   const [productnameError, setProductnameError] = useState("");
@@ -41,6 +43,8 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
   const [healthbenefitError, setHealtbenefitError] = useState("");
   const [cookingmethodError, setCookingmethodError] = useState("");
   const [productsizeError, setProductsizeError] = useState("");
+  const [plantingdateError, setPlantingdateError] = useState("");
+  const [harvestdateError, setHarvestdateError] = useState("");
 
   const [categories, setCategories] = useState([]);
   const [farms, setFarms] = useState([]);
@@ -153,6 +157,18 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
     } else {
       setProductsizeError("");
     }
+    if (plantingdate === "") {
+      setPlantingdateError("Ngày trồng không được để trống");
+      return false;
+    } else {
+      setPlantingdateError("");
+    }
+    if (harvestdate === "") {
+      setHarvestdateError("Ngày thu hoạch không được để trống");
+      return false;
+    } else {
+      setHarvestdateError("");
+    }
     return true;
   };
   const handleSubmit = async () => {
@@ -177,6 +193,8 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
       productData.append("cookingmethod", cookingmethod);
       productData.append("productsize", productsize);
       productData.append("isdistributorview", isdistributorview);
+      productData.append("plantingdate", plantingdate);
+      productData.append("harvestdate", harvestdate);
       // Gửi yêu cầu API tạo sản phẩm
       const response = await axios.post(
         `${API_BASE_URL}/farmer/create/product`,
@@ -506,7 +524,51 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
               )}
             </div>
           </div>
-
+          {/* 5.5 */}
+          <div className="flex justify-between my-2">
+            <div className="w-1/2 mx-2">
+              <label
+                htmlFor="plantingdate"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Ngày trồng
+              </label>
+              <input
+                id="plantingdate"
+                placeholder="Ngày trồng"
+                type="date"
+                value={plantingdate}
+                onChange={(e) => setPlantingdate(e.target.value)}
+                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+              />
+              {plantingdateError && (
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {plantingdateError}
+                </p>
+              )}
+            </div>
+            <div className="w-1/2 mx-2">
+              <label
+                htmlFor="harvestdate"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Ngày thu hoạch
+              </label>
+              <input
+                id="harvestdate"
+                placeholder="Ngày thu hoạch"
+                type="date"
+                value={harvestdate}
+                onChange={(e) => setHarvestdate(e.target.value)}
+                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+              />
+              {harvestdateError && (
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {harvestdateError}
+                </p>
+              )}
+            </div>
+          </div>
           {/* 6 */}
           <div className="flex justify-between my-2">
             <div className="w-1/2 mx-2">
