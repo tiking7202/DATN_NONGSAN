@@ -10,31 +10,49 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { API_BASE_URL } from './../../../../config/config';
+import { API_BASE_URL } from "./../../../../config/config";
 import { useToast } from "../../../../context/ToastContext";
 
 export default function FarmerRegisterStep2() {
-  const [farmName, setFarmName] = useState("");
-  const [farmType, setFarmType] = useState("");
+  const [farmname, setFarmName] = useState("");
+  const [farmtype, setFarmType] = useState("");
   const [farmemail, setFarmemail] = useState("");
-  const [farmArea, setFarmArea] = useState("");
-  const [farmDescription, setFarmDescription] = useState("");
-  // const [address, setAddress] = useState("");
+  const [farmarea, setFarmArea] = useState("");
+  const [farmdescription, setFarmDescription] = useState("");
   const [farmstreet, setStreet] = useState("");
   const [farmcommune, setCommune] = useState("");
   const [farmdistrict, setDistrict] = useState("");
   const [farmprovince, setProvince] = useState("");
+
+  const [farmphone, setFarmPhone] = useState("");
+  const [farmproductstotal, setFarmProductTotal] = useState("");
+  const [farmservice, setFarmservice] = useState("");
+  const [farminvite, setFarminVite] = useState("");
+  const [farmlogo, setFarmLogo] = useState("");
+  const [farmimage, setFarmImage] = useState("");
+  const [farmimage1, setFarmImage1] = useState("");
+  const [farmimage2, setFarmImage2] = useState("");
+  const [farmimage3, setFarmImage3] = useState("");
 
   const [farmNameError, setFarmNameError] = useState("");
   const [farmTypeError, setFarmTypeError] = useState("");
   const [farmemailError, setFarmemailError] = useState("");
   const [farmAreaError, setFarmAreaError] = useState("");
   const [farmDescriptionError, setFarmDescriptionError] = useState("");
-
   const [streetError, setStreetError] = useState("");
   const [communeError, setCommuneError] = useState("");
   const [districtError, setDistrictError] = useState("");
   const [provinceError, setProvinceError] = useState("");
+
+  const [farmphoneErrol, setFarmPhoneErrol] = useState("");
+  const [farmproductotalErrol, setFarmProductTotalErrol] = useState("");
+  const [farmserviceErrol, setFarmServiceErrol] = useState("");
+  const [farminviteErrol, setFarminViteErrol] = useState("");
+  const [farmlogoErrol, setFarmLogoErrol] = useState("");
+  const [farmimageErrol, setFarmImageErrol] = useState("");
+  const [farmimage1Errol, setFarmImage1Errol] = useState("");
+  const [farmimage2Errol, setFarmImage2Errol] = useState("");
+  const [farmimage3Errol, setFarmImage3Errol] = useState("");
 
   const location = useLocation();
   const userId = new URLSearchParams(location.search).get("userid");
@@ -57,13 +75,13 @@ export default function FarmerRegisterStep2() {
     setFarmAreaError("");
     setFarmDescriptionError("");
 
-    if (farmName.trim() === "") {
+    if (farmname.trim() === "") {
       setFarmNameError("Vui lòng nhập tên trang trại");
       isValid = false;
     }
 
     // Validate farm type
-    if (farmType.trim() === "") {
+    if (farmtype.trim() === "") {
       setFarmTypeError("Vui lòng nhập loại trang trại");
       isValid = false;
     }
@@ -77,13 +95,13 @@ export default function FarmerRegisterStep2() {
     // Validate ID number
 
     // Validate farm scale
-    if (farmArea.trim() === "") {
+    if (farmarea.trim() === "") {
       setFarmAreaError("Vui lòng nhập quy mô trang trại");
       isValid = false;
     }
 
     // Validate farm description
-    if (farmDescription.trim() === "") {
+    if (farmdescription.trim() === "") {
       setFarmDescriptionError("Vui lòng nhập mô tả trang trại");
       isValid = false;
     }
@@ -115,6 +133,69 @@ export default function FarmerRegisterStep2() {
     } else {
       setProvinceError("");
     }
+
+    if (!farmphone) {
+      setFarmPhoneErrol("Số điện thoại liên hệ là bắt buộc");
+      isValid = false;
+    } else {
+      setFarmPhoneErrol("");
+    }
+
+    if (!farmproductstotal) {
+      setFarmProductTotalErrol("Số lượng sản phẩm là bắt buộc");
+      isValid = false;
+    } else {
+      setFarmProductTotalErrol("");
+    }
+
+    if (!farmservice) {
+      setFarmServiceErrol("Dịch vụ của trang trại là bắt buộc");
+      isValid = false;
+    } else {
+      setFarmServiceErrol("");
+    }
+
+    if (!farminvite) {
+      setFarminViteErrol("Lời mời gọi khách hàng là bắt buộc");
+      isValid = false;
+    } else {
+      setFarminViteErrol("");
+    }
+
+    if (!farmlogo) {
+      setFarmLogoErrol("Logo trang trại là bắt buộc");
+      isValid = false;
+    } else {
+      setFarmLogoErrol("");
+    }
+
+    if (!farmimage) {
+      setFarmImageErrol("Hình ảnh trang trại là bắt buộc");
+      isValid = false;
+    } else {
+      setFarmImageErrol("");
+    }
+
+    if (!farmimage1) {
+      setFarmImage1Errol("Hình ảnh 1 trang trại là bắt buộc");
+      isValid = false;
+    } else {
+      setFarmImage1Errol("");
+    }
+
+    if (!farmimage2) {
+      setFarmImage2Errol("Hình ảnh 2 trang trại là bắt buộc");
+      isValid = false;
+    } else {
+      setFarmImage2Errol("");
+    }
+
+    if (!farmimage3) {
+      setFarmImage3Errol("Hình ảnh 3 trang trại là bắt buộc");
+      isValid = false;
+    } else {
+      setFarmImage3Errol("");
+    }
     return isValid;
   };
 
@@ -124,26 +205,50 @@ export default function FarmerRegisterStep2() {
       if (!validate()) {
         return;
       }
-      const farmData = {
-        farmName,
-        farmType,
-        farmemail,
-        farmstreet,
-        farmcommune,
-        farmdistrict,
-        farmprovince,
-        farmArea,
-        farmDescription,
-      };
+      const formData = new FormData();
+      formData.append("farmname", farmname);
+      formData.append("farmtype", farmtype);
+      formData.append("farmemail", farmemail);
+      formData.append("farmarea", farmarea);
+      formData.append("farmdescription", farmdescription);
+      formData.append("farmstreet", farmstreet);
+      formData.append("farmcommune", farmcommune);
+      formData.append("farmdistrict", farmdistrict);
+      formData.append("farmprovince", farmprovince);
+      formData.append("farmphone", farmphone);
+      formData.append("farmproductstotal", farmproductstotal);
+      formData.append("farmservice", farmservice);
+      formData.append("farminvite", farminvite);
+
+      if (farmlogo) {
+        formData.append("farmlogo", farmlogo);
+      }
+      if (farmimage) {
+        formData.append("farmimage", farmimage);
+      }
+      if (farmimage1) {
+        formData.append("farmimage1", farmimage1);
+      }
+      if (farmimage2) {
+        formData.append("farmimage2", farmimage2);
+      }
+      if (farmimage3) {
+        formData.append("farmimage3", farmimage3);
+      }
 
       // Gửi yêu cầu API cho giai đoạn 1 (nhập thông tin cơ bản)
       const response = await axios.post(
         `${API_BASE_URL}/auth/farmer/register/step2/${userId}`,
-        farmData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       const farmId = response.data.farmid;
-      
+
       // Điều hướng sang trang nhập thông tin phụ
       setToastMessage("Đăng ký trang trại thành công");
       navigate(`/farmer/register/step3?farmId=${farmId}`);
@@ -156,7 +261,6 @@ export default function FarmerRegisterStep2() {
     }
   };
 
-  
   return (
     <div className="h-screen bg-fourth flex flex-col">
       <ToastContainer />
@@ -186,7 +290,9 @@ export default function FarmerRegisterStep2() {
               icon={faShoppingCart}
               className=" text-green-600 text-4xl"
             />
-            <p className="text-center text-green-600 mt-2">Đăng ký trang trại</p>
+            <p className="text-center text-green-600 mt-2">
+              Đăng ký trang trại
+            </p>
             {/* Đường kẻ */}
             <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-500 w-40"></div>
           </div>
@@ -217,7 +323,7 @@ export default function FarmerRegisterStep2() {
                 type="text"
                 id="farmName"
                 placeholder="Tên trang trại"
-                value={farmName}
+                value={farmname}
                 onChange={(e) => setFarmName(e.target.value)}
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
@@ -237,7 +343,7 @@ export default function FarmerRegisterStep2() {
                 type="text"
                 id="farmType"
                 placeholder="Loại trang trại"
-                value={farmType}
+                value={farmtype}
                 onChange={(e) => setFarmType(e.target.value)}
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
@@ -356,7 +462,7 @@ export default function FarmerRegisterStep2() {
                 type="text"
                 id="farmArea"
                 placeholder="Quy mô trang trại (m2)"
-                value={farmArea}
+                value={farmarea}
                 onChange={(e) => setFarmArea(e.target.value)}
                 className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
               />
@@ -372,16 +478,189 @@ export default function FarmerRegisterStep2() {
               >
                 Mô tả trang trại:
               </label>
-              <textarea
+              <input
                 id="farmDescription"
                 placeholder="Mô tả trang trại"
-                value={farmDescription}
+                value={farmdescription}
                 onChange={(e) => setFarmDescription(e.target.value)}
-                className="border border-gray-500 rounded-2xl py-2 px-3 w-full h-40 bg-ebffeb resize-none text-gray-500"
-              ></textarea>
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              ></input>
               {farmDescriptionError && (
-                <p className="text-red-500 text-sm italic">{farmDescriptionError}</p>
+                <p className="text-red-500 text-sm italic">
+                  {farmDescriptionError}
+                </p>
               )}
+            </div>
+
+            {/* bổ sung */}
+
+            <div className="mb-4">
+              <label
+                htmlFor="farmphone"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Số điện thoại:
+              </label>
+              <input
+                type="text"
+                id="farmphone"
+                placeholder="Số điện thoại"
+                value={farmphone}
+                onChange={(e) => setFarmPhone(e.target.value)}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {farmphoneErrol && (
+                <p className="text-red-500 text-sm italic">{farmphoneErrol}</p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="farmproductstotal"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Số loại sản phẩm:
+              </label>
+              <input
+                type="number"
+                id="farmproductotal"
+                placeholder="Số loại sản phẩm"
+                value={farmproductstotal}
+                onChange={(e) => setFarmProductTotal(e.target.value)}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {farmproductotalErrol && (
+                <p className="text-red-500 text-sm italic">
+                  {farmproductotalErrol}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="farmservice"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Dịch vụ trang trại:
+              </label>
+              <input
+                type="text"
+                id="farmservice"
+                placeholder="Dịch vụ trang trại"
+                value={farmservice}
+                onChange={(e) => setFarmservice(e.target.value)}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {farmserviceErrol && (
+                <p className="text-red-500 text-sm italic">
+                  {farmserviceErrol}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="farminvite"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Lời mời gọi:
+              </label>
+              <input
+                type="text"
+                id="farminvite"
+                placeholder="Lời mời gọi"
+                value={farminvite}
+                onChange={(e) => setFarminVite(e.target.value)}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {farminviteErrol && (
+                <p className="text-red-500 text-sm italic">{farminviteErrol}</p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="farmlogo"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Logo nông trại:
+              </label>
+              <input
+                type="file"
+                id="farmlogo"
+                placeholder="Logo nông trại"
+                onChange={(e) => setFarmLogo(e.target.files[0])}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {<p className="text-red-500 text-sm italic">{farmlogoErrol}</p>}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="farmimage"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Ảnh đại diện nông trại:
+              </label>
+              <input
+                type="file"
+                id="farmimage"
+                placeholder="Ảnh đại diện nông trại"
+                onChange={(e) => setFarmImage(e.target.files[0])}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {<p className="text-red-500 text-sm italic">{farmimageErrol}</p>}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="farmimage1"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Hình ảnh 1:
+              </label>
+              <input
+                type="file"
+                id="farmimage1"
+                placeholder="Hình ảnh 2"
+                onChange={(e) => setFarmImage1(e.target.files[0])}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {<p className="text-red-500 text-sm italic">{farmimage1Errol}</p>}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="farmimage2"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Hình ảnh 2:
+              </label>
+              <input
+                type="file"
+                id="farmimage2"
+                placeholder="Hình ảnh 2"
+                onChange={(e) => setFarmImage2(e.target.files[0])}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {<p className="text-red-500 text-sm italic">{farmimage2Errol}</p>}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="farmimage3"
+                className="block text-gray-700 font-bold mb-2"
+              >
+                Hình ảnh 3:
+              </label>
+              <input
+                type="file"
+                id="farmimage3"
+                placeholder="Hình ảnh 3"
+                onChange={(e) => setFarmImage3(e.target.files[0])}
+                className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+              />
+              {<p className="text-red-500 text-sm italic">{farmimage3Errol}</p>}
             </div>
 
             <div className="flex mt-4 w-full justify-end">

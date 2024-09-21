@@ -7,6 +7,7 @@ import axios from "axios";
 import { formatDate } from "./../../../utils/formatDate";
 import ChangePasswordDialog from "../../../components/ChangePasswordDialog";
 import ChangeInfoDialog from "../../../components/ChangeInfoDialog";
+import ChangeAvatarCustomerDialog from "../../../components/DialogCustomer/ChangeAvatarCustomerDialog";
 
 export default function DetailInfoPage() {
   const token = localStorage.getItem("accessToken");
@@ -31,6 +32,11 @@ export default function DetailInfoPage() {
   const [isOpenChangeInfo, setIsOpenChangeInfo] = useState(false);
   const openChangeInfoDialog = () => {
     setIsOpenChangeInfo(true);
+  };
+
+  const [isOpenChangeAvatar, setIsOpenChangeAvatar] = useState(false);
+  const openChangeAvatarDialog = () => {
+    setIsOpenChangeAvatar(true);
   };
 
   const refreshUser = async () => {
@@ -126,7 +132,10 @@ export default function DetailInfoPage() {
                     alt="avatar"
                     className="rounded-full w-60 h-60 object-cover"
                   />
-                  <button className="font-bold text-primary text-xl">
+                  <button
+                    className="font-bold text-primary text-xl"
+                    onClick={() => openChangeAvatarDialog()}
+                  >
                     Thay đổi
                   </button>
                 </div>
@@ -146,6 +155,13 @@ export default function DetailInfoPage() {
       {isOpenChangeInfo && (
         <ChangeInfoDialog
           onClose={() => setIsOpenChangeInfo(false)}
+          user={user}
+          refreshUser={refreshUser}
+        />
+      )}
+      {isOpenChangeAvatar && (
+        <ChangeAvatarCustomerDialog
+          onClose={() => setIsOpenChangeAvatar(false)}
           user={user}
           refreshUser={refreshUser}
         />

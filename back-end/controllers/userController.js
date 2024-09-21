@@ -1,5 +1,15 @@
 const pool = require("../config/dbConnect");
 const bcrypt = require("bcryptjs");
+
+const { storage } = require("../config/firebase");
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+// Cấu hình Multer để xử lý upload
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
+
 // lay thong tin user tu userId
 const getUserById = async (req, res) => {
   const { id } = req.params;
@@ -106,15 +116,102 @@ const changePassword = async (req, res) => {
 };
 
 const changeInfo = async (req, res) => {
-  const { userId, username, email, fullname, street, commune, district, province, phonenumber, indentitycard, dob } = req.body;
+  const {
+    userId,
+    username,
+    email,
+    fullname,
+    street,
+    commune,
+    district,
+    province,
+    phonenumber,
+    indentitycard,
+    dob,
+  } = req.body;
   try {
     const result = await pool.query(
       `UPDATE "User" SET username = $1, email = $2, fullname = $3, street = $4, commune = $5, district = $6, province = $7, phonenumber = $8, indentitycard = $9, dob = $10 WHERE userid = $11`,
-      [username, email, fullname, street, commune, district, province, phonenumber, indentitycard, dob, userId]
+      [
+        username,
+        email,
+        fullname,
+        street,
+        commune,
+        district,
+        province,
+        phonenumber,
+        indentitycard,
+        dob,
+        userId,
+      ]
     );
-    res.json({ message: "Cập nhật thông tin thành công",  result: result.rows[0] });
+    res.json({
+      message: "Cập nhật thông tin thành công",
+      result: result.rows[0],
+    });
   } catch (error) {
     console.error("Error changing info:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const updateAvatarFarm = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const avatar = req.file;
+    let avatarUrl = null;
+    if (avatar) {
+      const avatarBuffer = avatar.buffer;
+      const avatarFilename = `avatars/${uuidv4()}`;
+      const avatarRef = ref(storage, avatarFilename);
+
+      await uploadBytes(avatarRef, avatarBuffer, {
+        contentType: avatar.mimetype,
+      });
+      avatarUrl = await getDownloadURL(avatarRef);
+
+      const newAvatar = await pool.query(
+        `UPDATE "User" SET avatar = $1 WHERE userid = $2 RETURNING *`,
+        [avatarUrl, userId]
+      );
+      res.json({
+        message: "Avatar đã được cập nhật thành công",
+        data: newAvatar.rows[0],
+      });
+    }
+  } catch (error) {
+    console.error("Error uploading avatar:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const changeAvatarCustomer = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const avatar = req.file;
+    let avatarUrl = null;
+    if (avatar) {
+      const avatarBuffer = avatar.buffer;
+      const avatarFilename = `avatars/${uuidv4()}`;
+      const avatarRef = ref(storage, avatarFilename);
+
+      await uploadBytes(avatarRef, avatarBuffer, {
+        contentType: avatar.mimetype,
+      });
+      avatarUrl = await getDownloadURL(avatarRef);
+
+      const newAvatar = await pool.query(
+        `UPDATE "User" SET avatar = $1 WHERE userid = $2 RETURNING *`,
+        [avatarUrl, userId]
+      );
+      res.json({
+        message: "Avatar đã được cập nhật thành công",
+        data: newAvatar.rows[0],
+      });
+    }
+  } catch (error) {
+    console.error("Error uploading avatar:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -123,4 +220,7 @@ module.exports = {
   getUserById,
   changePassword,
   changeInfo,
+  upload,
+  updateAvatarFarm,
+  changeAvatarCustomer,
 };

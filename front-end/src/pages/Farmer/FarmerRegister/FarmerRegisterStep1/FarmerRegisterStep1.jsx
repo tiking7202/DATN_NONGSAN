@@ -29,6 +29,7 @@ function FarmerRegisterStep1() {
   const [commune, setCommune] = useState("");
   const [district, setDistrict] = useState("");
   const [province, setProvince] = useState("");
+  const [avatar, setAvatar] = useState(null);
 
   // khởi tạo tb lỗi
   const [usernameError, setUsernameError] = useState("");
@@ -43,6 +44,7 @@ function FarmerRegisterStep1() {
   const [communeError, setCommuneError] = useState("");
   const [districtError, setDistrictError] = useState("");
   const [provinceError, setProvinceError] = useState("");
+  const [avatarError, setAvatarError] = useState("");
 
   const navigate = useNavigate();
 
@@ -126,7 +128,18 @@ function FarmerRegisterStep1() {
     } else {
       setProvinceError("");
     }
+
+    if (!avatar) {
+      setAvatarError("Ảnh đại diện là bắt buộc");
+      isValid = false;
+    } else {
+      setAvatarError("");
+    }
     return isValid;
+  };
+
+  const handleFileChange = (e) => {
+    setAvatar(e.target.files[0]);
   };
 
   // Xử lý hiện thị password khi nhập
@@ -142,30 +155,40 @@ function FarmerRegisterStep1() {
       if (!validate()) {
         return;
       }
-      const userData = {
-        username,
-        email,
-        password,
-        fullname,
-        dob,
-        phonenumber,
-        indentitycard,
-        role: "farmer",
-        status: "false",
-        street,
-        commune,
-        district,
-        province,
-      };
+
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("fullname", fullname);
+      formData.append("dob", dob);
+      formData.append("phonenumber", phonenumber);
+      formData.append("indentitycard", indentitycard);
+      formData.append("street", street);
+      formData.append("commune", commune);
+      formData.append("district", district);
+      formData.append("province", province);
+      if (avatar) {
+        formData.append("avatar", avatar);
+      }
+      formData.append("role", "farmer");
+      formData.append("status", "false");
 
       // Gửi yêu cầu API cho giai đoạn 1 (nhập thông tin cơ bản)
       const response = await axios.post(
         `${API_BASE_URL}/auth/farmer/register/step1`,
-        userData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       const userId = response.data.userid;
       // Điều hướng sang trang nhập thông tin phụ
-      setToastMessage("Đăng ký tài khoản thành công, nhập thông tin trang trại để hoàn tất đăng ký!");
+      setToastMessage(
+        "Đăng ký tài khoản thành công, nhập thông tin trang trại để hoàn tất đăng ký!"
+      );
       navigate(`/farmer/register/step2?userid=${userId}`);
     } catch (error) {
       console.error("Error during registration:", error);
@@ -290,7 +313,9 @@ function FarmerRegisterStep1() {
                   />
                 </div>
                 {passwordError && (
-                  <p className="text-red-500  text-sm italic">{passwordError}</p> // Changed to red
+                  <p className="text-red-500  text-sm italic">
+                    {passwordError}
+                  </p> // Changed to red
                 )}
               </div>
               <div className="mb-3 relative">
@@ -316,7 +341,9 @@ function FarmerRegisterStep1() {
                   />
                 </div>
                 {confirmPasswordError && (
-                  <p className="text-red-500 text-sm italic">{confirmPasswordError}</p> // Changed to red
+                  <p className="text-red-500 text-sm italic">
+                    {confirmPasswordError}
+                  </p> // Changed to red
                 )}
               </div>
               <div className="mb-3">
@@ -335,7 +362,7 @@ function FarmerRegisterStep1() {
                   className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {fullnameError && (
-                  <p className="text-red-500 italic text-sm">{fullnameError}</p> 
+                  <p className="text-red-500 italic text-sm">{fullnameError}</p>
                 )}
               </div>
               <div className="mb-3">
@@ -353,7 +380,7 @@ function FarmerRegisterStep1() {
                   className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {dobError && (
-                  <p className="text-red-500 italic text-sm">{dobError}</p> 
+                  <p className="text-red-500 italic text-sm">{dobError}</p>
                 )}
               </div>
               <div className="mb-3">
@@ -366,13 +393,15 @@ function FarmerRegisterStep1() {
                 <input
                   type="text"
                   id="phonenumber"
-                  placeholder="0987654321"
+                  placeholder="Số điện thoại"
                   value={phonenumber}
                   onChange={(e) => setPhonenumber(e.target.value)}
                   className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {phonenumberError && (
-                  <p className="text-red-500 italic text-sm">{phonenumberError}</p> 
+                  <p className="text-red-500 italic text-sm">
+                    {phonenumberError}
+                  </p>
                 )}
               </div>
               <div className="mb-3">
@@ -385,15 +414,37 @@ function FarmerRegisterStep1() {
                 <input
                   type="text"
                   id="indentitycard"
-                  placeholder="066202008991"
+                  placeholder="Số CMND/CCCD:"
                   value={indentitycard}
                   onChange={(e) => setIndentitycard(e.target.value)}
                   className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {indentitycardError && (
-                  <p className="text-red-500 text-sm italic">{indentitycardError}</p> 
+                  <p className="text-red-500 text-sm italic">
+                    {indentitycardError}
+                  </p>
                 )}
               </div>
+
+              <div className="mb-3">
+                <label
+                  htmlFor="avatar"
+                  className="block text-gray-700 font-bold mb-2 text-sm"
+                >
+                  Chọn ảnh đại diện:
+                </label>
+                <input
+                  type="file"
+                  id="avatar"
+                  placeholder="Chọn ảnh đại diện"
+                  onChange={handleFileChange}
+                  className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                />
+                {avatarError && (
+                  <p className="text-red-500 text-sm italic">{avatarError}</p>
+                )}
+              </div>
+
               <div className="mb-3">
                 <label
                   htmlFor="street"
@@ -410,7 +461,7 @@ function FarmerRegisterStep1() {
                   className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {streetError && (
-                  <p className="text-red-500 text-sm italic">{streetError}</p> 
+                  <p className="text-red-500 text-sm italic">{streetError}</p>
                 )}
               </div>
               <div className="mb-3">
@@ -429,7 +480,7 @@ function FarmerRegisterStep1() {
                   className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
                 />
                 {communeError && (
-                  <p className="text-red-500 text-sm italic">{communeError}</p> 
+                  <p className="text-red-500 text-sm italic">{communeError}</p>
                 )}
               </div>
               <div className="mb-3">

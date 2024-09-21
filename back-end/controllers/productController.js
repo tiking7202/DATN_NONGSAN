@@ -274,8 +274,8 @@ exports.createProduct = async (req, res) => {
     storagemethod,
     productsize,
     isdistributorview,
-    platingdate, 
-    harvestdate
+    plantingdate,
+    harvestdate,
   } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
@@ -308,9 +308,15 @@ exports.createProduct = async (req, res) => {
       return await getDownloadURL(imageRef);
     };
 
-    const productImage1Url = await uploadImage(req.files.productimage1 ? req.files.productimage1[0] : null);
-    const productImage2Url = await uploadImage(req.files.productimage2 ? req.files.productimage2[0] : null);
-    const productImage3Url = await uploadImage(req.files.productimage3 ? req.files.productimage3[0] : null);
+    const productImage1Url = await uploadImage(
+      req.files.productimage1 ? req.files.productimage1[0] : null
+    );
+    const productImage2Url = await uploadImage(
+      req.files.productimage2 ? req.files.productimage2[0] : null
+    );
+    const productImage3Url = await uploadImage(
+      req.files.productimage3 ? req.files.productimage3[0] : null
+    );
 
     // Tạo sản phẩm mới
     const newProduct = await pool.query(
@@ -338,7 +344,7 @@ exports.createProduct = async (req, res) => {
         "Tươi",
         false,
         plantingdate,
-        harvestdate
+        harvestdate,
       ]
     );
 
@@ -371,7 +377,7 @@ exports.updateProduct = async (req, res) => {
     isdistributorview,
     productsize,
     plantingdate,
-    harvestdate
+    harvestdate,
   } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
@@ -386,7 +392,7 @@ exports.updateProduct = async (req, res) => {
     !expirydate ||
     !productsize ||
     !plantingdate ||
-    !harvestdate 
+    !harvestdate
   ) {
     return res.status(400).json({ message: "Các trường ko được để trống" });
   }
@@ -406,7 +412,9 @@ exports.updateProduct = async (req, res) => {
     const uploadImage = async (image) => {
       if (!image) return null;
       const imageBuffer = image.buffer;
-      const imageFileName = `products/${existingProduct.productname}/${uuidv4()}`;
+      const imageFileName = `products/${
+        existingProduct.productname
+      }/${uuidv4()}`;
       const imageRef = ref(storage, imageFileName);
 
       await uploadBytes(imageRef, imageBuffer, { contentType: image.mimetype });
@@ -414,9 +422,15 @@ exports.updateProduct = async (req, res) => {
     };
 
     // Upload images to Firebase if they exist in the request
-    const productImage1Url = productImages.productimage1 ? await uploadImage(productImages.productimage1[0]) : existingProduct.productimage1;
-    const productImage2Url = productImages.productimage2 ? await uploadImage(productImages.productimage2[0]) : existingProduct.productimage2;
-    const productImage3Url = productImages.productimage3 ? await uploadImage(productImages.productimage3[0]) : existingProduct.productimage3;
+    const productImage1Url = productImages.productimage1
+      ? await uploadImage(productImages.productimage1[0])
+      : existingProduct.productimage1;
+    const productImage2Url = productImages.productimage2
+      ? await uploadImage(productImages.productimage2[0])
+      : existingProduct.productimage2;
+    const productImage3Url = productImages.productimage3
+      ? await uploadImage(productImages.productimage3[0])
+      : existingProduct.productimage3;
 
     // Sửa thông tin sản phẩm
     const updatedProduct = await pool.query(
