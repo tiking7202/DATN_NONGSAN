@@ -274,7 +274,7 @@ exports.createProduct = async (req, res) => {
     storagemethod,
     productsize,
     isdistributorview,
-    platingdate, 
+    plantingdate, 
     harvestdate
   } = req.body;
 

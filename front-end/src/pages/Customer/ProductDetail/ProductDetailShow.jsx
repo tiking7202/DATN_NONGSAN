@@ -166,7 +166,7 @@ export default function ProductDetail() {
                         Số lượng:{" "}
                       </span>
                       <span className="font-semibold">
-                        {product.productquantity} {product.unitofmeasure}
+                        {product.productquantity} ({product.unitofmeasure})
                       </span>
                     </div>
                     <div className="m-2">

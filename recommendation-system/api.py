@@ -7,13 +7,13 @@ import numpy as np
 app = Flask(__name__)
 
 # Tải mô hình và các đối tượng đã lưu
-with open('svd_model.pkl', 'rb') as f:
+with open('./svd_model.pkl', 'rb') as f:
     svd_model = pickle.load(f)
 
-with open('tfidf_vectorizer.pkl', 'rb') as f:
+with open('./tfidf_vectorizer.pkl', 'rb') as f:
     tfidf = pickle.load(f)
 
-with open('cosine_similarity.pkl', 'rb') as f:
+with open('./cosine_similarity.pkl', 'rb') as f:
     cosine_sim = pickle.load(f)
 
 # Đọc dữ liệu product_content
@@ -23,6 +23,11 @@ product_content_df['content'] = (
     product_content_df['farmname'].astype(str) + ' ' +
     product_content_df['farmprovince'].astype(str)
 )
+# Kiểm tra nếu hàm preprocess_text tồn tại
+try:
+    product_content_df['content'] = product_content_df['content'].apply(preprocess_text)
+except NameError:
+    print("Hàm preprocess_text không được định nghĩa!")
 
 # Tạo Series mapping productid tới chỉ số trong DataFrame
 indices = pd.Series(product_content_df.index, index=product_content_df['productid']).drop_duplicates()

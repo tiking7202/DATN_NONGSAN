@@ -148,6 +148,10 @@ export default function FarmerShowProducts() {
                       >
                         <td className="w-1/12 text-center">
                           {product.productname}
+                          <br />
+                          <span className="text-xs font-normal italic">
+                            ({formatDate(product.shipment)})
+                          </span>
                         </td>
                         <td className="w-1/12 text-center m-auto">
                           <img
@@ -163,7 +167,7 @@ export default function FarmerShowProducts() {
                           {product.farmname}
                         </td>
                         <td className="w-1/12 text-center">
-                          {product.productquantity} {product.unitofmeasure}
+                          {product.productquantity} ({product.unitofmeasure})
                         </td>
                         <td className="w-1/12 text-center">
                           {product.productprice} VNĐ
@@ -175,7 +179,9 @@ export default function FarmerShowProducts() {
                           {formatDate(product.expirydate)}
                         </td>
                         <td className="w-1/12 text-center">
-                          {product.isdistributorview ? "Có hiển thị" : "Không hiển thị"}
+                          {product.isdistributorview
+                            ? "Có hiển thị"
+                            : "Không hiển thị"}
                         </td>
                         <td className="w-1/6">
                           <div className="flex justify-center">

@@ -135,10 +135,15 @@ export default function ProductPage() {
 
   const handlePromotionChange = async (productid, newPromotion) => {
     try {
-      const response = await axios.patch(`${API_BASE_URL}/distributor/update/promotion/${productid}`, { promotion: newPromotion });
+      const response = await axios.patch(
+        `${API_BASE_URL}/distributor/update/promotion/${productid}`,
+        { promotion: newPromotion }
+      );
       setProducts((prevProducts) =>
         prevProducts.map((product) =>
-          product.productid === productid ? { ...product, promotion: newPromotion } : product
+          product.productid === productid
+            ? { ...product, promotion: newPromotion }
+            : product
         )
       );
       toast.success(response.data.message);
@@ -193,9 +198,9 @@ export default function ProductPage() {
                   >
                     <td className="w-1/12 text-center">
                       {product.productname}
-                      <span className="text-xs font-normal">
-                        {" "}
-                        ({product.productsize})
+                      <br />
+                      <span className="text-xs font-normal italic">
+                        ({formatDate(product.shipment)})
                       </span>
                     </td>
                     <td className="w-1/12 text-center">
@@ -216,7 +221,7 @@ export default function ProductPage() {
                       {formatDate(product.expirydate)}
                     </td>
                     <td className="w-1/12 text-center">
-                      {product.productquantity} {product.unitofmeasure}
+                      {product.productquantity} ({product.unitofmeasure})
                     </td>
                     <td className="w-1/12 text-center">
                       {editingProductId === product.productid ? (
@@ -252,16 +257,26 @@ export default function ProductPage() {
                       )}
                     </td>
                     <td className="w-1/12 text-center">
-                    <button
+                      <button
                         className="mx-2 rounded-full h-10 w-10 text-center hover:bg-slate-300"
-                        onClick={() => handleDecreasePromotion(product.productid, product.promotion)}
+                        onClick={() =>
+                          handleDecreasePromotion(
+                            product.productid,
+                            product.promotion
+                          )
+                        }
                       >
                         -
                       </button>
                       {product.promotion}%
                       <button
                         className="mx-2 rounded-full h-10 w-10 hover:bg-slate-300"
-                        onClick={() => handleIncreasePromotion(product.productid, product.promotion)}
+                        onClick={() =>
+                          handleIncreasePromotion(
+                            product.productid,
+                            product.promotion
+                          )
+                        }
                       >
                         +
                       </button>
