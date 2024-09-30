@@ -276,6 +276,10 @@ exports.createProduct = async (req, res) => {
     isdistributorview,
     plantingdate,
     harvestdate,
+// =======
+//     plantingdate, 
+//     harvestdate
+// >>>>>>> main
   } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
