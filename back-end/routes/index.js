@@ -8,6 +8,7 @@ const cart = require("./cart");
 const checkout = require("./checkout");
 const review = require("./review");
 const crop = require("./crop");
+const recommendation = require("./recommendation");
 
 router.use("/auth", auth);
 router.use("", user);
@@ -18,5 +19,6 @@ router.use("", cart);
 router.use("", checkout);
 router.use("", review);
 router.use("", crop);
+router.use("", recommendation);
 
 module.exports = router;

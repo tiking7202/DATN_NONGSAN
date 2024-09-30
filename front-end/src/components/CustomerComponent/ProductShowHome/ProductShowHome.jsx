@@ -11,20 +11,33 @@ import { API_BASE_URL } from "../../../config/config";
 import { toast } from "react-toastify";
 import { addToCart } from "../../../service/CustomerService/cartService";
 import { jwtDecode } from "jwt-decode";
+import { v4 as uuidv4 } from 'uuid';
 export default function ProductShowHome() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-
+  // Lấy user_id từ localStorage
+  const [userId, setUserId] = useState("");
   useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserId(decodedToken.userid);
+    } else {
+      const randomUserId = uuidv4();
+      setUserId(randomUserId);
+    }
+  }, []);
+  useEffect(() => {
+    console.log(userId)
     axios
-      .get(`${API_BASE_URL}/product`)
+      .get(`${API_BASE_URL}/recommendation/${userId}`)
       .then((response) => {
         setProducts(response.data);
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
       });
-  }, []);
+  }, [userId]);
 
   const handleAddToCart = (productId) => {
     const accessToken = localStorage.getItem("accessToken");
