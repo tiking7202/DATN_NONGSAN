@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../../../config/config";
 import { formatDate } from "../../../utils/formatDate";
 import ChangePasswordDialog from "../../../components/ChangePasswordDialog";
 import ChangeInfoDialog from "../../../components/ChangeInfoDialog";
+import ChangeAvatarFarmDialog from "../../../components/DialogFarm/ChangeAvatarFarmDialog";
 
 export default function FarmerDetailInfo() {
   const token = localStorage.getItem("accessToken");
@@ -33,6 +34,11 @@ export default function FarmerDetailInfo() {
     setIsOpenChangeInfo(true);
   };
 
+  const [isOpenChangeAvatar, setIsOpenChangeAvatar] = useState(false);
+  const openChangeAvatarDialog = () => {
+    setIsOpenChangeAvatar(true);
+  };
+
   const refreshUser = async () => {
     const response = await axios.get(`${API_BASE_URL}/user/${userId}`);
     setUser(response.data);
@@ -53,87 +59,98 @@ export default function FarmerDetailInfo() {
             {user && (
               <div className="flex flex-wrap justify-between ">
                 <div className="p-5 flex flex-col w-7/12">
-                <div className="flex">
-                  <p className="font-bold text-xl p-3 text-primary">
-                    Họ và tên:{" "}
-                  </p>
-                  <p className="text-xl p-3 font-medium">{user.fullname}</p>
+                  <div className="flex">
+                    <p className="font-bold text-xl p-3 text-primary">
+                      Họ và tên:{" "}
+                    </p>
+                    <p className="text-xl p-3 font-medium">{user.fullname}</p>
+                  </div>
+                  <div className="flex">
+                    <p className="font-bold text-xl p-3 text-primary">
+                      Email:{" "}
+                    </p>
+                    <p className="text-xl p-3 font-medium">{user.email}</p>
+                  </div>
+                  <div className="flex">
+                    <p className="font-bold text-xl p-3 text-primary">
+                      Username:{" "}
+                    </p>
+                    <p className="text-xl p-3 font-medium">{user.username}</p>
+                  </div>
+                  <div className="flex">
+                    <p className="font-bold text-xl p-3 text-primary">
+                      Mật khẩu
+                    </p>
+                    <p
+                      className="text-xl p-3 text-primary cursor-pointer italic font-medium"
+                      onClick={() => openChangePasswordDialog()}
+                    >
+                      Thay đổi
+                    </p>
+                  </div>
+                  <div className="flex">
+                    <p className="font-bold text-xl p-3 text-primary">
+                      Số điện thoại:{" "}
+                    </p>
+                    <p className="text-xl p-3 font-medium">
+                      {user.phonenumber}
+                    </p>
+                  </div>
+                  <div className="flex">
+                    <p className="font-bold text-xl p-3 text-primary">
+                      Địa chỉ:{" "}
+                    </p>
+                    <p className="text-xl p-3 font-medium">
+                      {user.street +
+                        ", " +
+                        user.commune +
+                        ", " +
+                        user.district +
+                        ", " +
+                        user.province +
+                        "."}
+                    </p>
+                  </div>
+                  <div className="flex">
+                    <p className="font-bold text-xl p-3 text-primary">
+                      Ngày sinh:
+                    </p>
+                    <p className="text-xl p-3 font-medium">
+                      {formatDate(user.dob)}
+                    </p>
+                  </div>
+                  <div className="flex">
+                    <p className="font-bold text-xl p-3 text-primary">
+                      Số CCCD:
+                    </p>
+                    <p className="text-xl p-3 font-medium">
+                      {user.indentitycard}
+                    </p>
+                  </div>
+                  <div className="flex justify-end w-2/3">
+                    <button
+                      className="bg-primary text-secondary font-bold text-xl p-2 rounded-md mt-5"
+                      onClick={() => openChangeInfoDialog()}
+                    >
+                      Thay đổi thông tin
+                    </button>
+                  </div>
                 </div>
-                <div className="flex">
-                  <p className="font-bold text-xl p-3 text-primary">Email: </p>
-                  <p className="text-xl p-3 font-medium">{user.email}</p>
-                </div>
-                <div className="flex">
-                  <p className="font-bold text-xl p-3 text-primary">
-                    Username:{" "}
-                  </p>
-                  <p className="text-xl p-3 font-medium">{user.username}</p>
-                </div>
-                <div className="flex">
-                  <p className="font-bold text-xl p-3 text-primary">Mật khẩu</p>
-                  <p
-                    className="text-xl p-3 text-primary cursor-pointer italic font-medium"
-                    onClick={() => openChangePasswordDialog()}
-                  >
-                    Thay đổi
-                  </p>
-                </div>
-                <div className="flex">
-                  <p className="font-bold text-xl p-3 text-primary">
-                    Số điện thoại:{" "}
-                  </p>
-                  <p className="text-xl p-3 font-medium">{user.phonenumber}</p>
-                </div>
-                <div className="flex">
-                  <p className="font-bold text-xl p-3 text-primary">
-                    Địa chỉ:{" "}
-                  </p>
-                  <p className="text-xl p-3 font-medium">
-                    {user.street +
-                      ", " +
-                      user.commune +
-                      ", " +
-                      user.district +
-                      ", " +
-                      user.province +
-                      "."}
-                  </p>
-                </div>
-                <div className="flex">
-                  <p className="font-bold text-xl p-3 text-primary">
-                    Ngày sinh:
-                  </p>
-                  <p className="text-xl p-3 font-medium">
-                    {formatDate(user.dob)}
-                  </p>
-                </div>
-                <div className="flex">
-                  <p className="font-bold text-xl p-3 text-primary">Số CCCD:</p>
-                  <p className="text-xl p-3 font-medium">
-                    {user.indentitycard}
-                  </p>
-                </div>
-                <div className="flex justify-end w-2/3">
-                  <button
-                    className="bg-primary text-secondary font-bold text-xl p-2 rounded-md mt-5"
-                    onClick={() => openChangeInfoDialog()}
-                  >
-                    Thay đổi thông tin
-                  </button>
-                </div>
-              </div>
                 <div className="p-5 w-4/12 border-l-2 border-primary">
-                <div className="flex flex-col items-center">
-                  <img
-                    src={user.avatar}
-                    alt="avatar"
-                    className="rounded-full w-1/3"
-                  />
-                  <button className="font-bold text-primary text-xl">
-                    Thay đổi
-                  </button>
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={user.avatar}
+                      alt="avatar"
+                      className="rounded-full w-2/3"
+                    />
+                    <button
+                      className="font-bold text-primary text-xl"
+                      onClick={() => openChangeAvatarDialog()}
+                    >
+                      Thay đổi
+                    </button>
+                  </div>
                 </div>
-              </div>
               </div>
             )}
           </div>
@@ -149,6 +166,14 @@ export default function FarmerDetailInfo() {
         <ChangeInfoDialog
           onClose={() => setIsOpenChangeInfo(false)}
           user={user}
+          refreshUser={refreshUser}
+        />
+      )}
+      {isOpenChangeAvatar && (
+        <ChangeAvatarFarmDialog
+          onClose={() => setIsOpenChangeAvatar(false)}
+          user={user}
+          userId={userId}
           refreshUser={refreshUser}
         />
       )}

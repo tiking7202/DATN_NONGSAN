@@ -25,6 +25,7 @@ export default function HeaderFarmer() {
       const decodedToken = jwtDecode(token);
       setFullName(decodedToken?.fullname);
       setAvatar(decodedToken?.avatar);
+      console.log(avatar);
       if (!isFarmer(token)) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -60,8 +61,6 @@ export default function HeaderFarmer() {
     }
   };
 
-  
-  
   return (
     <header className="z-40 p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full">
       <ToastContainer />
@@ -102,7 +101,7 @@ export default function HeaderFarmer() {
                     aria-labelledby="options-menu"
                   >
                     <a
-                      href="/farmer/profile"
+                      href="/farmer/farm/info"
                       className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
                       role="menuitem"
                     >

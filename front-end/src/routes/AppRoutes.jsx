@@ -26,8 +26,8 @@ import FarmerShowOrders from "../pages/Farmer/FarmerOrder/FarmerShowOrders";
 import CheckoutDetailPage from "../pages/Customer/CheckoutDetailPage/CheckoutDetailPage";
 import FarmerDetailInfo from "../pages/Farmer/FarmerInfo/FarmerDetailInfo";
 import DetailInfoPage from "../pages/Customer/DetailInfoPage/DetailInfoPage";
+import FarmerProfile from "../pages/Farmer/FarmerProfile/FarmerProfile";
 import { ToastProvider } from "../context/ToastContext";
-
 
 export default function AppRoutes() {
   return (
@@ -43,7 +43,7 @@ export default function AppRoutes() {
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path='/checkout-detail/:id' element={<CheckoutDetailPage />} />
+          <Route path="/checkout-detail/:id" element={<CheckoutDetailPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/purchase-history" element={<PurchasesHistory />} />
           <Route path="/detail-info" element={<DetailInfoPage />} />
@@ -57,7 +57,7 @@ export default function AppRoutes() {
           <Route path="/farmer/products" element={<FarmerShowProducts />} />
           <Route path="/farmer/farms" element={<FarmerShowFarm />} />
           <Route path="/farmer/farms/crop" element={<FarmerCrop />} />
-          {/* <Route path="/farmer/profile" element={<FarmerProfile />} />; */}
+          <Route path="/farmer/farm/info" element={<FarmerProfile />} />;
           <Route
             path="/farmer/register/step1"
             element={<FarmerRegisterStep1 />}
@@ -70,9 +70,8 @@ export default function AppRoutes() {
             path="/farmer/register/step3"
             element={<FarmerRegisterStep3 />}
           />
-          <Route path='/farmer/orders' element={<FarmerShowOrders />} />
+          <Route path="/farmer/orders" element={<FarmerShowOrders />} />
           <Route path="/farmer/profile" element={<FarmerDetailInfo />} />
-
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

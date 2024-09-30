@@ -214,6 +214,7 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
           console.error("Toast is not properly initialized");
         }
       }
+      console.log(response);
     } catch (error) {
       console.error("Error during registration:", error);
       toast.error(error.response.data, {

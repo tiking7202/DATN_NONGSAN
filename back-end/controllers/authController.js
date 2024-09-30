@@ -6,7 +6,7 @@ const { generateAccessToken, generateRefreshToken } = require("../utils/token");
 const { storage } = require("../config/firebase");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
-const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 // Cấu hình Multer để xử lý upload
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -100,7 +100,7 @@ const registerStep2 = async (req, res) => {
     }
     const parsedAddress = JSON.parse(address);
     const { street, commune, district, province } = parsedAddress;
-    
+
     if (!street || !commune || !district || !province) {
       return res.status(400).send("Địa chỉ không đầy đủ.");
     }
@@ -118,7 +118,9 @@ const registerStep2 = async (req, res) => {
       const avatarFileName = `avatars/${uuidv4()}`;
       const avatarRef = ref(storage, avatarFileName);
 
-      await uploadBytes(avatarRef, avatarBuffer, { contentType: avatar.mimetype });
+      await uploadBytes(avatarRef, avatarBuffer, {
+        contentType: avatar.mimetype,
+      });
       avatarUrl = await getDownloadURL(avatarRef);
     }
     // Cập nhật thông tin người dùng trong PostgreSQL
@@ -247,11 +249,13 @@ const registerFarmerStep1 = async (req, res) => {
       district,
       province,
     } = req.body;
+    const avatar = req.file;
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     if (!street || !commune || !district || !province) {
       return res.status(400).send("Địa chỉ không đầy đủ.");
     }
+
     // Check for existing username
     const existingUsername = await pool.query(
       'SELECT * FROM "User" WHERE username = $1',
@@ -292,9 +296,21 @@ const registerFarmerStep1 = async (req, res) => {
         .send("Số điện thoại đã tồn tại, vui lòng chọn số điện thoại khác");
     }
 
+    let avatarUrl = null;
+    if (avatar) {
+      const avatarBuffer = avatar.buffer;
+      const avatarFileName = `avatars/${uuidv4()}`;
+      const avatarRef = ref(storage, avatarFileName);
+
+      await uploadBytes(avatarRef, avatarBuffer, {
+        contentType: avatar.mimetype,
+      });
+      avatarUrl = await getDownloadURL(avatarRef);
+    }
+
     // Lưu thông tin cơ bản vào cơ sở dữ liệu
     const newUser = await pool.query(
-      'INSERT INTO "User" (username, password, email, fullname, phonenumber, indentitycard, dob, role, status, street, commune, district, province) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
+      'INSERT INTO "User" (username, password, email, fullname, phonenumber, indentitycard, dob, role, status, street, commune, district, province, avatar) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *',
       [
         username,
         hashedPassword,
@@ -309,6 +325,7 @@ const registerFarmerStep1 = async (req, res) => {
         commune,
         district,
         province,
+        avatarUrl,
       ]
     );
 
@@ -320,44 +337,94 @@ const registerFarmerStep1 = async (req, res) => {
 };
 
 const registerFarmerStep2 = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const {
-      farmName,
-      farmType,
-      farmemail,
-      farmstreet,
-      farmcommune,
-      farmdistrict,
-      farmprovince,
-      farmArea,
-      farmDescription,
-    } = req.body;
+  const { userId } = req.params;
+  const {
+    farmname,
+    farmtype,
+    farmemail,
+    farmstreet,
+    farmcommune,
+    farmdistrict,
+    farmprovince,
+    farmarea,
+    farmdescription,
+    farmphone,
+    farmproductstotal,
+    farmservice,
+    farminvite,
+  } = req.body;
 
-    // Kiểm tra xem các thông tin bắt buộc đã được gửi lên từ client chưa
-    if (!farmName || !farmType || !farmemail || !farmArea || !farmDescription) {
-      return res.status(400).send("Vui lòng nhập đầy đủ thông tin.");
-    }
-    if (!farmstreet || !farmcommune || !farmdistrict || !farmprovince) {
-      return res.status(400).send("Địa chỉ không đầy đủ.");
-    }
+  // Kiểm tra xem các thông tin bắt buộc đã được gửi lên từ client chưa
+  if (
+    !farmname ||
+    !farmtype ||
+    !farmemail ||
+    !farmarea ||
+    !farmdescription ||
+    !farmphone ||
+    !farmproductstotal ||
+    !farmservice ||
+    !farminvite
+  ) {
+    return res.status(400).send("Vui lòng nhập đầy đủ thông tin.");
+  }
+  if (!farmstreet || !farmcommune || !farmdistrict || !farmprovince) {
+    return res.status(400).send("Địa chỉ không đầy đủ.");
+  }
+
+  try {
+    const uploadImage = async (image) => {
+      if (!image) return null;
+      const imageBuffer = image.buffer;
+      const imageFileName = `farms/${farmname}/${uuidv4()}`;
+      const imageRef = ref(storage, imageFileName);
+
+      await uploadBytes(imageRef, imageBuffer, { contentType: image.mimetype });
+      return await getDownloadURL(imageRef);
+    };
+
+    const farmLogoUrl = await uploadImage(
+      req.files.farmlogo ? req.files.farmlogo[0] : null
+    );
+    const farmImageUrl = await uploadImage(
+      req.files.farmimage ? req.files.farmimage[0] : null
+    );
+    const farmImage1Url = await uploadImage(
+      req.files.farmimage1 ? req.files.farmimage1[0] : null
+    );
+    const farmImage2Url = await uploadImage(
+      req.files.farmimage2 ? req.files.farmimage2[0] : null
+    );
+    const farmImage3Url = await uploadImage(
+      req.files.farmimage3 ? req.files.farmimage3[0] : null
+    );
 
     // Tiến hành cập nhật thông tin trang trại vào cơ sở dữ liệu
     const newFarm = await pool.query(
-      "INSERT INTO Farm (farmname, farmtype, farmemail, farmarea, farmdes, userid, farmstreet, farmcommune, farmdistrict, farmprovince) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *",
+      "INSERT INTO Farm (farmname, farmtype, farmemail, farmarea, farmdes, userid, farmstreet, farmcommune, farmdistrict, farmprovince, farmphone, farmproductstotal, farmservice, farminvite, farmlogo, farmimage, farmimage1, farmimage2, farmimage3) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING *",
       [
-        farmName,
-        farmType,
+        farmname,
+        farmtype,
         farmemail,
-        farmArea,
-        farmDescription,
+        farmarea,
+        farmdescription,
         userId,
         farmstreet,
         farmcommune,
         farmdistrict,
         farmprovince,
+        farmphone,
+        farmproductstotal,
+        farmservice,
+        farminvite,
+        farmLogoUrl,
+        farmImageUrl,
+        farmImage1Url,
+        farmImage2Url,
+        farmImage3Url,
       ]
     );
+
     res.json(newFarm.rows[0]);
   } catch (error) {
     console.error("Error updating additional info:", error);
@@ -372,7 +439,7 @@ const loginDistributor = async (req, res) => {
     const { usernameOrEmail, password } = req.body;
 
     const distributor = await pool.query(
-      'SELECT * FROM distributor WHERE username = $1 OR email = $1',
+      "SELECT * FROM distributor WHERE username = $1 OR email = $1",
       [usernameOrEmail]
     );
 
@@ -380,7 +447,10 @@ const loginDistributor = async (req, res) => {
       return res.status(400).send("Tên đăng nhập hoặc email không tồn tại");
     }
 
-    const validPassword = await bcrypt.compare(password, distributor.rows[0].password);
+    const validPassword = await bcrypt.compare(
+      password,
+      distributor.rows[0].password
+    );
     if (!validPassword) {
       return res.status(400).send("Mật khẩu không chính xác");
     }
@@ -393,9 +463,8 @@ const loginDistributor = async (req, res) => {
         expiresIn: "1h",
       }
     );
-    
+
     res.json({ token });
-    
   } catch (error) {
     console.error("Lỗi khi đăng nhập:", error);
     res.status(500).send("Internal Server Error");
