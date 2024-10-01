@@ -25,7 +25,6 @@ export default function HeaderFarmer() {
       const decodedToken = jwtDecode(token);
       setFullName(decodedToken?.fullname);
       setAvatar(decodedToken?.avatar);
-      console.log(avatar);
       if (!isFarmer(token)) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -101,11 +100,11 @@ export default function HeaderFarmer() {
                     aria-labelledby="options-menu"
                   >
                     <a
-                      href="/farmer/farm/info"
+                      href="/farmer/profile"
                       className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
                       role="menuitem"
                     >
-                      Thay đổi thông tin
+                      Thông tin cá nhân
                     </a>
                     <a
                       href="/farmer"

@@ -36,7 +36,7 @@ export default function HeaderDistributor() {
             Trang chủ
           </Link>
           <Link
-            to="/category"
+            to="/farmer"
             className="btn btn-primary font-medium hover:text-fourth m-2"
           >
             Nông dân

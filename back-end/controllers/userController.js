@@ -216,6 +216,30 @@ const changeAvatarCustomer = async (req, res) => {
   }
 };
 
+// Lấy tất cả farmer
+const getAllFarmerInactive = async (req, res) => {
+  try {
+    // Lấy tất cả farmer có status = false
+    const farmersResult = await pool.query(`SELECT * FROM "User" WHERE role = 'farmer'`);
+    const farmers = farmersResult.rows;
+
+    if (farmers.length === 0) {
+      return res.json({ farmers: [], farms: [] });
+    }
+
+    // Lấy thêm thông tin trang trại từ bảng farm cho từng farmer
+    const farmQueries = farmers.map(farmer => pool.query(`SELECT * FROM "Farm" WHERE userid = $1`, [farmer.userid]));
+    const farmsResults = await Promise.all(farmQueries);
+    const farms = farmsResults.map(result => result.rows).flat();
+
+    // Trả về dữ liệu của cả farmer và farm
+    res.json({ farmers, farms });
+  } catch (error) {
+    console.error("Error fetching farmers:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getUserById,
   changePassword,
@@ -223,4 +247,5 @@ module.exports = {
   upload,
   updateAvatarFarm,
   changeAvatarCustomer,
+  getAllFarmerInactive,
 };

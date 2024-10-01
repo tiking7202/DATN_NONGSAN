@@ -46,16 +46,16 @@ const FarmerNavBar = () => {
         >
           Quản lý đơn hàng
         </Link>
-        {/* <Link
-          to="/farmer/payments"
+        <Link
+          to="/farmer/farm/info"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
-            location.pathname === "/farmer/payments"
+            location.pathname === "/farmer/farm/info"
               ? "bg-primary font-bold text-secondary hover:opacity-85"
               : ""
           }`}
         >
-          Quản lý thanh toán
-        </Link> */}
+          Quản lý trang trại
+        </Link>
         <Link
           to="/farmer/profile"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${

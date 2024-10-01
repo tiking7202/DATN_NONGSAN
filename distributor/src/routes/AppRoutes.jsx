@@ -5,6 +5,7 @@ import CategoryPage from "../pages/Category/CategoryPage";
 import OrderPage from "../pages/Order/OrderPage";
 import LoginPage from "../pages/LoginPage";
 import { ToastProvider } from "../context/ToastContext";
+import FarmerPage from "../pages/Farmer/FarmerPage";
 
 export default function AppRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function AppRoutes() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/farmer" element={<FarmerPage />} />
           <Route path="/category" element={<CategoryPage />} />
           <Route path="/product" element={<ProductPage />} />
           <Route path="/order" element={<OrderPage />} />

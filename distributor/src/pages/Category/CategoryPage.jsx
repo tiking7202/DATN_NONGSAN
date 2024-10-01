@@ -126,7 +126,7 @@ export default function CategoryShow() {
         <div className="bg-secondary w-full right-0 top-0 mt-20">
           <div className="w-10/12 m-auto bg-white rounded-lg px-3 mt-5">
             <div className="flex justify-between items-center my-3">
-              <h2 className="text-2xl font-bold">Danh mục sản phẩm</h2>
+              <h2 className="my-4 px-4 text-primary font-bold text-3xl">Danh mục sản phẩm</h2>
               <button
                 className="bg-primary hover:bg-green-600 text-white px-4 py-2 rounded-lg"
                 onClick={openCreateCategoryDialog}

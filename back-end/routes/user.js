@@ -9,11 +9,11 @@ router.put(
   userController.upload.single("avatar"),
   userController.changeAvatarCustomer
 );
-
 router.put(
   "/farms/update/avatar/:userId",
   userController.upload.single("avatar"),
   userController.updateAvatarFarm
 );
+router.get("/farmer", userController.getAllFarmerInactive);
 
 module.exports = router;
