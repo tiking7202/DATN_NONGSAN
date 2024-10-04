@@ -51,7 +51,7 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
   };
 
   return (
-    <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center m-auto">
+    <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center m-auto">
       <div className="bg-white p-4 rounded-lg w-1/2 m-auto text-primary h-7/12 overflow-auto shadow-xl border border-primary">
         <div className="flex justify-end">
           <button

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 export default function FarmerDetailCrop({ crop, onClose }) {
   return (
-    <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+    <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center">
       <div className="bg-white p-8 rounded-lg w-1/2 h-3/4 overflow-auto shadow-2xl">
         {/* Close Button */}
         <div className="flex justify-end">

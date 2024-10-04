@@ -37,7 +37,10 @@ router.delete(
   "/farmer/delete/product/:productid",
   productController.deleteProduct
 );
-
+router.post("/create/product-batch/:productid", productController.createProductBatch);
+router.get("/product-batch/:productid", productController.getProductBatchByProductId);
+router.put("/update/product-batch/:batchid", productController.updateProductBatch);
+router.delete("/delete/product-batch/:batchid", productController.deleteProductBatch);
 // Cho distributor quản lý sản phẩm
 router.get(
   "/distributor/products",

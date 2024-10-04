@@ -28,7 +28,7 @@ export default function DeleteCategory({
     }
   };
   return (
-    <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center h-screen w-full">
+    <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center h-screen w-full">
       <div className="bg-white p-6 rounded w-1/2 m-auto text-primary h-11/12 overflow-auto shadow-xl">
         <div className="flex justify-end">
           <button

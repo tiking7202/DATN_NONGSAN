@@ -126,15 +126,21 @@ exports.searchProduct = async (req, res) => {
       SELECT 
         p.*, 
         f.farmname, 
-        f.farmprovince 
+        f.farmprovince,
+        c.categoryname
       FROM 
         product p
       JOIN 
         farm f 
       ON 
         p.farmid = f.farmid
+      JOIN
+        category c
+      ON
+        p.categoryid = c.categoryid
       WHERE 
-        p.productname ILIKE $1 AND p.isvisibleweb = true
+        (p.productname ILIKE $1 OR c.categoryname ILIKE $1 OR f.farmprovince ILIKE $1 OR f.farmname ILIKE $1)  
+        AND p.isvisibleweb = true
     `;
     const productsWithFarm = await pool.query(query, [`%${search}%`]);
     res.json(productsWithFarm.rows);
@@ -276,10 +282,6 @@ exports.createProduct = async (req, res) => {
     isdistributorview,
     plantingdate,
     harvestdate,
-// =======
-//     plantingdate, 
-//     harvestdate
-// >>>>>>> main
   } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
@@ -500,6 +502,133 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
+// Thêm lô sản phẩm mới bảng product_batch: batchid, productid, batchname, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion
+exports.createProductBatch = async (req, res) => {
+  const { productid } = req.params;
+  const { unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion } = req.body;
+  try {
+    // Kiểm tra sản phẩm có tồn tại không
+    const productQuery = await pool.query(
+      "SELECT * FROM product WHERE productid = $1",
+      [productid]
+    );
+    if (productQuery.rows.length === 0) {
+      return res.status(400).json({ message: "Không tìm thấy sản phẩm" });
+    }
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!unitofmeasure || !batchquantity || !batchquality || !batchprice || !promotion) {
+      return res.status(400).json({ message: "Các trường không được để trống" });
+    }
+
+    // Thêm lô sản phẩm mới
+    const newBatch = await pool.query(
+      `INSERT INTO product_batch (productid, unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *`,
+      [productid, unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion]
+    );
+
+    // Trả về thông tin lô sản phẩm vừa tạo
+    res.json({
+      batch: newBatch.rows[0],
+      message: "Tạo lô sản phẩm thành công",
+    });
+  } catch (error) {
+    console.error("Error creating product batch:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Xem danh sách các lô hàng
+exports.getProductBatchByProductId = async (req, res) => {
+  const { productid } = req.params;
+  try {
+    // Kiểm tra sản phẩm có tồn tại không
+    const productQuery = await pool.query(
+      "SELECT * FROM product WHERE productid = $1",
+      [productid]
+    );
+    if (productQuery.rows.length === 0) {
+      return res.status(400).json({ message: "Không tìm thấy sản phẩm" });
+    }
+
+    // Lấy danh sách các lô hàng của sản phẩm
+    const batches = await pool.query(
+      "SELECT * FROM product_batch WHERE productid = $1",
+      [productid]
+    );
+
+    // Trả về danh sách các lô hàng
+    res.json(batches.rows);
+  } catch (error) {
+    console.error("Error fetching product batches:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Sửa thông tin lô hàng
+exports.updateProductBatch = async (req, res) => {
+  const { batchid } = req.params;
+  const { unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion } = req.body;
+  try {
+    // Kiểm tra lô hàng có tồn tại không
+    const batchQuery = await pool.query(
+      "SELECT * FROM product_batch WHERE batchid = $1",
+      [batchid]
+    );
+    if (batchQuery.rows.length === 0) {
+      return res.status(400).json({ message: "Không tìm thấy lô hàng" });
+    }
+
+    // Kiểm tra dữ liệu đầu vào
+    // if (!unitofmeasure || !batchquantity || !batchquality || !batchprice || !promotion) {
+    //   return res.status(400).json({ message: "Các trường không được để trống" });
+    // }
+
+    // Sửa thông tin lô hàng
+    const updatedBatch = await pool.query(
+      `UPDATE product_batch
+        SET unitofmeasure = $1, batchquantity = $2, batchquality = $3, plantingdate = $4, harvestdate = $5, expirydate = $6, batchprice = $7, promotion = $8
+        WHERE batchid = $9
+        RETURNING *`,
+      [unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion, batchid]
+    );
+
+    // Trả về thông tin lô hàng vừa sửa
+    res.json({
+      batch: updatedBatch.rows[0],
+      message: "Sửa thông tin lô hàng thành công",
+    });
+  } catch (error) {
+    console.error("Error fetching product batches:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  } 
+};
+
+// Xóa lô sản phẩm
+exports.deleteProductBatch = async (req, res) => {
+  const { batchid } = req.params;
+  try {
+    // Kiểm tra lô hàng có tồn tại không
+    const batchQuery = await pool.query(
+      "SELECT * FROM product_batch WHERE batchid = $1",
+      [batchid]
+    );
+    if (batchQuery.rows.length === 0) {
+      return res.status(400).json({ message: "Không tìm thấy lô hàng" });
+    }
+
+    // Xóa lô hàng
+    await pool.query("DELETE FROM product_batch WHERE batchid = $1", [batchid]);
+
+    res.json({ message: "Xóa lô hàng thành công" });
+  }
+  catch (error) {
+    console.error("Error deleting product batch:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 // distributor controller
 exports.getAllProductsToDistributor = async (req, res) => {
   const { page = 1, pageSize = 10 } = req.query;

@@ -216,24 +216,37 @@ const changeAvatarCustomer = async (req, res) => {
   }
 };
 
-// Lấy tất cả farmer
-const getAllFarmerInactive = async (req, res) => {
+const getAllFarmer = async (req, res) => {
   try {
-    // Lấy tất cả farmer có status = false
-    const farmersResult = await pool.query(`SELECT * FROM "User" WHERE role = 'farmer'`);
-    const farmers = farmersResult.rows;
+    // Lấy page và limit từ query parameters, mặc định là page 1 và limit 10
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
 
-    if (farmers.length === 0) {
-      return res.json({ farmers: [], farms: [] });
-    }
+    // Lấy tất cả farmer có status = false và thông tin trang trại của họ với phân trang
+    const result = await pool.query(`
+      SELECT u.*, f.farmname
+      FROM "User" u
+      LEFT JOIN farm f ON u.userid = f.userid
+      WHERE u.role = 'farmer'
+      LIMIT $1 OFFSET $2
+    `, [limit, offset]);
+    const farmersWithFarms = result.rows;
 
-    // Lấy thêm thông tin trang trại từ bảng farm cho từng farmer
-    const farmQueries = farmers.map(farmer => pool.query(`SELECT * FROM "Farm" WHERE userid = $1`, [farmer.userid]));
-    const farmsResults = await Promise.all(farmQueries);
-    const farms = farmsResults.map(result => result.rows).flat();
+    // Lấy tổng số lượng farmer để tính tổng số trang
+    const countResult = await pool.query(`
+      SELECT COUNT(*) AS total
+      FROM "User" u
+      WHERE u.role = 'farmer'
+    `);
+    const totalFarmers = parseInt(countResult.rows[0].total);
+    const totalPages = Math.ceil(totalFarmers / limit);
 
-    // Trả về dữ liệu của cả farmer và farm
-    res.json({ farmers, farms });
+    res.json({ 
+      farmersWithFarms, 
+      page, 
+      totalPages 
+    });
   } catch (error) {
     console.error("Error fetching farmers:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -247,5 +260,5 @@ module.exports = {
   upload,
   updateAvatarFarm,
   changeAvatarCustomer,
-  getAllFarmerInactive,
+  getAllFarmer,
 };

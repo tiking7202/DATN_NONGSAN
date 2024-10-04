@@ -14,6 +14,6 @@ router.put(
   userController.upload.single("avatar"),
   userController.updateAvatarFarm
 );
-router.get("/farmer", userController.getAllFarmerInactive);
+router.get("/farmer", userController.getAllFarmer);
 
 module.exports = router;

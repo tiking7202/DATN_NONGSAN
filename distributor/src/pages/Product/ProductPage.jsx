@@ -2,15 +2,19 @@ import HeaderDistributor from "../../components/HeaderDistributor";
 import {
   faChevronLeft,
   faChevronRight,
+  faEye,
+  faPlusCircle,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../../../../front-end/src/config/config";
-import { formatDate } from "../../utils/formatDate";
 import { truncateText } from "../../utils/truncaseText";
 import { toast, ToastContainer } from "react-toastify";
 import DetailProductDialog from "./DetailProductDialog";
+import CreateProductBatch from "./CreateProductBatch";
+import DetailProductBatch from "./DetailProductBatch";
 export default function ProductPage() {
   const [products, setProducts] = useState([]);
 
@@ -55,31 +59,31 @@ export default function ProductPage() {
     }
   };
 
-  const handleQualityChange = async (productId, newQuality) => {
-    try {
-      const response = await axios.patch(
-        `${API_BASE_URL}/distributor/update/productquality/${productId}`,
-        {
-          productquality: newQuality,
-        }
-      );
-      toast.success(response.data.message);
-      //set lại state cho product
-      setProducts((prevProducts) => {
-        return prevProducts.map((product) => {
-          if (product.productid === productId) {
-            return {
-              ...product,
-              productquality: newQuality,
-            };
-          }
-          return product;
-        });
-      });
-    } catch (error) {
-      console.error("Error updating product quality:", error);
-    }
-  };
+  // const handleQualityChange = async (productId, newQuality) => {
+  //   try {
+  //     const response = await axios.patch(
+  //       `${API_BASE_URL}/distributor/update/productquality/${productId}`,
+  //       {
+  //         productquality: newQuality,
+  //       }
+  //     );
+  //     toast.success(response.data.message);
+  //     //set lại state cho product
+  //     setProducts((prevProducts) => {
+  //       return prevProducts.map((product) => {
+  //         if (product.productid === productId) {
+  //           return {
+  //             ...product,
+  //             productquality: newQuality,
+  //           };
+  //         }
+  //         return product;
+  //       });
+  //     });
+  //   } catch (error) {
+  //     console.error("Error updating product quality:", error);
+  //   }
+  // };
 
   const handleVisibilityChange = async (productid, newVisibility) => {
     try {
@@ -101,66 +105,91 @@ export default function ProductPage() {
     }
   };
 
-  const [editingProductId, setEditingProductId] = useState(null);
-  const [newPrice, setNewPrice] = useState("");
-  const handleEditClick = (productid, currentPrice) => {
-    setEditingProductId(productid);
-    setNewPrice(currentPrice);
+  // const [editingProductId, setEditingProductId] = useState(null);
+  // const [newPrice, setNewPrice] = useState("");
+  // const handleEditClick = (productid, currentPrice) => {
+  //   setEditingProductId(productid);
+  //   setNewPrice(currentPrice);
+  // };
+
+  // const handlePriceChange = (e) => {
+  //   setNewPrice(e.target.value);
+  // };
+
+  // const handleSaveClick = async (productid) => {
+  //   try {
+  //     const response = await axios.patch(
+  //       `${API_BASE_URL}/distributor/update/productprice/${productid}`,
+  //       { productprice: newPrice }
+  //     );
+  //     setProducts((prevProducts) =>
+  //       prevProducts.map((product) =>
+  //         product.productid === productid
+  //           ? { ...product, productprice: newPrice }
+  //           : product
+  //       )
+  //     );
+  //     setEditingProductId(null);
+  //     toast.success(response.data.message);
+  //   } catch (error) {
+  //     console.error("Error updating product price:", error);
+  //     toast.error("Failed to update product price");
+  //   }
+  // };
+
+  // const handlePromotionChange = async (productid, newPromotion) => {
+  //   try {
+  //     const response = await axios.patch(
+  //       `${API_BASE_URL}/distributor/update/promotion/${productid}`,
+  //       { promotion: newPromotion }
+  //     );
+  //     setProducts((prevProducts) =>
+  //       prevProducts.map((product) =>
+  //         product.productid === productid
+  //           ? { ...product, promotion: newPromotion }
+  //           : product
+  //       )
+  //     );
+  //     toast.success(response.data.message);
+  //   } catch (error) {
+  //     console.error("Error updating product promotion:", error);
+  //     toast.error("Failed to update product promotion");
+  //   }
+  // };
+
+  // const handleIncreasePromotion = (productid, currentPromotion) => {
+  //   const newPromotion = currentPromotion + 1;
+  //   handlePromotionChange(productid, newPromotion);
+  // };
+
+  // const handleDecreasePromotion = (productid, currentPromotion) => {
+  //   const newPromotion = currentPromotion - 1;
+  //   handlePromotionChange(productid, newPromotion);
+  // };
+  const [isOpenCreateProductBatch, setIsOpenCreateProductBatch] =
+    useState(false);
+  const [producid, setProducid] = useState(null);
+  const openCreateProductBatch = (productid) => {
+    setIsOpenCreateProductBatch(true);
+    setProducid(productid);
   };
 
-  const handlePriceChange = (e) => {
-    setNewPrice(e.target.value);
-  };
+  const [isOpenDetailProductBatch, setIsOpenDetailProductBatch] =
+    useState(false);
+  const [selectedProductBatch, setSelectedProductBatch] = useState([]);
+  const onOpenDetailProductBatch = async (productid) => {
+    setIsOpenDetailProductBatch(true);
 
-  const handleSaveClick = async (productid) => {
+    // gọi api lấy danh sách lô hàng
     try {
-      const response = await axios.patch(
-        `${API_BASE_URL}/distributor/update/productprice/${productid}`,
-        { productprice: newPrice }
+      const response = await axios.get(
+        `${API_BASE_URL}/product-batch/${productid}`
       );
-      setProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product.productid === productid
-            ? { ...product, productprice: newPrice }
-            : product
-        )
-      );
-      setEditingProductId(null);
-      toast.success(response.data.message);
+      setSelectedProductBatch(response.data);
+      console.log(selectedProductBatch);
     } catch (error) {
-      console.error("Error updating product price:", error);
-      toast.error("Failed to update product price");
+      console.error("Error fetching product batch:", error);
     }
-  };
-
-  const handlePromotionChange = async (productid, newPromotion) => {
-    try {
-      const response = await axios.patch(
-        `${API_BASE_URL}/distributor/update/promotion/${productid}`,
-        { promotion: newPromotion }
-      );
-      setProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product.productid === productid
-            ? { ...product, promotion: newPromotion }
-            : product
-        )
-      );
-      toast.success(response.data.message);
-    } catch (error) {
-      console.error("Error updating product promotion:", error);
-      toast.error("Failed to update product promotion");
-    }
-  };
-
-  const handleIncreasePromotion = (productid, currentPromotion) => {
-    const newPromotion = currentPromotion + 1;
-    handlePromotionChange(productid, newPromotion);
-  };
-
-  const handleDecreasePromotion = (productid, currentPromotion) => {
-    const newPromotion = currentPromotion - 1;
-    handlePromotionChange(productid, newPromotion);
   };
 
   return (
@@ -169,23 +198,32 @@ export default function ProductPage() {
       <ToastContainer />
       <div className="bg-secondary w-full mt-24">
         <div className="my-4">
-          <div className="my-4 w-11/12 ml-24 px-4 text-primary font-bold text-3xl">
-            Danh sách sản phẩm
+          <div className="my-4 w-9/12 ml-56 px-4 flex justify-between">
+            <h1 className="text-primary font-bold text-3xl">
+              Danh sách sản phẩm
+            </h1>
+            <div className="relative w-1/4">
+              <input
+                type="text"
+                placeholder="Tìm kiếm sản phẩm"
+                className="w-full p-2 border rounded-lg placeholder-color pr-5 text-primary border-black"
+              />
+              <button className="absolute right-1 top-1/2 transform -translate-y-1/2 px-2  py-1 bg-primary text-white rounded-lg">
+                <FontAwesomeIcon icon={faSearch} />
+              </button>
+            </div>
           </div>
-          <table className="w-11/12 mx-auto rounded-lg">
+          <table className="w-9/12 mx-auto rounded-lg shadow-xl border border-black">
             <thead className="">
-              <tr className="bg-primary text-secondary border border-black">
+              <tr className="bg-primary text-secondary rounded-lg border border-black">
                 <th className="py-3 w-1/12">Tên sản phẩm</th>
                 <th className="py-3 w-1/12">Hình ảnh</th>
                 <th className="py-3 w-1/12">Danh mục</th>
-                <th className="py-3 w-1/12">Trang trại</th>
-                <th className="py-3 w-1/12">Mô tả</th>
-                <th className="py-3 w-1/12">Ngày hết hạn</th>
-                <th className="py-3 w-1/12">Số lượng</th>
-                <th className="py-3 w-1/12">Giá</th>
-                <th className="py-3 w-1/12">Giảm giá</th>
-                <th className="py-3 w-1/12">Chất lượng</th>
-                <th className="py-3 w-1/12">Ẩn sản phẩm</th>
+                <th className="py-3 w-2/12">Trang trại</th>
+                <th className="py-3 w-3/12">Mô tả</th>
+                <th className="py-3 w-2/12">Ẩn sản phẩm</th>
+                <th className="py-3 w-1/12">Các lô hàng</th>
+
                 <th className="py-3 w-1/12"></th>
               </tr>
             </thead>
@@ -194,124 +232,30 @@ export default function ProductPage() {
                 products.map((product) => (
                   <tr
                     key={product.productid}
-                    className="border border-black text-center font-medium"
+                    className="text-center font-medium border border-black"
                   >
-                    <td className="w-1/12 text-center">
+                    <td className="w-1/12 text-center p-2">
                       {product.productname}
                       <br />
-                      <span className="text-xs font-normal italic">
-                        ({formatDate(product.shipment)})
-                      </span>
                     </td>
-                    <td className="w-1/12 text-center">
+                    <td className="w-1/12 text-center p-2">
                       <img
                         src={product.productimage1}
                         alt={product.productname}
                         className="h-16 w-full m-auto"
                       />
                     </td>
-                    <td className="w-1/12 text-center">
+                    <td className="w-1/12 text-center p-2">
                       {product.categoryname}
                     </td>
-                    <td className="w-1/12 text-center">{product.farmname}</td>
-                    <td className="w-1/12 text-justify">
-                      {truncateText(product.overviewdes, 30)}
+                    <td className="w-2/12 text-center p-2">
+                      {product.farmname}
                     </td>
-                    <td className="w-1/12 text-center">
-                      {formatDate(product.expirydate)}
+                    <td className="w-3/12 text-justify">
+                      {truncateText(product.overviewdes, 70)}
                     </td>
-                    <td className="w-1/12 text-center">
-                      {product.productquantity} ({product.unitofmeasure})
-                    </td>
-                    <td className="w-1/12 text-center">
-                      {editingProductId === product.productid ? (
-                        <>
-                          <input
-                            type="text"
-                            value={newPrice}
-                            onChange={handlePriceChange}
-                            className="w-1/2 text-center"
-                          />
-                          <button
-                            onClick={() => handleSaveClick(product.productid)}
-                            className="bg-primary text-secondary ml-2 px-2 py-1 rounded-lg"
-                          >
-                            Lưu
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          {product.productprice} VNĐ
-                          <button
-                            onClick={() =>
-                              handleEditClick(
-                                product.productid,
-                                product.productprice
-                              )
-                            }
-                            className="bg-primary text-secondary ml-2 px-2 py-1 rounded-lg"
-                          >
-                            Sửa
-                          </button>
-                        </>
-                      )}
-                    </td>
-                    <td className="w-1/12 text-center">
-                      <button
-                        className="mx-2 rounded-full h-10 w-10 text-center hover:bg-slate-300"
-                        onClick={() =>
-                          handleDecreasePromotion(
-                            product.productid,
-                            product.promotion
-                          )
-                        }
-                      >
-                        -
-                      </button>
-                      {product.promotion}%
-                      <button
-                        className="mx-2 rounded-full h-10 w-10 hover:bg-slate-300"
-                        onClick={() =>
-                          handleIncreasePromotion(
-                            product.productid,
-                            product.promotion
-                          )
-                        }
-                      >
-                        +
-                      </button>
-                    </td>
-                    <td className="w-1/12 text-center">
-                      <select
-                        value={product.productquality || ""}
-                        onChange={(e) =>
-                          handleQualityChange(product.productid, e.target.value)
-                        }
-                      >
-                        <option value="Tươi" className="text-center p-2">
-                          Tươi
-                        </option>
-                        <option
-                          value="Tương đối tươi"
-                          className="text-center p-2"
-                        >
-                          Tương đối tươi
-                        </option>
-                        <option value="Bình thường" className="text-center p-2">
-                          Bình thường
-                        </option>
-                        <option
-                          value="Cần sử dụng ngay"
-                          className="text-center p-2"
-                        >
-                          Cần sử dụng ngay
-                        </option>
-                        <option value="Kém" className="text-center p-2">
-                          Kém
-                        </option>
-                      </select>
-                    </td>
-                    <td className="w-1/12 text-center">
+
+                    <td className="w-2/12 text-center p-2">
                       <select
                         value={product.isvisibleweb ? "visible" : "hidden"}
                         onChange={(e) =>
@@ -325,7 +269,25 @@ export default function ProductPage() {
                         <option value="hidden">Đã ẩn</option>
                       </select>
                     </td>
-                    <td className="w-2/12 text-center">
+                    <td className="w-1/12 text-center p-2">
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="hover:opacity-50 mx-2 cursor-pointer"
+                        size="xl"
+                        onClick={() =>
+                          onOpenDetailProductBatch(product.productid)
+                        }
+                      />
+                      <FontAwesomeIcon
+                        icon={faPlusCircle}
+                        className="hover:opacity-50 mx-2 cursor-pointer"
+                        size="xl"
+                        onClick={() =>
+                          openCreateProductBatch(product.productid)
+                        }
+                      />
+                    </td>
+                    <td className="w-1/12 text-center p-2">
                       <div className="flex justify-center">
                         <button
                           className="font-bold mx-3 text-primary hover:opacity-80"
@@ -333,7 +295,7 @@ export default function ProductPage() {
                             onOpenDetailProductDialog(product.productid)
                           }
                         >
-                          Xem chi tiết
+                          Chi tiết
                         </button>
                       </div>
                     </td>
@@ -387,6 +349,18 @@ export default function ProductPage() {
         <DetailProductDialog
           onClose={() => setIsOpenDetailProductDialog(false)}
           product={selectedProduct}
+        />
+      )}
+      {isOpenCreateProductBatch && (
+        <CreateProductBatch
+          onClose={() => setIsOpenCreateProductBatch(false)}
+          producid={producid}
+        />
+      )}
+      {isOpenDetailProductBatch && (
+        <DetailProductBatch
+          onClose={() => setIsOpenDetailProductBatch(false)}
+          selectedProductBatch={selectedProductBatch}
         />
       )}
     </div>
