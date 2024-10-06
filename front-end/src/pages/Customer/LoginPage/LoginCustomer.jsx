@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
 import { useToast } from "../../../context/ToastContext";
 import { jwtDecode } from "jwt-decode";
+import Loading from "../../../components/Loading.jsx"; 
 
 const LoginCustomer = () => {
   const navigate = useNavigate();
@@ -17,10 +18,15 @@ const LoginCustomer = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const { toastMessage, setToastMessage } = useToast();
+  const [loading, setLoading] = useState(false); 
+
   useEffect(() => {
     // Xóa token khỏi localStorage nếu có
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+  }, []);
+
+  useEffect(() => {
     if (toastMessage) {
       toast.success(toastMessage, {
         position: "top-right",
@@ -43,13 +49,11 @@ const LoginCustomer = () => {
     e.preventDefault();
     // Kiểm tra nếu username/email và password không rỗng
     if (!credentials.usernameOrEmail || !credentials.password) {
-      toast.error("Vui lòng nhập đầy đủ thông tin đăng nhập.", {
-        position: "top-right",
-        time: 500,
-      });
+      toast.error("Vui lòng nhập đầy đủ thông tin đăng nhập.");
       return;
     }
 
+    setLoading(true); 
     try {
       const response = await axios.post(
         `${API_BASE_URL}/auth/login`,
@@ -62,12 +66,13 @@ const LoginCustomer = () => {
         const role = decodedToken?.role;
         if (role !== "customer") {
           toast.error("Đây không phải là tài khoản khách hàng");
+          setLoading(false); 
           return;
         }
 
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
-        setToastMessage("Đăng nhập thành công");
+        setToastMessage("Đăng nhập thành công")
         callProtectedApi();
         // Điều hướng người dùng đến trang chính
         navigate("/");
@@ -80,6 +85,8 @@ const LoginCustomer = () => {
         position: "top-right",
         time: 500,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -155,82 +162,86 @@ const LoginCustomer = () => {
   return (
     <div className="backgroundImg">
       <ToastContainer />
-      <div className="w-1/4 m-auto bg-fourth rounded-2xl  shadow-2xl">
-        <h1 className="text-primary py-3 font-bold text-center text-40">
-          Đăng Nhập
-        </h1>
+      {loading ? (
+        <Loading /> // Display loading spinner when loading is true
+      ) : (
+        <div className="w-1/4 m-auto bg-fourth rounded-2xl  shadow-2xl">
+          <h1 className="text-primary py-3 font-bold text-center text-40">
+            Đăng Nhập
+          </h1>
 
-        <div className="p-3 my-2">
-          <div className="bg-secondary mx-2 rounded-t-xl p-2">
-            <label
-              htmlFor="usernameOrEmail"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Username hoặc email
-            </label>
-            <input
-              type="text"
-              placeholder="Username hoặc email"
-              name="usernameOrEmail"
-              value={credentials.usernameOrEmail}
-              onChange={handleChange}
-              className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
-            />
-          </div>
-          <div className="bg-secondary mx-2 rounded-b-xl p-2">
-            <label
-              htmlFor="usernameOrEmail"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Mật khẩu
-            </label>
-            <div className="relative">
+          <div className="p-3 my-2">
+            <div className="bg-secondary mx-2 rounded-t-xl p-2">
+              <label
+                htmlFor="usernameOrEmail"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Username hoặc email
+              </label>
               <input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Mật khẩu"
-                value={credentials.password}
+                type="text"
+                placeholder="Username hoặc email"
+                name="usernameOrEmail"
+                value={credentials.usernameOrEmail}
                 onChange={handleChange}
                 className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
               />
-              <FontAwesomeIcon
-                icon={showPassword ? faEyeSlash : faEye}
-                onClick={handlePasswordVisibility}
-                className="absolute right-3 top-3 cursor-pointer"
-              />
             </div>
-            <div className="flex justify-between my-3">
-              <div>
-                <input type="checkbox" className="mr-2" />
-                <label className="text-primary">Ghi nhớ mật khẩu</label>
+            <div className="bg-secondary mx-2 rounded-b-xl p-2">
+              <label
+                htmlFor="usernameOrEmail"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Mật khẩu
+              </label>
+              <div className="relative">
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Mật khẩu"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                />
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  onClick={handlePasswordVisibility}
+                  className="absolute right-3 top-3 cursor-pointer"
+                />
               </div>
-              <a href="/forgot-password" className="text-primary">
-                Quên mật khẩu?
-              </a>
+              <div className="flex justify-between my-3">
+                <div>
+                  <input type="checkbox" className="mr-2" />
+                  <label className="text-primary">Ghi nhớ mật khẩu</label>
+                </div>
+                <a href="/forgot-password" className="text-primary">
+                  Quên mật khẩu?
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center flex-col mx-5 mb-3">
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-2 rounded-xl w-full"
-          >
-            Đăng nhập
-          </button>
-          <p className="text-primary text-xl m-1">Hoặc</p>
-          <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-2 rounded-xl w-full">
-            Đăng nhập với google
-          </button>
-          <p className="text-primary">
-            Bạn chưa có tài khoản?{" "}
-            <Link className="text-third" to="/register/step1">
-              Đăng ký
-            </Link>
-          </p>
+          <div className="flex items-center flex-col mx-5 mb-3">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="bg-primary hover:opacity-90 text-white font-bold py-2 px-4 m-2 rounded-xl w-full"
+            >
+              Đăng nhập
+            </button>
+            <p className="text-primary text-xl m-1">Hoặc</p>
+            <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-2 rounded-xl w-full">
+              Đăng nhập với google
+            </button>
+            <p className="text-primary">
+              Bạn chưa có tài khoản?{" "}
+              <Link className="text-third" to="/register/step1">
+                Đăng ký
+              </Link>
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

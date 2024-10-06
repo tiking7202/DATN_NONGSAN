@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../../config/config";
 import { isCustomer } from "../../../utils/roleCheck";
 import { useToast } from "../../../context/ToastContext";
-
+import Loading from "../../Loading.jsx"; // Import the Loading component
 
 export default function HeaderCustomer() {
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ export default function HeaderCustomer() {
   const [query, setQuery] = useState("");
   const [fullName, setFullName] = useState(""); 
   const [avatar, setAvatar] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
   
   const token = localStorage.getItem("accessToken");
   
@@ -43,6 +44,7 @@ export default function HeaderCustomer() {
   const { setToastMessage } = useToast();
 
   const handleLogout = async () => {
+    setLoading(true); // Set loading to true before API call
     try {
       const response = await axios.get(`${API_BASE_URL}/auth/logout`);
       if (response.status === 200) {
@@ -60,10 +62,12 @@ export default function HeaderCustomer() {
       }
     } catch (error) {
       console.error("Error during logout:", error);
-      toast.error(error,{
+      toast.error(error, {
         position: "top-right",
         time: 500,
       });
+    } finally {
+      setLoading(false); // Set loading to false after API call
     }
   };
 
@@ -72,6 +76,7 @@ export default function HeaderCustomer() {
   };
 
   const handleSearch = async () => {
+    setLoading(true); // Set loading to true before API call
     try {
       const response = await axios.get(`${API_BASE_URL}/search`, {
         params: { search: query.trim() },
@@ -81,35 +86,59 @@ export default function HeaderCustomer() {
       setQuery("");
     } catch (error) {
       console.error("Error searching products:", error);
+    } finally {
+      setLoading(false); // Set loading to false after API call
     }
   };
 
   const handleRouteToLoginFarmer =  async () => {
-    const response = await axios.get(`${API_BASE_URL}/auth/logout`);
+    setLoading(true); // Set loading to true before API call
+    try {
+      const response = await axios.get(`${API_BASE_URL}/auth/logout`);
       if (response.status === 200) {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         navigate("/farmer/login");
       } else {
         toast.error("Đăng xuất thất bại. Vui lòng thử lại.");
-      }    
-  }
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error(error, {
+        position: "top-right",
+        time: 500,
+      });
+    } finally {
+      setLoading(false); // Set loading to false after API call
+    }
+  };
 
   const handleRouteToRegisterFarmer = async () => {
-    const response = await axios.get(`${API_BASE_URL}/auth/logout`);
-    if (response.status === 200) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      navigate("/farmer/register/step1");
-    } else {
-      toast.error("Đăng xuất thất bại. Vui lòng thử lại.");
-    }   
-  }
-
+    setLoading(true); // Set loading to true before API call
+    try {
+      const response = await axios.get(`${API_BASE_URL}/auth/logout`);
+      if (response.status === 200) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        navigate("/farmer/register/step1");
+      } else {
+        toast.error("Đăng xuất thất bại. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error(error, {
+        position: "top-right",
+        time: 500,
+      });
+    } finally {
+      setLoading(false); // Set loading to false after API call
+    }
+  };
 
   return (
-    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40">
+    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40 shadow-2xl">
       <ToastContainer />
+      {loading && <Loading />} {/* Display loading spinner when loading is true */}
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
           <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToLoginFarmer}>Kênh người nông dân</p>
@@ -148,14 +177,6 @@ export default function HeaderCustomer() {
                       >
                         Thông tin cá nhân
                       </Link>
-                      
-                      {/* <a
-                        href="/change-password"
-                        className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"
-                        role="menuitem"
-                      >
-                        Thay đổi mật khẩu
-                      </a> */}
                       <Link
                         to="/purchase-history"
                         className="block px-4 py-2 text-sm text-primary hover:bg-fourth hover:font-bold"

@@ -46,9 +46,48 @@ const SlideShow = () => {
           .slick-prev {
             left: 10px;
           }
+
+          .slick-dots li button:before {
+            color: #07bc0c;
+            font-size: 16px;
+          }
+
+          .slick-dots li.slick-active button:before {
+            color: #fc3;
+          }
+
+          .slick-slide {
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+          }
+
+          .slick-active {
+            opacity: 1;
+          }
+
+          .slide-text {
+            position: absolute;
+            bottom: 15%;
+            left: 5%;
+            color: white;
+            font-size: 2rem;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            animation: fadeIn 1.5s ease-in-out;
+          }
+
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+            }
+            to {
+              opacity: 1;
+            }
+          }
         `}
       </style>
-      <Slider {...settings} className="w-1/2 h-96 bg-fourth">
+      <Slider {...settings} className="w-1/2 h-96 bg-fourth shadow-2xl">
         {imgs.map((image, index) => (
           <div key={index} className="h-96  rounded-lg">
             <img src={image} alt={`Slide ${index}`} className="w-full h-full" />

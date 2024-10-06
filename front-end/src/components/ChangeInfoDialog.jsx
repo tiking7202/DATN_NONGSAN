@@ -6,6 +6,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../config/config";
 import { formatDateInput } from "../utils/formatDate";
+import Loading from "../components/Loading"; // Import Loading component
+import { useLoading } from "../context/LoadingContext"; // Import useLoading
 
 export default function ChangeInfoDialog({ onClose, user, refreshUser }) {
   const [username, setUsername] = useState(user.username);
@@ -29,6 +31,8 @@ export default function ChangeInfoDialog({ onClose, user, refreshUser }) {
   const [phonenumberError, setPhonenumberError] = useState("");
   const [indentitycardError, setIndentitycardError] = useState("");
   const [dobError, setDobError] = useState("");
+
+  const { loading, setLoading } = useLoading(); // Sử dụng context loading
 
   const validateForm = () => {
     if (!username) {
@@ -77,6 +81,7 @@ export default function ChangeInfoDialog({ onClose, user, refreshUser }) {
   const onChangeInfo = async () => {
     try {
       if (!validateForm()) return;
+      setLoading(true); // Bắt đầu loading
       // Gọi API thay đổi thông tin
       const response = await axios.put(`${API_BASE_URL}/user/change-info`, {
         userId: user.userid,
@@ -96,6 +101,8 @@ export default function ChangeInfoDialog({ onClose, user, refreshUser }) {
       toast.success(response.data.message);
     } catch (error) {
       console.error("Error changing info:", error);
+    } finally {
+      setLoading(false); // Kết thúc loading
     }
   };
 
@@ -114,171 +121,177 @@ export default function ChangeInfoDialog({ onClose, user, refreshUser }) {
           Thay đổi thông tin
         </h2>
         <div className="p-3 my-2">
-          <div className="bg-secondary m-3 flex">
-            <div className="w-1/2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Tên đăng nhập
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập tên đăng nhập"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              {usernameError && (
-                <p className="text-red-500 italic">{usernameError}</p>
-              )}
-            </div>
-            <div className="w-1/2 ml-2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Email
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập email"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {emailError && (
-                <p className="text-red-500 italic">{emailError}</p>
-              )}
-            </div>
-          </div>
-          <div className="bg-secondary m-3 flex">
-            <div className="w-1/2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Họ và tên
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập họ và tên"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)}
-              />
-              {fullnameError && (
-                <p className="text-red-500 italic">{fullnameError}</p>
-              )}
-            </div>
-            <div className="w-1/2 ml-2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Tên đường
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập tên đường"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={street}
-                onChange={(e) => setStreet(e.target.value)}
-              />
-              {streetError && (
-                <p className="text-red-500 italic">{streetError}</p>
-              )}
-            </div>
-          </div>
-          <div className="bg-secondary m-3 flex">
-            <div className="w-1/2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Phường/Xã
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập phường/xã"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={commune}
-                onChange={(e) => setCommune(e.target.value)}
-              />
-              {communeError && (
-                <p className="text-red-500 italic">{communeError}</p>
-              )}
-            </div>
-            <div className="w-1/2 ml-2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Quận/Huyện
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập quận/huyện"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-              />
-              {districtError && (
-                <p className="text-red-500 italic">{districtError}</p>
-              )}
-            </div>
-          </div>
-          <div className="bg-secondary m-3 flex">
-            <div className="w-1/2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Tỉnh/Thành phố
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập tỉnh/thành phố"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={province}
-                onChange={(e) => setProvince(e.target.value)}
-              />
-              {provinceError && (
-                <p className="text-red-500 italic">{provinceError}</p>
-              )}
-            </div>
-            <div className="w-1/2 ml-2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Số điện thoại
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập số điện thoại"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={phonenumber}
-                onChange={(e) => setPhonenumber(e.target.value)}
-              />
-              {phonenumberError && (
-                <p className="text-red-500 italic">{phonenumberError}</p>
-              )}
-            </div>
-          </div>
-          <div className="bg-secondary m-3 flex">
-            <div className="w-1/2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Số CCCD
-              </label>
-              <input
-                type="text"
-                placeholder="Nhập số CCCD"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                value={indentitycard}
-                onChange={(e) => setIndentitycard(e.target.value)}
-              />
-              {indentitycardError && (
-                <p className="text-red-500 italic">{indentitycardError}</p>
-              )}
-            </div>
-            <div className="w-1/2 ml-2">
-              <label className="block text-xl text-primary font-bold mb-2">
-                Ngày sinh
-              </label>
-              <input
-                type="date"
-                value={formatDateInput(dob)}
-                onChange={(e) => setDob(e.target.value)}
-                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
-              />
-              {dobError && <p className="text-red-500 italic">{dobError}</p>}
-            </div>
-          </div>
-          <div className="flex justify-end mt-5">
-            <button
-              className="bg-primary hover:opacity-90 text-white font-bold py-2 px-3 m-3 rounded-lg"
-              onClick={onChangeInfo}
-            >
-              Lưu
-            </button>
-          </div>
+          {loading ? (
+            <Loading /> // Hiển thị component Loading khi loading là true
+          ) : (
+            <>
+              <div className="bg-secondary m-3 flex">
+                <div className="w-1/2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Tên đăng nhập
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập tên đăng nhập"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  {usernameError && (
+                    <p className="text-red-500 italic">{usernameError}</p>
+                  )}
+                </div>
+                <div className="w-1/2 ml-2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập email"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  {emailError && (
+                    <p className="text-red-500 italic">{emailError}</p>
+                  )}
+                </div>
+              </div>
+              <div className="bg-secondary m-3 flex">
+                <div className="w-1/2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Họ và tên
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập họ và tên"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={fullname}
+                    onChange={(e) => setFullname(e.target.value)}
+                  />
+                  {fullnameError && (
+                    <p className="text-red-500 italic">{fullnameError}</p>
+                  )}
+                </div>
+                <div className="w-1/2 ml-2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Tên đường
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập tên đường"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                  />
+                  {streetError && (
+                    <p className="text-red-500 italic">{streetError}</p>
+                  )}
+                </div>
+              </div>
+              <div className="bg-secondary m-3 flex">
+                <div className="w-1/2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Phường/Xã
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập phường/xã"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={commune}
+                    onChange={(e) => setCommune(e.target.value)}
+                  />
+                  {communeError && (
+                    <p className="text-red-500 italic">{communeError}</p>
+                  )}
+                </div>
+                <div className="w-1/2 ml-2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Quận/Huyện
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập quận/huyện"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={district}
+                    onChange={(e) => setDistrict(e.target.value)}
+                  />
+                  {districtError && (
+                    <p className="text-red-500 italic">{districtError}</p>
+                  )}
+                </div>
+              </div>
+              <div className="bg-secondary m-3 flex">
+                <div className="w-1/2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Tỉnh/Thành phố
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập tỉnh/thành phố"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={province}
+                    onChange={(e) => setProvince(e.target.value)}
+                  />
+                  {provinceError && (
+                    <p className="text-red-500 italic">{provinceError}</p>
+                  )}
+                </div>
+                <div className="w-1/2 ml-2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Số điện thoại
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập số điện thoại"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={phonenumber}
+                    onChange={(e) => setPhonenumber(e.target.value)}
+                  />
+                  {phonenumberError && (
+                    <p className="text-red-500 italic">{phonenumberError}</p>
+                  )}
+                </div>
+              </div>
+              <div className="bg-secondary m-3 flex">
+                <div className="w-1/2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Số CCCD
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập số CCCD"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    value={indentitycard}
+                    onChange={(e) => setIndentitycard(e.target.value)}
+                  />
+                  {indentitycardError && (
+                    <p className="text-red-500 italic">{indentitycardError}</p>
+                  )}
+                </div>
+                <div className="w-1/2 ml-2">
+                  <label className="block text-xl text-primary font-bold mb-2">
+                    Ngày sinh
+                  </label>
+                  <input
+                    type="date"
+                    value={formatDateInput(dob)}
+                    onChange={(e) => setDob(e.target.value)}
+                    className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                  />
+                  {dobError && <p className="text-red-500 italic">{dobError}</p>}
+                </div>
+              </div>
+              <div className="flex justify-end mt-5">
+                <button
+                  className="bg-primary hover:opacity-90 text-white font-bold py-2 px-3 m-3 rounded-lg"
+                  onClick={onChangeInfo}
+                >
+                  Lưu
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
