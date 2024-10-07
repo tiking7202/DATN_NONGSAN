@@ -18,26 +18,26 @@ import FarmInfoShow from "../../../components/CustomerComponent/FarmInfoShow/Far
 import CommentShow from "../../../components/CustomerComponent/CommentShow/CommentShow.jsx";
 import { getAmountOfReview } from "../../../service/CustomerService/reviewService.js";
 import { formatDate } from "../../../utils/formatDate.js";
-import Loading from "../../../components/Loading.jsx"; // Import the Loading component
+import Loading from "../../../components/Loading.jsx";
 
 export default function ProductDetail() {
   const navigate = useNavigate();
   let { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [batchId, setBatchId] = useState("");
   const [batchList, setBatchList] = useState([]);
   const [reviewCount, setReviewCount] = useState(0);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+
   const handleIncrease = () => {
     setQuantity(quantity + 1);
   };
 
   const handleDecrease = () => {
     if (quantity === 1) {
-      toast.error("Số lượng sản phẩm thêm vào giỏ hàng phải lớn hơn 0", {
-        position: "top-right",
-        time: 500,
-      });
+      toast.error("Số lượng sản phẩm thêm vào giỏ hàng phải lớn hơn 0");
       return;
     }
     setQuantity(quantity - 1);
@@ -47,18 +47,22 @@ export default function ProductDetail() {
     const fetchData = async () => {
       setLoading(true); // Set loading to true before API calls
       try {
-        const productResponse = await axios.get(`${API_BASE_URL}/product/${id}`);
+        const productResponse = await axios.get(
+          `${API_BASE_URL}/product/${id}`
+        );
         setProduct(productResponse.data);
 
         const reviewResponse = await getAmountOfReview(id);
         setReviewCount(reviewResponse.data);
 
-        const batchResponse = await axios.get(`${API_BASE_URL}/product-batch/${id}`);
+        const batchResponse = await axios.get(
+          `${API_BASE_URL}/product-batch/${id}`
+        );
         setBatchList(batchResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false); // Set loading to false after API calls
+        setLoading(false);
       }
     };
 
@@ -76,32 +80,29 @@ export default function ProductDetail() {
     }, 100);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
-      toast.error("Đăng nhập để thêm vào giỏ hàng!", {
-        position: "top-right",
-        time: 500,
-      });
+      toast.error("Đăng nhập để thêm vào giỏ hàng!");
       navigate("/login");
     } else {
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.userid;
-      addToCart(product.productid, userId, quantity)
-        .then((response) => {
-          response;
-          toast.success("Thêm vào giỏ hàng thành công!", {
-            position: "top-right",
-            time: 500,
-          });
-          setQuantity(1);
-        })
-        .catch((error) => {
-          toast.error(error.response.data.message, {
-            position: "top-right",
-            time: 500,
-          });
-        });
+      if (!batchId) {
+        toast.error("Vui lòng chọn lô hàng bạn muốn mua!");
+        return;
+      }
+      setIsAddingToCart(true); // Set loading to true before API call
+      try {
+        await addToCart(product.productid, userId, quantity, batchId);
+        toast.success("Thêm vào giỏ hàng thành công!");
+        setQuantity(1);
+        setBatchId("");
+      } catch (error) {
+        toast.error(error.response.data.message);
+      } finally {
+        setIsAddingToCart(false); // Set loading to false after API call
+      }
     }
   };
 
@@ -109,7 +110,7 @@ export default function ProductDetail() {
     <>
       <FarmInfoShow />
       {loading ? (
-        <Loading /> // Display loading spinner when loading is true
+        <Loading />
       ) : (
         product && (
           <div className="bg-fourth py-5">
@@ -194,12 +195,13 @@ export default function ProductDetail() {
                           />
                         </span>
                       </div>
-                      <div className="flex m-2">
+                      <div className="my-2 w-full mx-auto h-1 bg-primary"></div>
+                      <div className="flex m-2 mt-3">
                         <span className="text-primary font-medium mr-1 my-auto">
                           Số lượng:{" "}
                         </span>
 
-                        <div className="w-1/4 p-1 flex items-center bg-fourth space-x-2 ml-3 rounded-md font-bold ">
+                        <div className="w-5/12 p-1 flex items-center bg-white space-x-2 ml-3 rounded-md font-bold border">
                           <button
                             onClick={handleDecrease}
                             className="w-1/3 px-2 py-1 rounded-md text-gray-900 hover:bg-gray-200"
@@ -218,74 +220,162 @@ export default function ProductDetail() {
                         </div>
                       </div>
                       {/* Hiển thị danh sách lô hàng */}
+                      <span className="text-primary font-medium m-2 my-auto">
+                        Các lô hàng:{" "}
+                      </span>
                       <div className="m-2 flex">
                         {batchList.map((batch) => (
                           <div
                             key={batch.batchid}
-                            className="bg-fourth p-2 rounded mr-2 my-2 shadow-lg cursor-pointer hover:opacity-80"
+                            className={`p-2 rounded mr-2 my-2 shadow-xl cursor-pointer border hover:opacity-80 ${
+                              batchId === batch.batchid
+                                ? "bg-primary text-white"
+                                : "bg-fourth"
+                            }`}
+                            onClick={() => setBatchId(batchId === batch.batchid ? "" : batch.batchid)}
                           >
                             <div>
-                              <span className="text-primary font-medium mr-1">
+                              <span
+                                className={`font-medium mr-1 ${
+                                  batchId === batch.batchid
+                                    ? "text-white"
+                                    : "text-primary"
+                                }`}
+                              >
                                 Mã lô hàng:{" "}
                               </span>
-                              <span className="font-semibold">
+                              <span
+                                className={`font-semibold ${
+                                  batchId === batch.batchid ? "text-white" : ""
+                                }`}
+                              >
                                 {batch.batchid.substring(0, 8)}
                               </span>
                             </div>
                             <div>
-                              <span className="text-primary font-medium mr-1">
+                              <span
+                                className={`font-medium mr-1 ${
+                                  batchId === batch.batchid
+                                    ? "text-white"
+                                    : "text-primary"
+                                }`}
+                              >
                                 Giá:{" "}
                               </span>
-                              <span className="font-semibold">
+                              <span
+                                className={`font-semibold ${
+                                  batchId === batch.batchid ? "text-white" : ""
+                                }`}
+                              >
                                 {Number(batch.batchprice).toLocaleString()} / (
                                 {batch.unitofmeasure})
                               </span>
                             </div>
                             <div>
-                              <span className="text-primary font-medium mr-1">
+                              <span
+                                className={`font-medium mr-1 ${
+                                  batchId === batch.batchid
+                                    ? "text-white"
+                                    : "text-primary"
+                                }`}
+                              >
                                 Giảm giá:{" "}
                               </span>
-                              <span className="font-semibold">
+                              <span
+                                className={`font-semibold ${
+                                  batchId === batch.batchid ? "text-white" : ""
+                                }`}
+                              >
                                 {batch.promotion} %
                               </span>
                             </div>
                             <div>
-                              <span className="text-primary font-medium mr-1">
+                              <span
+                                className={`font-medium mr-1 ${
+                                  batchId === batch.batchid
+                                    ? "text-white"
+                                    : "text-primary"
+                                }`}
+                              >
                                 Tình trạng:{" "}
                               </span>
-                              <span className="font-semibold">
+                              <span
+                                className={`font-semibold ${
+                                  batchId === batch.batchid ? "text-white" : ""
+                                }`}
+                              >
                                 {batch.batchquality}
                               </span>
                             </div>
                             <div>
-                              <span className="text-primary font-medium mr-1">
+                              <span
+                                className={`font-medium mr-1 ${
+                                  batchId === batch.batchid
+                                    ? "text-white"
+                                    : "text-primary"
+                                }`}
+                              >
                                 Số lượng còn lại:{" "}
                               </span>
-                              <span className="font-semibold">
+                              <span
+                                className={`font-semibold ${
+                                  batchId === batch.batchid ? "text-white" : ""
+                                }`}
+                              >
                                 {batch.batchquantity}
                               </span>
                             </div>
                             <div>
-                              <span className="text-primary font-medium mr-1">
+                              <span
+                                className={`font-medium mr-1 ${
+                                  batchId === batch.batchid
+                                    ? "text-white"
+                                    : "text-primary"
+                                }`}
+                              >
                                 Ngày hết hạn:{" "}
                               </span>
-                              <span className="font-semibold">
+                              <span
+                                className={`font-semibold ${
+                                  batchId === batch.batchid ? "text-white" : ""
+                                }`}
+                              >
                                 {formatDate(batch.expirydate)}
                               </span>
                             </div>
                             <div>
-                              <span className="text-primary font-medium mr-1">
+                              <span
+                                className={`font-medium mr-1 ${
+                                  batchId === batch.batchid
+                                    ? "text-white"
+                                    : "text-primary"
+                                }`}
+                              >
                                 Ngày trồng:{" "}
                               </span>
-                              <span className="font-semibold">
+                              <span
+                                className={`font-semibold ${
+                                  batchId === batch.batchid ? "text-white" : ""
+                                }`}
+                              >
                                 {formatDate(batch.plantingdate)}
                               </span>
                             </div>
                             <div>
-                              <span className="text-primary font-medium mr-1">
+                              <span
+                                className={`font-medium mr-1 ${
+                                  batchId === batch.batchid
+                                    ? "text-white"
+                                    : "text-primary"
+                                }`}
+                              >
                                 Ngày thu hoạch:{" "}
                               </span>
-                              <span className="font-semibold">
+                              <span
+                                className={`font-semibold ${
+                                  batchId === batch.batchid ? "text-white" : ""
+                                }`}
+                              >
                                 {formatDate(batch.harvestdate)}
                               </span>
                             </div>
@@ -294,17 +384,24 @@ export default function ProductDetail() {
                       </div>
                       <div className="flex m-2 w-3/4">
                         <button
-                          className="bg-primary text-white p-3 rounded-md mt-4 w-1/2 hover:opacity-90"
+                          className="bg-primary text-white font-bold px-4 py-3 rounded-md mt-4 w-1/2 shadow-xl hover:opacity-90"
                           onClick={handleAddToCart}
+                          disabled={isAddingToCart} 
                         >
-                          Thêm vào giỏ hàng
-                          <FontAwesomeIcon
-                            icon={faShoppingCart}
-                            className="ml-2"
-                          />
+                          {isAddingToCart ? (
+                            <Loading />
+                          ) : (
+                            <>
+                              Thêm vào giỏ hàng
+                              <FontAwesomeIcon
+                                icon={faShoppingCart}
+                                className="ml-2"
+                              />
+                            </>
+                          )}
                         </button>
                         <button
-                          className="bg-primary text-white p-3 rounded-md mt-4 ml-3 w-1/2  hover:opacity-90"
+                          className="bg-primary text-white font-bold px-4 py-3 rounded-md mt-4 w-1/2 shadow-xl hover:opacity-90 ml-7"
                           onClick={() => navigate("/cart")}
                         >
                           Mua ngay{" "}

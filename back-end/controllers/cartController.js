@@ -1,29 +1,35 @@
 const pool = require("../config/dbConnect");
 
 exports.addToCart = async (req, res) => {
-  const { userId, productId, quantity } = req.body;
+  const { userId, productId, quantity, batchId } = req.body;
+
+  if (quantity === 0) {
+    return res.status(400).json({ message: "Số lượng sản phẩm phải lớn hơn 0" });
+  }
+
   try {
-    if (quantity === 0) {
-      return res
-        .status(400)
-        .json({ message: "Số lượng sản phẩm phải lớn hơn 0" });
-    }
-    const existingProduct = await pool.query(
-      "SELECT * FROM cart WHERE userid = $1 AND productid = $2",
-      [userId, productId]
-    );
+    const existingProductQuery = `
+      SELECT * FROM cart WHERE userid = $1 AND productid = $2 AND batchid = $3
+    `;
+    const existingProduct = await pool.query(existingProductQuery, [userId, productId, batchId]);
+
     if (existingProduct.rows.length > 0) {
       // Update the quantity if the product already exists in the cart
-      const updatedCart = await pool.query(
-        "UPDATE cart SET quantity = quantity + $1 WHERE userid = $2 AND productid = $3 RETURNING *",
-        [quantity, userId, productId]
-      );
+      const updateCartQuery = `
+        UPDATE cart SET quantity = quantity + $1 
+        WHERE userid = $2 AND productid = $3 AND batchid = $4 
+        RETURNING *
+      `;
+      const updatedCart = await pool.query(updateCartQuery, [quantity, userId, productId, batchId]);
       return res.status(200).json(updatedCart.rows[0]);
     }
-    const cart = await pool.query(
-      "INSERT INTO cart (userid, productid, quantity) VALUES ($1, $2, $3) RETURNING *",
-      [userId, productId, quantity]
-    );
+
+    const insertCartQuery = `
+      INSERT INTO cart (userid, productid, quantity, batchid) 
+      VALUES ($1, $2, $3, $4) 
+      RETURNING *
+    `;
+    const cart = await pool.query(insertCartQuery, [userId, productId, quantity, batchId]);
     res.status(200).json(cart.rows[0]);
   } catch (error) {
     console.error("Error adding to cart:", error);
@@ -56,22 +62,24 @@ exports.getAllCart = async (req, res) => {
       return res.status(400).json({ message: "Giỏ hàng của bạn đang trống" });
     }
 
-    // Get product IDs from cart items
+    // Get product IDs and batch IDs from cart items
     const productIds = cart.rows.map((item) => item.productid);
+    const batchIds = cart.rows.map((item) => item.batchid);
 
-    // Fetch product details and quantities in a single query
+    // Fetch product details, quantities, and batch details in a single query
     const products = await pool.query(
-      `SELECT p.*, c.quantity 
+      `SELECT p.*, c.quantity, pb.*
         FROM product p 
         JOIN cart c ON p.productid = c.productid 
-        WHERE c.userid = $1 AND c.productid = ANY($2::uuid[])`,
-      [userId, productIds]
+        JOIN product_batch pb ON c.batchid = pb.batchid
+        WHERE c.userid = $1 AND c.productid = ANY($2::uuid[]) AND c.batchid = ANY($3::uuid[])`,
+      [userId, productIds, batchIds]
     );
 
-    // Map product details to cart items
+    // Map product details and batch details to cart items
     const cartItems = cart.rows.map((cartItem) => {
       const product = products.rows.find(
-        (p) => p.productid === cartItem.productid
+        (p) => p.productid === cartItem.productid && p.batchid === cartItem.batchid
       );
       return {
         ...product,

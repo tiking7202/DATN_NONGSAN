@@ -11,13 +11,13 @@ import { API_BASE_URL } from "../../../config/config";
 import { toast } from "react-toastify";
 import { addToCart } from "../../../service/CustomerService/cartService";
 import { jwtDecode } from "jwt-decode";
-import { v4 as uuidv4 } from 'uuid';
-import Loading from "../../Loading.jsx"; // Import the Loading component
+import { v4 as uuidv4 } from "uuid";
+import Loading from "../../Loading.jsx";
 
 export default function ProductShowHome() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   // Lấy user_id từ localStorage
   const [userId, setUserId] = useState("");
@@ -34,14 +34,16 @@ export default function ProductShowHome() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true); // Set loading to true before API call
+      setLoading(true);
       try {
-        const response = await axios.get(`${API_BASE_URL}/recommendation/${userId}`);
+        const response = await axios.get(
+          `${API_BASE_URL}/recommendation/${userId}`
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
-        setLoading(false); // Set loading to false after API call
+        setLoading(false); 
       }
     };
 
@@ -75,22 +77,20 @@ export default function ProductShowHome() {
   return (
     <div className="bg-secondary m-auto flex flex-wrap justify-center py-6 rounded-lg shadow-2xl">
       {loading ? (
-        <Loading /> // Display loading spinner when loading is true
+        <Loading />
       ) : (
         products.map((product) => {
-          const currentDate = new Date();
-          const expireDate = new Date(product.expirydate);
-          const remainingTime = expireDate - currentDate;
-          const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-
           return (
             <div
               key={product.productid}
-              className="w-1/4 bg-fourth max-w-xs rounded overflow-hidden shadow-lg m-4 cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1"
+              className="w-1/4 bg-fourth max-w-xs rounded overflow-hidden shadow-2xl m-4 cursor-pointer"
             >
-              <Link to={`/product/${product.productid}`} key={product.productid}>
+              <Link
+                to={`/product/${product.productid}`}
+                key={product.productid}
+              >
                 <img
-                  className="w-full h-64 object-cover hover:opacity-80"
+                  className="w-full h-64 object-cover transition duration-500 ease-in-out transform hover:scale-110"
                   src={product.productimage1}
                   alt={product.productname}
                 />
@@ -103,34 +103,6 @@ export default function ProductShowHome() {
                   <div className="flex justify-center mb-2 ">
                     <p className="font-bold text-center text-2xl">
                       {product.productname}
-
-                      <span className="my-auto text-xs font-normal italic block">
-                        Chất lượng: {product.productquality}
-                      </span>
-                    </p>
-                  </div>
-                  <p className="m-2 text-primary">
-                    Hạn sử dụng còn:{" "}
-                    <span className="text-primary font-bold">
-                      {" "}
-                      {remainingDays} ngày
-                    </span>
-                  </p>
-                  <p className="text-sm m-2 text-primary">
-                    Số lượng còn lại:{" "}
-                    <span className="text-primary font-bold">
-                      {" "}
-                      {product.productquantity}kg
-                    </span>
-                  </p>
-                  <div className="flex justify-between  m-3">
-                    <del className="text-2xl italic text-green-500">
-                      {product.productprice}đ 
-                    </del>
-                    <p className="text-2xl text-left font-bold">
-                      {product.productprice -
-                        product.productprice * product.promotion * 0.01}
-                      đ
                     </p>
                   </div>
                 </Link>

@@ -6,21 +6,24 @@ import OrderPage from "../pages/Order/OrderPage";
 import LoginPage from "../pages/LoginPage";
 import { ToastProvider } from "../context/ToastContext";
 import FarmerPage from "../pages/Farmer/FarmerPage";
+import { LoadingProvider } from "../context/LoadingContext";
 
 export default function AppRoutes() {
   return (
     <ToastProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/farmer" element={<FarmerPage />} />
-          <Route path="/category" element={<CategoryPage />} />
-          <Route path="/product" element={<ProductPage />} />
-          <Route path="/order" element={<OrderPage />} />
-          <Route path="*" element={<div>404</div>} />
-        </Routes>
-      </Router>
+      <LoadingProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/farmer" element={<FarmerPage />} />
+            <Route path="/category" element={<CategoryPage />} />
+            <Route path="/product" element={<ProductPage />} />
+            <Route path="/order" element={<OrderPage />} />
+            <Route path="*" element={<div>404</div>} />
+          </Routes>
+        </Router>
+      </LoadingProvider>
     </ToastProvider>
   );
 }

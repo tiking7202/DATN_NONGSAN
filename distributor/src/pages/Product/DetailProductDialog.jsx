@@ -1,17 +1,11 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PropTypes } from "prop-types";
-import { useEffect } from "react";
 
 export default function DetailProductDialog({ onClose, product }) {
-  useEffect(() => {
-    if (product) {
-      console.log(product);
-    }
-  }, [product]);
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center m-auto">
-      <div className="bg-white p-6 rounded w-1/2 m-auto h-3/4 overflow-auto shadow-2xl text-primary">
+      <div className="bg-white p-10 rounded-2xl w-1/2 m-auto h-2/3 overflow-auto shadow-2xl text-primary">
         <div className="flex justify-end">
           <button
             className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold fixed"
@@ -25,61 +19,27 @@ export default function DetailProductDialog({ onClose, product }) {
         </h2>
         <div className="py-4 text-justify">
           <div className="flex flex-col">
-            <div className="flex my-2 justify-around h-48">
-              <img
-                src={product.productimage1}
-                alt={product.productname}
-                className="w-1/3"
-              />
-              <img
-                src={product.productimage2}
-                alt={product.productname}
-                className="w-1/3"
-              />
-              <img
-                src={product.productimage3}
-                alt={product.productname}
-                className="w-1/3"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
+              {[
+                product.productimage1,
+                product.productimage2,
+                product.productimage3,
+              ]
+                .filter(Boolean)
+                .map((imgSrc, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={imgSrc}
+                      alt={`Product Image ${index + 1}`}
+                      className="w-full h-48 object-cover rounded-lg transition-transform transform group-hover:scale-105"
+                    />
+                  </div>
+                ))}
             </div>
-
             <div className="flex my-2">
               <p className="font-medium text-xl">Danh mục sản phẩm:</p>
               <p className="text-lg ml-2">{product.categoryname}</p>
             </div>
-
-            {/* <div className="flex my-2">
-              <div className="flex w-1/2">
-                <p className="font-medium text-xl">Số lượng còn lại:</p>
-                <p className="text-lg ml-2">
-                  {product.productquantity} {product.unitofmeasure}
-                </p>
-              </div>
-              <div className="flex w-1/2">
-                <p className="font-medium text-xl">Ngày hết hạn:</p>
-                <p className="text-lg ml-2">{formatDate(product.expirydate)}</p>
-              </div>
-            </div>
-            <div className="flex my-2">
-              <div className="flex w-1/2">
-                <p className="font-medium text-xl">Giá:</p>
-                <p className="text-lg ml-2">{product.productprice} VNĐ</p>
-              </div>
-              <div className="flex w-1/2">
-                <p className="font-medium text-xl">Giảm giá:</p>
-                <p className="text-lg ml-2">{product.promotion} %</p>
-              </div>
-            </div>
-            <div className="flex my-2">
-              <div className="flex w-1/2">
-                <p className="font-medium text-xl">Chất lượng sản phẩm:</p>
-                <p className="text-lg ml-2">{product.productquality}</p>
-              </div>
-              <div className="flex w-1/2">
-                <p className="font-medium text-xl">Kích cỡ sản phẩm:</p>
-                <p className="text-lg ml-2">{product.productsize}</p>
-              </div>
-            </div> */}
 
             <div className="flex my-2">
               <p className="font-medium text-xl">Trang trại:</p>

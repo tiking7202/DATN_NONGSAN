@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { API_BASE_URL } from '../../config/config';
 
-export function addToCart(productId, userId, quantity) {
+export function addToCart(productId, userId, quantity, batchId) {
     return axios.post(`${API_BASE_URL}/add-cart`, {
         productId,
         userId,
-        quantity
+        quantity,
+        batchId
     });
 }
 

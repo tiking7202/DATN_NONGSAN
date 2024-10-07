@@ -54,10 +54,14 @@ export default function CartPage() {
   const [productId, setProductId] = useState("");
   const refreshCart = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/cart`, { userId });
+      const response = await axios.get(`${API_BASE_URL}/cart/${userId}`, {
+        params: {
+          page,
+          pageSize,
+        },
+      });
       setCart(response.data.cartItems);
       setTotalPages(response.data.pagination.totalPages);
-
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
@@ -88,9 +92,7 @@ export default function CartPage() {
 
   const handleUpdateQuantity = (productid, quantity) => {
     if (quantity === 0) {
-      toast.error("Số lượng sản phẩm phải lớn hơn 0", {
-        position: "top-right",
-      });
+      toast.error("Số lượng sản phẩm phải lớn hơn 0");
       return;
     }
     updateQuantityCart(userId, productid, quantity);
@@ -191,7 +193,7 @@ export default function CartPage() {
                   {item.productname}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
-                  {item.productprice}
+                  {item.batchprice}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
                   {item.quantity > 0 && (
@@ -215,9 +217,7 @@ export default function CartPage() {
                   </button>
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
-                  {item.productquantity > item.quantity
-                    ? "Còn hàng"
-                    : "Hết hàng"}
+                  {item.batchquantity > item.quantity ? "Còn hàng" : "Hết hàng"}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth font-bold">
                   <input

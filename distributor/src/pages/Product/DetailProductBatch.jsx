@@ -77,7 +77,7 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
 
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center m-auto">
-      <div className="bg-white p-6 rounded w-7/12 m-auto text-primary h-2/3 overflow-auto shadow-xl">
+      <div className="bg-white p-6 rounded w-6/12 m-auto text-primary h-3/5 overflow-auto shadow-xl">
         <div className="flex justify-end">
           <button
             className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold fixed"
@@ -89,12 +89,12 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
         <h2 className="text-3xl text-center text-primary font-bold">
           Các lô hàng của sản phẩm
         </h2>
-        <div className="py-4 text-justify flex flex-wrap justify-center">
-          {productBatch ? (
+        <div className="py-4 text-justify flex flex-wrap justify-around">
+          {productBatch.length > 0 ? (
             productBatch.map((productBatch) => (
               <div
                 key={productBatch.batchid}
-                className="bg-fourth shadow-xl rounded-lg px-4 py-6 m-6 w-1/4 text-primary font-bold "
+                className="bg-fourth shadow-xl rounded-lg p-6 m-4 w-5/12 text-primary font-bold "
               >
                 {isEdit && editingBatchId === productBatch.batchid ? (
                   <>
@@ -256,7 +256,7 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
                       Số lượng:{" "}
                       <span className="font-semibold">
                         {productBatch.batchquantity}{" "}
-                        {productBatch.unitofmeasure}
+                        / ({productBatch.unitofmeasure})
                       </span>
                     </p>
                     <p className=" mt-2">
@@ -295,14 +295,14 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
                         {productBatch.batchquality}
                       </span>
                     </p>
-                    <div className="flex justify-end mt-4">
+                    <div className="flex justify-end mt-4 mr-4">
                       <button
-                        className="px-3 py-2 mx-2 bg-primary text-white rounded-lg hover:opacity-85"
+                        className="px-7 py-2 mx-2 bg-primary text-white rounded-xl hover:opacity-85"
                         onClick={() => handleEditClick(productBatch)}
                       >
                         Sửa
                       </button>
-                      <button className="px-3 py-2 mx-2 bg-red-600 text-white rounded-lg hover:opacity-85"
+                      <button className="px-7 py-2 mx-2 bg-red-600 text-white rounded-xl hover:opacity-85"
                       onClick={() => handleDeleteClick(productBatch.batchid)}
                       >
                         Xóa
@@ -313,7 +313,7 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
               </div>
             ))
           ) : (
-            <p>Chưa có lô hàng nào!</p>
+            <p className="mt-10">Chưa có lô hàng nào!</p>
           )}
         </div>
       </div>
