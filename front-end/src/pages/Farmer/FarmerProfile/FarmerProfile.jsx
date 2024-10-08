@@ -60,7 +60,7 @@ export default function FarmDetailInfo() {
                     { label: "Email", value: farm.farmemail },
                     { label: "Tổng sản phẩm", value: farm.farmproductstotal },
                     { label: "Mô tả", value: farm.farmdes, break: true },
-                    { label: "Dịch vụ", value: farm.farmservice, break: true },
+                    { label: "Dịch vụ", value: farm.farmservice,  },
                     {
                       label: "Lời mời hợp tác",
                       value: farm.farminvite,
@@ -74,7 +74,7 @@ export default function FarmDetailInfo() {
                     <div className="flex" key={index}>
                       {item.break ? (
                         <>
-                          <p className="font-bold text-lg text-primary w-4/12">
+                          <p className="font-bold text-lg text-primary w-3/12">
                             {item.label}:
                           </p>
                           <p className="text-lg font-medium text-justify">
@@ -106,16 +106,13 @@ export default function FarmDetailInfo() {
                 {/* Hình ảnh */}
                 <div className="w-full lg:w-4/12 space-y-6">
                   <div className="text-center">
-                    {/* <p className="font-bold text-lg text-primary">
-                      Logo Trang Trại
-                    </p> */}
                     <img
                       src={farm.farmlogo}
                       alt="Farm Logo"
-                      className="rounded-full w-40 h-40 object-cover mx-auto mt-4 shadow-lg"
+                      className="rounded-full w-40 h-40 object-cover mx-auto mt-4 shadow-lg  hover:scale-105"
                     />
                     <button
-                      className="mt-4 py-2 px-4 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-colors"
+                      className="mt-4 py-2 px-4 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-colors shadow-xl"
                       onClick={openChangeLogoDialog}
                     >
                       Thay đổi logo trang trại
@@ -123,9 +120,6 @@ export default function FarmDetailInfo() {
                   </div>
 
                   <div className="text-center">
-                    {/* <p className="font-bold text-lg text-primary">
-                      Hình Ảnh Trang Trại
-                    </p> */}
                     <div className="grid grid-cols-2 gap-4 mt-4">
                       {[
                         farm.farmimage,
@@ -137,12 +131,12 @@ export default function FarmDetailInfo() {
                           key={index}
                           src={image}
                           alt={`Farm Image ${index}`}
-                          className="rounded-lg w-full h-32 object-cover shadow-md"
+                          className="rounded-lg w-full h-32 object-cover shadow-md  hover:scale-105"
                         />
                       ))}
                     </div>
                     <button
-                      className="mt-4 py-2 px-4 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-colors"
+                      className="mt-4 py-2 px-4 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-colors shadow-xl"
                       onClick={openChangeImageDialog}
                     >
                       Thay đổi hình ảnh trang trại

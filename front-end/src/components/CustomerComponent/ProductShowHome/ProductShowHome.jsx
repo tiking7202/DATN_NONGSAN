@@ -43,27 +43,24 @@ export default function ProductShowHome() {
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, [userId]);
 
-  const handleAddToCart = (productId) => {
+  const handleAddToCart = (productId, batchId) => {
     const accessToken = localStorage.getItem("accessToken");
 
     if (!accessToken) {
-      toast.error("Đăng nhập để thêm vào giỏ hàng!", {
-        position: "top-right",
-        time: 500,
-      });
+      toast.error("Đăng nhập để thêm vào giỏ hàng!");
       navigate("/login");
     } else {
       const decodedToken = jwtDecode(accessToken);
       const userId = decodedToken.userid;
 
-      addToCart(productId, userId, 1)
+      addToCart(productId, userId, 1, batchId)
         .then((response) => {
           response;
           toast.success("Thêm vào giỏ hàng thành công!");
@@ -80,6 +77,13 @@ export default function ProductShowHome() {
         <Loading />
       ) : (
         products.map((product) => {
+          const currentDate = new Date();
+          const expireDate = new Date(product.expirydate);
+          const remainingTime = expireDate - currentDate;
+          const remainingDays = Math.floor(
+            remainingTime / (1000 * 60 * 60 * 24)
+          );
+
           return (
             <div
               key={product.productid}
@@ -103,6 +107,35 @@ export default function ProductShowHome() {
                   <div className="flex justify-center mb-2 ">
                     <p className="font-bold text-center text-2xl">
                       {product.productname}
+                      <span className="ml-2 my-auto text-sm font-normal italic block">
+                        {product.productquality}
+                      </span>
+                    </p>
+                  </div>
+
+                  <p className="m-2 text-primary">
+                    Hạn sử dụng còn:{" "}
+                    <span className="text-primary font-bold">
+                      {" "}
+                      {remainingDays} ngày
+                    </span>
+                  </p>
+                  <p className="text-sm m-2 text-primary">
+                    Số lượng còn lại:{" "}
+                    <span className="text-primary font-bold">
+                      {" "}
+                      {product.batchquantity}{" "}
+                      <span className="text-sm italic">({product.unitofmeasure})</span>
+                    </span>
+                  </p>
+                  <div className="flex justify-between  m-3">
+                    <del className="text-xl italic text-green-500">
+                      {Number(product.batchprice)}đ
+                    </del>
+                    <p className="text-3xl text-left font-bold">
+                      {(product.batchprice) -
+                        (product.batchprice) * product.promotion * 0.01}
+                      đ
                     </p>
                   </div>
                 </Link>
@@ -122,7 +155,7 @@ export default function ProductShowHome() {
 
                   <button
                     className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200"
-                    onClick={() => handleAddToCart(product.productid)}
+                    onClick={() => handleAddToCart(product.productid, product.batchid)}
                   >
                     <FontAwesomeIcon icon={faCartPlus} size="2x" />
                   </button>

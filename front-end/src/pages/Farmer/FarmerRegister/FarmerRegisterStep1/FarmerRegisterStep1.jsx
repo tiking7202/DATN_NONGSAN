@@ -48,6 +48,8 @@ function FarmerRegisterStep1() {
 
   const navigate = useNavigate();
 
+
+
   const validate = () => {
     let isValid = true;
     if (username === "") {
@@ -148,7 +150,6 @@ function FarmerRegisterStep1() {
   };
 
   const { setToastMessage } = useToast();
-
   //Xử lý bước tiếp theo
   const handleNext = async () => {
     try {
@@ -192,10 +193,7 @@ function FarmerRegisterStep1() {
       navigate(`/farmer/register/step2?userid=${userId}`);
     } catch (error) {
       console.error("Error during registration:", error);
-      toast.error(error.response.data, {
-        position: "top-right",
-        time: 500,
-      });
+      toast.error(error.response.data);
     }
   };
 
