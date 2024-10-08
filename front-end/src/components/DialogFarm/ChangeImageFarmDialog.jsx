@@ -5,6 +5,7 @@ import { PropTypes } from "prop-types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../config/config";
+import Loading from "../Loading";
 
 export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
   const [farmimage, setFarmImage] = useState(farm.farmimage);
@@ -16,6 +17,8 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
   const [farmimage1Error, setFarmImage1Error] = useState("");
   const [farmimage2Error, setFarmImage2Error] = useState("");
   const [farmimage3Error, setFarmImage3Error] = useState("");
+
+  const [loading, setLoading] = useState(false); // Thêm state loading
 
   const farmname = farm.farmname;
   const farmId = farm.farmid;
@@ -47,6 +50,7 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
     if (!validateForm()) {
       return;
     }
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("farmimage", farmimage);
@@ -73,6 +77,8 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -90,92 +96,98 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
         <h2 className="text-3xl text-center font-bold mb-4">
           Thay đổi hình ảnh trang trại
         </h2>
-        <div className="p-3 my-2">
-          {/* Input cho farmimage */}
-          <div className="bg-secondary m-3 flex">
-            <div className="w-full">
-              <label
-                className="block text-xl text-primary font-bold mb-2"
-                htmlFor="farmimage"
+        {loading ? (
+          <div className="flex justify-center items-center h-full w-full">
+            <Loading />
+          </div>
+        ) : (
+          <div className="p-3 my-2">
+            {/* Input cho farmimage */}
+            <div className="bg-secondary m-3 flex">
+              <div className="w-full">
+                <label
+                  className="block text-xl text-primary font-bold mb-2"
+                  htmlFor="farmimage"
+                >
+                  Hình ảnh chính
+                </label>
+                <input
+                  type="file"
+                  className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                  onChange={(e) => setFarmImage(e.target.files[0])}
+                />
+                {farmimageError && (
+                  <p className="text-red-500 italic">{farmimageError}</p>
+                )}
+              </div>
+            </div>
+            {/* Input cho farmimage1 */}
+            <div className="bg-secondary m-3 flex">
+              <div className="w-full">
+                <label
+                  className="block text-xl text-primary font-bold mb-2"
+                  htmlFor="farmimage1"
+                >
+                  Hình ảnh phụ 1
+                </label>
+                <input
+                  type="file"
+                  className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                  onChange={(e) => setFarmImage1(e.target.files[0])}
+                />
+                {farmimage1Error && (
+                  <p className="text-red-500 italic">{farmimage1Error}</p>
+                )}
+              </div>
+            </div>
+            {/* Input cho farmimage2 */}
+            <div className="bg-secondary m-3 flex">
+              <div className="w-full">
+                <label
+                  className="block text-xl text-primary font-bold mb-2"
+                  htmlFor="farmimage2"
+                >
+                  Hình ảnh phụ 2
+                </label>
+                <input
+                  type="file"
+                  className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                  onChange={(e) => setFarmImage2(e.target.files[0])}
+                />
+                {farmimage2Error && (
+                  <p className="text-red-500 italic">{farmimage2Error}</p>
+                )}
+              </div>
+            </div>
+            {/* Input cho farmimage3 */}
+            <div className="bg-secondary m-3 flex">
+              <div className="w-full">
+                <label
+                  className="block text-xl text-primary font-bold mb-2"
+                  htmlFor="farmimage3"
+                >
+                  Hình ảnh phụ 3
+                </label>
+                <input
+                  type="file"
+                  className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                  onChange={(e) => setFarmImage3(e.target.files[0])}
+                />
+                {farmimage3Error && (
+                  <p className="text-red-500 italic">{farmimage3Error}</p>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-end mt-5">
+              <button
+                className="bg-primary hover:opacity-90 text-white font-bold py-2 px-3 m-3 rounded-lg"
+                onClick={handleSubmit}
               >
-                Hình ảnh chính
-              </label>
-              <input
-                type="file"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                onChange={(e) => setFarmImage(e.target.files[0])}
-              />
-              {farmimageError && (
-                <p className="text-red-500 italic">{farmimageError}</p>
-              )}
+                Lưu thay đổi
+              </button>
             </div>
           </div>
-          {/* Input cho farmimage1 */}
-          <div className="bg-secondary m-3 flex">
-            <div className="w-full">
-              <label
-                className="block text-xl text-primary font-bold mb-2"
-                htmlFor="farmimage1"
-              >
-                Hình ảnh phụ 1
-              </label>
-              <input
-                type="file"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                onChange={(e) => setFarmImage1(e.target.files[0])}
-              />
-              {farmimage1Error && (
-                <p className="text-red-500 italic">{farmimage1Error}</p>
-              )}
-            </div>
-          </div>
-          {/* Input cho farmimage2 */}
-          <div className="bg-secondary m-3 flex">
-            <div className="w-full">
-              <label
-                className="block text-xl text-primary font-bold mb-2"
-                htmlFor="farmimage2"
-              >
-                Hình ảnh phụ 2
-              </label>
-              <input
-                type="file"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                onChange={(e) => setFarmImage2(e.target.files[0])}
-              />
-              {farmimage2Error && (
-                <p className="text-red-500 italic">{farmimage2Error}</p>
-              )}
-            </div>
-          </div>
-          {/* Input cho farmimage3 */}
-          <div className="bg-secondary m-3 flex">
-            <div className="w-full">
-              <label
-                className="block text-xl text-primary font-bold mb-2"
-                htmlFor="farmimage3"
-              >
-                Hình ảnh phụ 3
-              </label>
-              <input
-                type="file"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                onChange={(e) => setFarmImage3(e.target.files[0])}
-              />
-              {farmimage3Error && (
-                <p className="text-red-500 italic">{farmimage3Error}</p>
-              )}
-            </div>
-          </div>
-          <div className="flex justify-end mt-5">
-            <button
-              className="bg-primary hover:opacity-90 text-white font-bold py-2 px-3 m-3 rounded-lg"
-              onClick={handleSubmit}
-            >
-              Lưu thay đổi
-            </button>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

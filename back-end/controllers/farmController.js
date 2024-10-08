@@ -97,10 +97,10 @@ exports.changeInfoFarm = async (req, res) => {
   try {
     const result = await pool.query(
       `UPDATE farm 
-       SET farmname = $1, farmemail = $2, farmtype = $3, farmstreet = $4, farmcommune = $5, 
-           farmdistrict = $6, farmprovince = $7, farmphone = $8, farmproductstotal = $9, 
-           farmservice = $10, farminvite = $11, farmdes = $12 
-       WHERE userid = $13`,
+        SET farmname = $1, farmemail = $2, farmtype = $3, farmstreet = $4, farmcommune = $5, 
+            farmdistrict = $6, farmprovince = $7, farmphone = $8, farmproductstotal = $9, 
+            farmservice = $10, farminvite = $11, farmdes = $12 
+        WHERE userid = $13`,
       [
         farmname,
         farmemail,
@@ -132,26 +132,38 @@ exports.updateLogoFarm = async (req, res) => {
   const { farmId, farmname } = req.body;
   try {
     const farmlogo = req.file;
-    if (!farmId)
-      return res.status(400).json({ message: "Farm ID is required" });
     let farmlogoUrl = null;
+
+    if (!farmId) {
+      return res.status(400).json({ message: "Farm ID is required" });
+    }
+
     if (farmlogo) {
       const farmlogoBuffer = farmlogo.buffer;
       const farmlogoFilename = `farms/${farmname}/${uuidv4()}`;
       const farmlogoRef = ref(storage, farmlogoFilename);
 
       await uploadBytes(farmlogoRef, farmlogoBuffer, {
-        contentType: farmname.mimetype,
+        contentType: farmlogo.mimetype,
       });
       farmlogoUrl = await getDownloadURL(farmlogoRef);
-
-      const newLogo = await pool.query(
-        "UPDATE farm SET farmlogo = $1 WHERE farmid = $2 RETURNING *",
-        [farmlogoUrl, farmId]
+    } else {
+      // Lấy logo hiện tại từ cơ sở dữ liệu nếu không có logo mới
+      const currentLogoQuery = await pool.query(
+        "SELECT farmlogo FROM farm WHERE farmid = $1",
+        [farmId]
       );
-
-      res.json({ logo: newLogo.rows[0] });
+      if (currentLogoQuery.rows.length > 0) {
+        farmlogoUrl = currentLogoQuery.rows[0].farmlogo;
+      }
     }
+
+    const newLogo = await pool.query(
+      "UPDATE farm SET farmlogo = $1 WHERE farmid = $2 RETURNING *",
+      [farmlogoUrl, farmId]
+    );
+
+    res.json({ logo: newLogo.rows[0] });
   } catch (error) {
     console.error("Error updating farm logo:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -162,7 +174,7 @@ exports.updateImageFarm = async (req, res) => {
   const { farmId, farmname } = req.body;
   try {
     const uploadImage = async (image) => {
-      if (!image) return;
+      if (!image) return null;
       const imageBuffer = image.buffer;
       const imageFilename = `farms/${farmname}/${uuidv4()}`;
       const imageRef = ref(storage, imageFilename);
@@ -173,18 +185,25 @@ exports.updateImageFarm = async (req, res) => {
       return await getDownloadURL(imageRef);
     };
 
+    // Lấy các URL hình ảnh hiện tại từ cơ sở dữ liệu nếu không có hình ảnh mới
+    const currentImagesQuery = await pool.query(
+      "SELECT farmimage, farmimage1, farmimage2, farmimage3 FROM farm WHERE farmid = $1",
+      [farmId]
+    );
+    const currentImages = currentImagesQuery.rows[0];
+
     const farmimageUrl = await uploadImage(
       req.files.farmimage ? req.files.farmimage[0] : null
-    );
+    ) || currentImages.farmimage;
     const farmimage1Url = await uploadImage(
       req.files.farmimage1 ? req.files.farmimage1[0] : null
-    );
+    ) || currentImages.farmimage1;
     const farmimage2Url = await uploadImage(
       req.files.farmimage2 ? req.files.farmimage2[0] : null
-    );
+    ) || currentImages.farmimage2;
     const farmimage3Url = await uploadImage(
       req.files.farmimage3 ? req.files.farmimage3[0] : null
-    );
+    ) || currentImages.farmimage3;
 
     const newImages = await pool.query(
       "UPDATE farm SET farmimage = $1, farmimage1 = $2, farmimage2 = $3, farmimage3 = $4 WHERE farmid = $5 RETURNING *",

@@ -7,6 +7,8 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { API_BASE_URL } from "../../../../config/config";
 import { toast, ToastContainer } from "react-toastify";
 import { useToast } from "../../../../context/ToastContext";
+import { useLoading } from "../../../../context/LoadingContext";
+import Loading from "../../../../components/Loading";
 
 const RegisterCustomerStep1 = () => {
   const [username, setUsername] = useState("");
@@ -26,6 +28,7 @@ const RegisterCustomerStep1 = () => {
 
   const navigate = useNavigate();
   const { setToastMessage } = useToast();
+  const { loading, setLoading } = useLoading();
 
   const validate = () => {
     let isValid = true;
@@ -73,6 +76,7 @@ const RegisterCustomerStep1 = () => {
       if (!validate()) {
         return;
       }
+      setLoading(true);
       const userData = {
         username,
         email,
@@ -93,177 +97,188 @@ const RegisterCustomerStep1 = () => {
       setToastMessage("Đăng ký bước 1 thành công, nhập các thông tin bước 2 để hoàn tất!");
       navigate(`/register/step2?userid=${userId}`);
     } catch (error) {
-      console.error("Error during registration:", error);
-      toast.error(error.response.data, {
-        position: "top-right",
-        time: 500,
-      });
+      console.error(error);
+      toast.error(error.response.data); 
+    }
+    finally {
+      setLoading(false);
     }
   };
 
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   return (
-    <div className="backgroundImg">
+    <>
       <ToastContainer />
-
-      <div className="w-2/5 m-auto bg-fourth rounded-2xl">
-        <h1 className="text-primary py-3 font-bold text-center text-40">
-          Đăng ký
-        </h1>
-        <div className="flex justify-center px-5 my-3">
-          <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
-            <label
-              htmlFor="username"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Username:
-            </label>
-            <input
-              id="username"
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-            />
-            {usernameError && <p className="text-red-500">{usernameError}</p>}
-          </div>
-
-          <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
-            <label
-              htmlFor="email"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Email:
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-            />
-            {emailError && <p className="text-red-500">{emailError}</p>}
-          </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-full w-full">
+          <Loading />
         </div>
+      ) : (
+        <>
+          <div className="backgroundImg">
+            
+            <div className="w-2/5 m-auto bg-fourth rounded-2xl">
+              <h1 className="text-primary py-3 font-bold text-center text-40">
+                Đăng ký
+              </h1>
+              <div className="flex justify-center px-5 my-3">
+                <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
+                  <label
+                    htmlFor="username"
+                    className="block text-xl text-primary font-bold mb-2"
+                  >
+                    Username:
+                  </label>
+                  <input
+                    id="username"
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                  />
+                  {usernameError && <p className="text-red-500">{usernameError}</p>}
+                </div>
 
-        <div className="flex justify-center px-5 my-3">
-          <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
-            <label
-              htmlFor="password"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Mật khẩu:
-            </label>
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Mật khẩu"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-              />
-              <FontAwesomeIcon
-                icon={showPassword ? faEyeSlash : faEye}
-                onClick={handlePasswordVisibility}
-                className="absolute right-3 top-3 cursor-pointer"
-              />
+                <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-xl text-primary font-bold mb-2"
+                  >
+                    Email:
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                  />
+                  {emailError && <p className="text-red-500">{emailError}</p>}
+                </div>
+              </div>
+
+              <div className="flex justify-center px-5 my-3">
+                <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
+                  <label
+                    htmlFor="password"
+                    className="block text-xl text-primary font-bold mb-2"
+                  >
+                    Mật khẩu:
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Mật khẩu"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    />
+                    <FontAwesomeIcon
+                      icon={showPassword ? faEyeSlash : faEye}
+                      onClick={handlePasswordVisibility}
+                      className="absolute right-3 top-3 cursor-pointer"
+                    />
+                  </div>
+                  {passwordError && <p className="text-red-500">{passwordError}</p>}
+                </div>
+                <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-xl text-primary font-bold mb-2"
+                  >
+                    Xác nhận mật khẩu:
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="confirmPassword"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Xác nhận mật khẩu"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    />
+                    <FontAwesomeIcon
+                      icon={showPassword ? faEyeSlash : faEye}
+                      onClick={handlePasswordVisibility}
+                      className="absolute right-3 top-3 cursor-pointer"
+                    />
+                  </div>
+                  {confirmPasswordError && (
+                    <p className="text-red-500">{confirmPasswordError}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-center px-5 my-3">
+                <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
+                  <label
+                    htmlFor="phonenumber"
+                    className="block text-xl text-primary font-bold mb-2"
+                  >
+                    Số điện thoại:
+                  </label>
+                  <input
+                    id="phonenumber"
+                    type="text"
+                    placeholder="Số điện thoại"
+                    value={phonenumber}
+                    onChange={(e) => setPhonenumber(e.target.value)}
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                  />
+                  {phonenumberError && (
+                    <p className="text-red-500">{phonenumberError}</p>
+                  )}
+                </div>
+                <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
+                  <label
+                    htmlFor="fullname"
+                    className="block text-xl text-primary font-bold mb-2"
+                  >
+                    Họ và tên:
+                  </label>
+                  <input
+                    id="fullname"
+                    type="text"
+                    placeholder="Họ và tên"
+                    value={fullname}
+                    onChange={(e) => setFullname(e.target.value)}
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                  />
+                  {fullnameError && <p className="text-red-500">{fullnameError}</p>}
+                </div>
+              </div>
+              <div className="flex items-center flex-col m-3">
+                <button
+                  onClick={handleNext}
+                  className="bg-primary hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-2 rounded-xl w-1/2"
+                >
+                  Tiếp theo
+                </button>
+                <p className="text-primary text-xl m-2">Hoặc</p>
+                <button
+                  onClick={handleNext}
+                  className="bg-third hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-2 rounded-xl w-1/2"
+                >
+                  Đăng ký với google
+                </button>
+                <p className="text-primary">
+                  Bạn đã có tài khoản?{" "}
+                  <Link className="text-third" to="/login">
+                    Đăng nhập
+                  </Link>
+                </p>
+              </div>
             </div>
-            {passwordError && <p className="text-red-500">{passwordError}</p>}
           </div>
-          <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Xác nhận mật khẩu:
-            </label>
-            <div className="relative">
-              <input
-                id="confirmPassword"
-                type={showPassword ? "text" : "password"}
-                placeholder="Xác nhận mật khẩu"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-              />
-              <FontAwesomeIcon
-                icon={showPassword ? faEyeSlash : faEye}
-                onClick={handlePasswordVisibility}
-                className="absolute right-3 top-3 cursor-pointer"
-              />
-            </div>
-            {confirmPasswordError && (
-              <p className="text-red-500">{confirmPasswordError}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="flex justify-center px-5 my-3">
-          <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
-            <label
-              htmlFor="phonenumber"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Số điện thoại:
-            </label>
-            <input
-              id="phonenumber"
-              type="text"
-              placeholder="Số điện thoại"
-              value={phonenumber}
-              onChange={(e) => setPhonenumber(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-            />
-            {phonenumberError && (
-              <p className="text-red-500">{phonenumberError}</p>
-            )}
-          </div>
-          <div className="bg-secondary w-6/12 mx-2 rounded-xl p-2">
-            <label
-              htmlFor="fullname"
-              className="block text-xl text-primary font-bold mb-2"
-            >
-              Họ và tên:
-            </label>
-            <input
-              id="fullname"
-              type="text"
-              placeholder="Họ và tên"
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
-              className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-            />
-            {fullnameError && <p className="text-red-500">{fullnameError}</p>}
-          </div>
-        </div>
-        <div className="flex items-center flex-col m-3">
-          <button
-            onClick={handleNext}
-            className="bg-primary hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-2 rounded-xl w-1/2"
-          >
-            Tiếp theo
-          </button>
-          <p className="text-primary text-xl m-2">Hoặc</p>
-          <button
-            onClick={handleNext}
-            className="bg-third hover:opacity-90 text-white font-bold text-xl py-3 px-6 m-2 rounded-xl w-1/2"
-          >
-            Đăng ký với google
-          </button>
-          <p className="text-primary">
-            Bạn đã có tài khoản?{" "}
-            <Link className="text-third" to="/login">
-              Đăng nhập
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+        </>
+      )}
+    </>
   );
 };
 

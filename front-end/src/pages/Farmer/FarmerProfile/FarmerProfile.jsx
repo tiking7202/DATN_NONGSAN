@@ -23,19 +23,13 @@ export default function FarmDetailInfo() {
   }, [userId]);
 
   const [isOpenChangeInfo, setIsOpenChangeInfo] = useState(false);
-  const openChangeInfoDialog = () => {
-    setIsOpenChangeInfo(true);
-  };
+  const openChangeInfoDialog = () => setIsOpenChangeInfo(true);
 
   const [isOpenChangeLogo, setIsOpenChangeLogo] = useState(false);
-  const openChangeLogoDialog = () => {
-    setIsOpenChangeLogo(true);
-  };
+  const openChangeLogoDialog = () => setIsOpenChangeLogo(true);
 
   const [isOpenChangeImage, setIsOpenChangeImage] = useState(false);
-  const openChangeImageDialog = () => {
-    setIsOpenChangeImage(true);
-  };
+  const openChangeImageDialog = () => setIsOpenChangeImage(true);
 
   const refreshFarm = async () => {
     const response = await axios.get(`${API_BASE_URL}/farm/user/${userId}`);
@@ -43,92 +37,66 @@ export default function FarmDetailInfo() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <HeaderFarmer />
       <div className="flex">
         <FarmerNavBar />
-        <div className="bg-fourth w-5/6 h-screen fixed right-0 top-0 mt-20 overflow-y-auto">
-          <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg">
-            <h1 className="font-bold text-primary text-2xl p-5">
-              Thông tin trang trại
-            </h1>
-          </div>
+        <div className="w-5/6 h-screen ml-auto bg-fourth mt-16 p-8 rounded-lg shadow-2xl">
+          <h1 className="font-bold text-3xl text-primary mb-3 bg-white rounded-lg p-3 shadow-2xl">
+            Thông tin trang trại
+          </h1>
 
           {/* Thông tin chi tiết farm */}
-          <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg p-5">
+          <div className="flex flex-wrap justify-between bg-white p-6 rounded-lg shadow-md">
             {farm && (
-              <div className="flex flex-wrap justify-between">
+              <>
                 {/* Thông tin cơ bản */}
-                <div className="p-5 pb-20 flex flex-col w-7/12">
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">
-                      Tên trang trại:
-                    </p>
-                    <p className="text-xl p-3 font-medium">{farm.farmname}</p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">
-                      Diện tích:
-                    </p>
-                    <p className="text-xl p-3 font-medium">
-                      {farm.farmarea} ha
-                    </p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">
-                      Loại hình:
-                    </p>
-                    <p className="text-xl p-3 font-medium">{farm.farmtype}</p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">
-                      Số điện thoại:
-                    </p>
-                    <p className="text-xl p-3 font-medium">{farm.farmphone}</p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">Email:</p>
-                    <p className="text-xl p-3 font-medium">{farm.farmemail}</p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">
-                      Tổng sản phẩm:
-                    </p>
-                    <p className="text-xl p-3 font-medium">
-                      {farm.farmproductstotal}
-                    </p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">
-                      Dịch vụ:
-                    </p>
-                    <p className="text-xl p-3 font-medium">
-                      {farm.farmservice}
-                    </p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">
-                      Lời mời hợp tác:
-                    </p>
-                    <p className="text-xl p-3 font-medium">{farm.farminvite}</p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">Mô tả:</p>
-                    <p className="text-xl p-3 font-medium">{farm.farmdes}</p>
-                  </div>
-                  <div className="flex">
-                    <p className="font-bold text-xl p-3 text-primary">
-                      Địa chỉ:
-                    </p>
-                    <p className="text-xl p-3 font-medium">
-                      {farm.farmstreet}, {farm.farmcommune}, {farm.farmdistrict}
-                      , {farm.farmprovince}.
-                    </p>
-                  </div>
-                  <div className="flex justify-center mt-5">
+                <div className="w-full lg:w-7/12 space-y-6">
+                  {[
+                    { label: "Tên trang trại", value: farm.farmname },
+                    { label: "Diện tích", value: `${farm.farmarea} ha` },
+                    { label: "Loại hình", value: farm.farmtype },
+                    { label: "Số điện thoại", value: farm.farmphone },
+                    { label: "Email", value: farm.farmemail },
+                    { label: "Tổng sản phẩm", value: farm.farmproductstotal },
+                    { label: "Mô tả", value: farm.farmdes, break: true },
+                    { label: "Dịch vụ", value: farm.farmservice, break: true },
+                    {
+                      label: "Lời mời hợp tác",
+                      value: farm.farminvite,
+                      break: true,
+                    },
+                    {
+                      label: "Địa chỉ",
+                      value: `${farm.farmstreet}, ${farm.farmcommune}, ${farm.farmdistrict}, ${farm.farmprovince}`,
+                    },
+                  ].map((item, index) => (
+                    <div className="flex" key={index}>
+                      {item.break ? (
+                        <>
+                          <p className="font-bold text-lg text-primary w-4/12">
+                            {item.label}:
+                          </p>
+                          <p className="text-lg font-medium text-justify">
+                            {item.value}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-bold text-lg text-primary">
+                            {item.label}:
+                          </p>
+                          <p className="ml-4 text-lg font-medium text-justify">
+                            {item.value}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                  <div className="flex justify-end mt-8">
                     <button
-                      className="p-3 bg-primary text-white font-bold rounded-md w-full max-w-xs"
-                      onClick={() => openChangeInfoDialog()}
+                      className="py-3 px-6 bg-primary text-white font-bold rounded-lg hover:opacity-80 transition-colors"
+                      onClick={openChangeInfoDialog}
                     >
                       Thay đổi thông tin
                     </button>
@@ -136,62 +104,57 @@ export default function FarmDetailInfo() {
                 </div>
 
                 {/* Hình ảnh */}
-                <div className="p-5 w-4/12 border-l-2 border-primary">
-                  <div className="flex flex-col items-center">
-                    <p className="font-bold text-xl text-primary">
+                <div className="w-full lg:w-4/12 space-y-6">
+                  <div className="text-center">
+                    {/* <p className="font-bold text-lg text-primary">
                       Logo Trang Trại
-                    </p>
+                    </p> */}
                     <img
                       src={farm.farmlogo}
                       alt="Farm Logo"
-                      className="rounded-full w-2/3 mb-5"
+                      className="rounded-full w-40 h-40 object-cover mx-auto mt-4 shadow-lg"
                     />
-                    {/* Button Thay đổi logo trang trại */}
                     <button
-                      className="mb-5 p-3 bg-primary text-white font-bold rounded-md w-full max-w-xs"
-                      onClick={() => openChangeLogoDialog()}
+                      className="mt-4 py-2 px-4 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-colors"
+                      onClick={openChangeLogoDialog}
                     >
                       Thay đổi logo trang trại
                     </button>
-                    <p className="font-bold text-xl text-primary mt-10">
+                  </div>
+
+                  <div className="text-center">
+                    {/* <p className="font-bold text-lg text-primary">
                       Hình Ảnh Trang Trại
-                    </p>
-                    <div className="grid grid-cols-2 gap-3 mt-5">
-                      <img
-                        src={farm.farmimage}
-                        alt="Farm Image"
-                        className="rounded-lg w-full"
-                      />
-                      <img
-                        src={farm.farmimage1}
-                        alt="Farm Image 1"
-                        className="rounded-lg w-full"
-                      />
-                      <img
-                        src={farm.farmimage2}
-                        alt="Farm Image 2"
-                        className="rounded-lg w-full"
-                      />
-                      <img
-                        src={farm.farmimage3}
-                        alt="Farm Image 3"
-                        className="rounded-lg w-full"
-                      />
+                    </p> */}
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                      {[
+                        farm.farmimage,
+                        farm.farmimage1,
+                        farm.farmimage2,
+                        farm.farmimage3,
+                      ].map((image, index) => (
+                        <img
+                          key={index}
+                          src={image}
+                          alt={`Farm Image ${index}`}
+                          className="rounded-lg w-full h-32 object-cover shadow-md"
+                        />
+                      ))}
                     </div>
-                    {/* Button Thay đổi hình ảnh trang trại */}
                     <button
-                      className="mt-5 p-3 bg-primary text-white font-bold rounded-md w-full max-w-xs"
-                      onClick={() => openChangeImageDialog()}
+                      className="mt-4 py-2 px-4 text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition-colors"
+                      onClick={openChangeImageDialog}
                     >
                       Thay đổi hình ảnh trang trại
                     </button>
                   </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
         </div>
       </div>
+
       {isOpenChangeInfo && (
         <ChangeInfoFarmDialog
           onClose={() => setIsOpenChangeInfo(false)}

@@ -4,7 +4,7 @@ const FarmerNavBar = () => {
   const location = useLocation();
 
   return (
-    <div className="fixed top-0 left-0 w-1/6 bg-secondary mt-20">
+    <div className="fixed top-0 left-0 w-1/6 bg-secondary mt-20 shadow-xl">
       <nav className="flex flex-col text-xl font-bold">
         <Link
           to="/farmer"

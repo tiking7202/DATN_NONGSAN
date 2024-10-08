@@ -5,11 +5,14 @@ import { PropTypes } from "prop-types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../config/config";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; 
+import Loading from "../Loading";
 
 export default function ChangeLogoDialog({ onClose, user, refreshUser }) {
   const [avatar, setAvatar] = useState(user.avatar);
   const [avatarError, setAvatarError] = useState("");
+  const [loading, setLoading] = useState(false); 
+
   const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.userid;
@@ -18,7 +21,7 @@ export default function ChangeLogoDialog({ onClose, user, refreshUser }) {
     let isvalid = true;
 
     if (!avatar) {
-      setAvatarError("Avatar is required");
+      setAvatarError("Avatar là bắt buộc");
       isvalid = false;
     }
     return isvalid;
@@ -28,6 +31,7 @@ export default function ChangeLogoDialog({ onClose, user, refreshUser }) {
     if (!validateForm()) {
       return;
     }
+    setLoading(true); 
     try {
       const formData = new FormData();
       formData.append("avatar", avatar);
@@ -40,13 +44,14 @@ export default function ChangeLogoDialog({ onClose, user, refreshUser }) {
           },
         }
       );
-      if (response.status == 200) {
-        onClose();
-        toast.success("Logo uploaded successfully");
-        refreshUser();
-      }
+      onClose();
+      toast.success("Cập nhật logo thành công");
+      refreshUser();
+      response
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -64,35 +69,45 @@ export default function ChangeLogoDialog({ onClose, user, refreshUser }) {
         <h2 className="text-3xl text-center font-bold mb-4">
           Thay đổi ảnh đại diện
         </h2>
-        <div className="p-3 my-2">
-          <div className="bg-secondary m-3 flex">
-            <div className="w-full">
-              <label
-                className="block text-xl text-primary font-bold mb-2"
-                htmlFor="avatar"
-              >
-                Ảnh đại diện
-              </label>
-              <input
-                type="file"
-                placeholder="Ảnh đại diện nông dân"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                onChange={(e) => setAvatar(e.target.files[0])}
-              />
-              {avatarError && (
-                <p className="text-red-500 italic">{avatarError}</p>
-              )}
+        {loading ? (
+            <div className="flex justify-center items-center h-full w-full">
+              <Loading />
             </div>
-          </div>
-          <div className="flex justify-end mt-5">
-            <button
-              className="bg-primary hover:opacity-90 text-white font-bold py-2 px-3 m-3 rounded-lg"
-              onClick={handleSubmit}
-            >
-              Lưu thay đổi
-            </button>
-          </div>
+          ) : (
+            <>
+        <div className="p-3 my-2">
+          
+              <div className="bg-secondary m-3 flex">
+                <div className="w-full">
+                  <label
+                    className="block text-xl text-primary font-bold mb-2"
+                    htmlFor="avatar"
+                  >
+                    Ảnh đại diện
+                  </label>
+                  <input
+                    type="file"
+                    placeholder="Ảnh đại diện nông dân"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    onChange={(e) => setAvatar(e.target.files[0])}
+                  />
+                  {avatarError && (
+                    <p className="text-red-500 italic">{avatarError}</p>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-end mt-5">
+                <button
+                  className="bg-primary hover:opacity-90 text-white font-bold py-2 px-3 m-3 rounded-lg"
+                  onClick={handleSubmit}
+                >
+                  Lưu thay đổi
+                </button>
+              </div>
+            
         </div>
+        </>
+          )}
       </div>
     </div>
   );

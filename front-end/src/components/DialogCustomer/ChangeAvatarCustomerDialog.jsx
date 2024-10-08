@@ -7,7 +7,7 @@ import { API_BASE_URL } from "../../config/config";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import Loading from "../../components/Loading"; 
-import { useLoading } from "../../context/LoadingContext"; // Import useLoading
+import { useLoading } from "../../context/LoadingContext"; 
 
 export default function ChangeAvatarCustomerDialog({ onClose, user, refreshUser }) {
   const [avatar, setAvatar] = useState(user.avatar);
@@ -31,7 +31,7 @@ export default function ChangeAvatarCustomerDialog({ onClose, user, refreshUser 
     if (!validateForm()) {
       return;
     }
-    setLoading(true); // Bắt đầu loading
+    setLoading(true); 
     try {
       const formData = new FormData();
       formData.append("avatar", avatar);
@@ -50,7 +50,7 @@ export default function ChangeAvatarCustomerDialog({ onClose, user, refreshUser 
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false); // Kết thúc loading
+      setLoading(false); 
     }
   };
 
@@ -71,7 +71,7 @@ export default function ChangeAvatarCustomerDialog({ onClose, user, refreshUser 
         <div className="p-3 my-2">
           {loading ? (
             <div className="flex justify-center items-center h-full">
-              <Loading /> {/* Hiển thị component Loading */}
+              <Loading />
             </div>
           ) : (
             <>

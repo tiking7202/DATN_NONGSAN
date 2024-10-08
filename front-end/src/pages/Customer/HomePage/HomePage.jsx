@@ -7,29 +7,28 @@ import SlideShow from "../../../components/CustomerComponent/SlideShow/SlideShow
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../../context/ToastContext";
-import Loading from "../../../components/Loading.jsx"; // Import the Loading component
+import Loading from "../../../components/Loading.jsx"; 
 
 function HomePage() {
   const navigate = useNavigate();
   const { toastMessage, setToastMessage } = useToast();
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    setLoading(true); // Set loading to true before API call
-    // Simulate an API call
+    setLoading(true);
 
     if (toastMessage) {
       toast.success(toastMessage);
       setToastMessage(null);
     }
-    setLoading(false); // Set loading to false after API call
+    setLoading(false);
   }, [toastMessage, setToastMessage, navigate]);
 
   return (
     <div className="h-screen flex flex-col bg-fourth">
       <HeaderCustomer />
       {loading ? (
-        <Loading /> // Display loading spinner when loading is true
+        <Loading />
       ) : (
         <>
           <div className="flex justify-center my-10 mt-44">
@@ -47,22 +46,24 @@ function HomePage() {
                 <p className="mt-3 text-secondary text-3xl text-center">
                   Tìm hiểu thêm về
                 </p>
-                <p className="text-4xl font-bold text-center text-secondary mt-2">
+                <p className="text-4xl font-extrabold text-center text-secondary mt-2">
                   Agrimart
                 </p>
               </div>
             </div>
           </div>
-          <div className="w-3/5 m-auto bg-secondary px-9 py-6 rounded-lg shadow-2xl">
-            <h1 className="text-4xl font-bold text-primary">
-              Danh mục sản phẩm
-            </h1>
-            <CategoryShow />
+          <div className="w-full bg-fourth py-5">
+            <div className="w-3/5 mx-auto bg-secondary px-9 py-7 rounded-lg shadow-xl">
+              <h1 className="text-3xl font-bold text-primary">
+                Danh mục sản phẩm
+              </h1>
+              <CategoryShow />
+            </div>
           </div>
           <div className="w-full bg-fourth py-3">
             <div className="m-auto w-4/5 px-9 rounded-lg">
               <div className="m-auto w-full bg-secondary rounded-lg my-3 p-5 shadow-2xl">
-                <h1 className="text-4xl font-bold text-primary">
+                <h1 className="text-3xl font-bold text-primary">
                   Dành cho bạn
                 </h1>
               </div>

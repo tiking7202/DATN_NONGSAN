@@ -13,7 +13,6 @@ import {
   faPlus,
   faRemove,
 } from "@fortawesome/free-solid-svg-icons";
-import { formatDate } from "../../../utils/formatDate";
 import { truncateText } from "../../../utils/truncaseText";
 import CreateProduct from "./CreateProduct";
 import FarmerDetailProduct from "./FarmerDetailProduct";
@@ -112,7 +111,7 @@ export default function FarmerShowProducts() {
       <div className="flex">
         <FarmerNavBar />
         <div className="bg-fourth w-5/6 h-screen fixed right-0 top-0 mt-20">
-          <div className="w-11/12 m-auto bg-secondary rounded-lg px-3 py-2 mt-5">
+          <div className="w-10/12 m-auto bg-secondary rounded-lg px-7 py-1 mt-7 shadow-2xl">
             <div className="my-4">
               <button
                 className="bg-primary px-4 py-2 text-secondary font-bold rounded-xl"
@@ -124,17 +123,14 @@ export default function FarmerShowProducts() {
             </div>
 
             <div className="my-4">
-              <table className="w-full rounded-lg">
+              <table className="w-full rounded-lg shadow-xl">
                 <thead className="">
                   <tr className="bg-primary text-secondary border border-black">
-                    <th className="py-3 w-1/12">Tên sản phẩm</th>
+                    <th className="py-3 w-2/12">Tên sản phẩm</th>
                     <th className="py-3 w-1/12">Hình ảnh</th>
                     <th className="py-3 w-1/12">Danh mục</th>
                     <th className="py-3 w-1/12">Trang trại</th>
-                    <th className="py-3 w-1/12">Số lượng</th>
-                    <th className="py-3 w-1/12">Giá</th>
-                    <th className="py-3 w-2/12">Mô tả</th>
-                    <th className="py-3 w-1/12">Ngày hết hạn</th>
+                    <th className="py-3 w-4/12">Mô tả</th>
                     <th className="py-3 w-1/12">Hiển thị NPP</th>
                     <th className="py-3 w-2/12"></th>
                   </tr>
@@ -146,12 +142,8 @@ export default function FarmerShowProducts() {
                         key={product.productid}
                         className="font-medium border border-black"
                       >
-                        <td className="w-1/12 text-center">
+                        <td className="w-2/12 text-center">
                           {product.productname}
-                          <br />
-                          <span className="text-xs font-normal italic">
-                            ({formatDate(product.shipment)})
-                          </span>
                         </td>
                         <td className="w-1/12 text-center m-auto">
                           <img
@@ -166,18 +158,11 @@ export default function FarmerShowProducts() {
                         <td className="w-1/12 text-center">
                           {product.farmname}
                         </td>
-                        <td className="w-1/12 text-center">
-                          {product.productquantity} ({product.unitofmeasure})
+
+                        <td className="w-4/12 text-center">
+                          {truncateText(product.overviewdes, 50)}
                         </td>
-                        <td className="w-1/12 text-center">
-                          {product.productprice} VNĐ
-                        </td>
-                        <td className="w-2/12 text-center">
-                          {truncateText(product.overviewdes, 40)}
-                        </td>
-                        <td className="w-1/12 text-center">
-                          {formatDate(product.expirydate)}
-                        </td>
+
                         <td className="w-1/12 text-center">
                           {product.isdistributorview
                             ? "Có hiển thị"

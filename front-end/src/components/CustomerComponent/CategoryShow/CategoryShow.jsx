@@ -67,7 +67,7 @@ function CategoryShow() {
   return (
     <div className="mt-2">
       {loading ? (
-        <Loading /> // Display loading spinner when loading is true
+        <Loading /> 
       ) : (
         <Slider {...settings}>
           {categories.map((category) => (
@@ -75,14 +75,14 @@ function CategoryShow() {
               key={category.categoryid}
               className="flex flex-col items-center mx-3 space-x-4"
             >
-              <div className="mr-7 p-5 bg-fourth rounded-md shadow-lg transition-transform transform hover:scale-105">
+              <div className="mr-7 p-3 bg-fourth rounded-md shadow-lg transition-transform transform hover:scale-105">
                 <Link to={`/category/${category.categoryid}`}>
                   <img
                     src={category.categoryimage}
                     alt={category.categoryname}
                     className="w-full h-44 object-cover rounded-lg"
                   />
-                  <p className="text-center text-primary text-xl mt-2">
+                  <p className="text-center font-semibold text-primary text-xl mt-2">
                     {category.categoryname}
                   </p>
                 </Link>

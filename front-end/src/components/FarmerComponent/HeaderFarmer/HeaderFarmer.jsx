@@ -61,7 +61,7 @@ export default function HeaderFarmer() {
   };
 
   return (
-    <header className="z-40 p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full">
+    <header className="z-40 p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full shadow-xl">
       <ToastContainer />
       <nav className="flex justify-between w-full m-auto py-2">
         <section className="flex flex-col sm:flex-row items-center">

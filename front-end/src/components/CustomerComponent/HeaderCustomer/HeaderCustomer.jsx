@@ -76,7 +76,7 @@ export default function HeaderCustomer() {
   };
 
   const handleSearch = async () => {
-    setLoading(true); // Set loading to true before API call
+    
     try {
       const response = await axios.get(`${API_BASE_URL}/search`, {
         params: { search: query.trim() },
@@ -86,9 +86,7 @@ export default function HeaderCustomer() {
       setQuery("");
     } catch (error) {
       console.error("Error searching products:", error);
-    } finally {
-      setLoading(false); // Set loading to false after API call
-    }
+    } 
   };
 
   const handleRouteToLoginFarmer =  async () => {

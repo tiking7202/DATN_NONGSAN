@@ -270,18 +270,11 @@ exports.createProduct = async (req, res) => {
     productname,
     categoryid,
     farmid,
-    productquantity,
-    unitofmeasure,
-    productprice,
     overviewdes,
-    expirydate,
     healtbenefit,
     cookingmethod,
     storagemethod,
-    productsize,
     isdistributorview,
-    plantingdate,
-    harvestdate,
   } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
@@ -289,15 +282,11 @@ exports.createProduct = async (req, res) => {
     !productname ||
     !categoryid ||
     !farmid ||
-    !productquantity ||
-    !unitofmeasure ||
-    !productprice ||
     !overviewdes ||
-    !expirydate ||
-    !productsize ||
-    !isdistributorview ||
-    !plantingdate ||
-    !harvestdate
+    !healtbenefit ||
+    !cookingmethod ||
+    !storagemethod ||
+    !isdistributorview
   ) {
     return res.status(400).json({ message: "Các trường ko được để trống" });
   }
@@ -326,8 +315,8 @@ exports.createProduct = async (req, res) => {
 
     // Tạo sản phẩm mới
     const newProduct = await pool.query(
-      `INSERT INTO product (productname, productimage1, productimage2, productimage3, categoryid, farmid, productquantity, unitofmeasure, productprice, overviewdes, expirydate, healtbenefit, cookingmethod, storagemethod, productsize, isdistributorview, promotion, productquality, isvisibleweb, plantingdate, harvestdate) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+      `INSERT INTO product (productname, productimage1, productimage2, productimage3, categoryid, farmid, overviewdes, healtbenefit, cookingmethod, storagemethod, isdistributorview, isvisibleweb) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING *`,
       [
         productname,
@@ -336,21 +325,12 @@ exports.createProduct = async (req, res) => {
         productImage3Url,
         categoryid,
         farmid,
-        productquantity,
-        unitofmeasure,
-        productprice,
         overviewdes,
-        expirydate,
         healtbenefit,
         cookingmethod,
         storagemethod,
-        productsize,
         isdistributorview,
-        0,
-        "Tươi",
         false,
-        plantingdate,
-        harvestdate,
       ]
     );
 
@@ -372,18 +352,11 @@ exports.updateProduct = async (req, res) => {
     productname,
     categoryid,
     farmid,
-    productquantity,
-    unitofmeasure,
-    productprice,
     overviewdes,
-    expirydate,
     healtbenefit,
     cookingmethod,
     storagemethod,
     isdistributorview,
-    productsize,
-    plantingdate,
-    harvestdate,
   } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
@@ -391,14 +364,11 @@ exports.updateProduct = async (req, res) => {
     !productname ||
     !categoryid ||
     !farmid ||
-    !productquantity ||
-    !unitofmeasure ||
-    !productprice ||
     !overviewdes ||
-    !expirydate ||
-    !productsize ||
-    !plantingdate ||
-    !harvestdate
+    !healtbenefit ||
+    !cookingmethod ||
+    !storagemethod ||
+    !isdistributorview
   ) {
     return res.status(400).json({ message: "Các trường ko được để trống" });
   }
@@ -441,8 +411,8 @@ exports.updateProduct = async (req, res) => {
     // Sửa thông tin sản phẩm
     const updatedProduct = await pool.query(
       `UPDATE product
-        SET productname = $1, productimage1 = $2, productimage2 = $3, productimage3 = $4, categoryid = $5, farmid = $6, productquantity = $7, unitofmeasure = $8, productprice = $9, overviewdes = $10, expirydate = $11, healtbenefit = $12, cookingmethod = $13, storagemethod = $14, isdistributorview = $15, productsize = $16, plantingdate = $17, harvestdate = $18
-        WHERE productid = $19
+        SET productname = $1, productimage1 = $2, productimage2 = $3, productimage3 = $4, categoryid = $5, farmid = $6, overviewdes = $7, healtbenefit = $8, cookingmethod = $9, storagemethod = $10, isdistributorview = $11
+        WHERE productid = $12
         RETURNING *`,
       [
         productname,
@@ -451,18 +421,11 @@ exports.updateProduct = async (req, res) => {
         productImage3Url,
         categoryid,
         farmid,
-        productquantity,
-        unitofmeasure,
-        productprice,
         overviewdes,
-        expirydate,
         healtbenefit,
         cookingmethod,
         storagemethod,
         isdistributorview,
-        productsize,
-        plantingdate,
-        harvestdate,
         productid,
       ]
     );
@@ -505,7 +468,16 @@ exports.deleteProduct = async (req, res) => {
 // Thêm lô sản phẩm mới bảng product_batch: batchid, productid, batchname, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion
 exports.createProductBatch = async (req, res) => {
   const { productid } = req.params;
-  const { unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion } = req.body;
+  const {
+    unitofmeasure,
+    batchquantity,
+    batchquality,
+    plantingdate,
+    harvestdate,
+    expirydate,
+    batchprice,
+    promotion,
+  } = req.body;
   try {
     // Kiểm tra sản phẩm có tồn tại không
     const productQuery = await pool.query(
@@ -517,8 +489,16 @@ exports.createProductBatch = async (req, res) => {
     }
 
     // Kiểm tra dữ liệu đầu vào
-    if (!unitofmeasure || !batchquantity || !batchquality || !batchprice || !promotion) {
-      return res.status(400).json({ message: "Các trường không được để trống" });
+    if (
+      !unitofmeasure ||
+      !batchquantity ||
+      !batchquality ||
+      !batchprice ||
+      !promotion
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Các trường không được để trống" });
     }
 
     // Thêm lô sản phẩm mới
@@ -526,7 +506,17 @@ exports.createProductBatch = async (req, res) => {
       `INSERT INTO product_batch (productid, unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *`,
-      [productid, unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion]
+      [
+        productid,
+        unitofmeasure,
+        batchquantity,
+        batchquality,
+        plantingdate,
+        harvestdate,
+        expirydate,
+        batchprice,
+        promotion,
+      ]
     );
 
     // Trả về thông tin lô sản phẩm vừa tạo
@@ -570,7 +560,16 @@ exports.getProductBatchByProductId = async (req, res) => {
 // Sửa thông tin lô hàng
 exports.updateProductBatch = async (req, res) => {
   const { batchid } = req.params;
-  const { unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion } = req.body;
+  const {
+    unitofmeasure,
+    batchquantity,
+    batchquality,
+    plantingdate,
+    harvestdate,
+    expirydate,
+    batchprice,
+    promotion,
+  } = req.body;
   try {
     // Kiểm tra lô hàng có tồn tại không
     const batchQuery = await pool.query(
@@ -592,7 +591,17 @@ exports.updateProductBatch = async (req, res) => {
         SET unitofmeasure = $1, batchquantity = $2, batchquality = $3, plantingdate = $4, harvestdate = $5, expirydate = $6, batchprice = $7, promotion = $8
         WHERE batchid = $9
         RETURNING *`,
-      [unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion, batchid]
+      [
+        unitofmeasure,
+        batchquantity,
+        batchquality,
+        plantingdate,
+        harvestdate,
+        expirydate,
+        batchprice,
+        promotion,
+        batchid,
+      ]
     );
 
     // Trả về thông tin lô hàng vừa sửa
@@ -603,10 +612,10 @@ exports.updateProductBatch = async (req, res) => {
   } catch (error) {
     console.error("Error fetching product batches:", error);
     res.status(500).json({ message: "Internal Server Error" });
-  } 
+  }
 };
 
-// Xóa lô sản phẩm
+// Xóa lô hàng
 exports.deleteProductBatch = async (req, res) => {
   const { batchid } = req.params;
   try {
@@ -623,8 +632,7 @@ exports.deleteProductBatch = async (req, res) => {
     await pool.query("DELETE FROM product_batch WHERE batchid = $1", [batchid]);
 
     res.json({ message: "Xóa lô hàng thành công" });
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error deleting product batch:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }

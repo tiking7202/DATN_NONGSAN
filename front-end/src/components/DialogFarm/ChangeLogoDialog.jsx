@@ -5,12 +5,14 @@ import { PropTypes } from "prop-types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../config/config";
+import Loading from "../Loading";
 
 export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
   const [farmlogo, setFarmLogo] = useState(farm.farmlogo);
   const farmname = farm.farmname;
   const farmId = farm.farmid;
   const [farmlogoError, setFarmLogoError] = useState("");
+  const [loading, setLoading] = useState(false); // Thêm state loading
 
   const validateForm = () => {
     let isvalid = true;
@@ -26,6 +28,7 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
     if (!validateForm()) {
       return;
     }
+    setLoading(true); // Bắt đầu loading
     try {
       const formData = new FormData();
       formData.append("farmlogo", farmlogo);
@@ -40,13 +43,15 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
           },
         }
       );
-      if (response.status == 200) {
-        onClose();
-        toast.success("Logo uploaded successfully");
-        refreshFarm();
-      }
+
+      onClose();
+      toast.success("Cập nhật logo thành công");
+      response;
+      refreshFarm();
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false); // Dừng loading
     }
   };
 
@@ -65,33 +70,41 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
           Thay đổi logo trang trại
         </h2>
         <div className="p-3 my-2">
-          <div className="bg-secondary m-3 flex">
-            <div className="w-full">
-              <label
-                className="block text-xl text-primary font-bold mb-2"
-                htmlFor="farmlogo"
-              >
-                Logo trang trại
-              </label>
-              <input
-                type="file"
-                placeholder="Logo trang trại"
-                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                onChange={(e) => setFarmLogo(e.target.files[0])}
-              />
-              {farmlogoError && (
-                <p className="text-red-500 italic">{farmlogoError}</p>
-              )}
-            </div>
+          {loading ? (
+            <div className="flex justify-center items-center h-full w-full">
+            <Loading />
           </div>
-          <div className="flex justify-end mt-5">
-            <button
-              className="bg-primary hover:opacity-90 text-white font-bold py-2 px-3 m-3 rounded-lg"
-              onClick={handleSubmit}
-            >
-              Lưu thay đổi
-            </button>
-          </div>
+          ) : (
+            <>
+              <div className="bg-secondary m-3 flex">
+                <div className="w-full">
+                  <label
+                    className="block text-xl text-primary font-bold mb-2"
+                    htmlFor="farmlogo"
+                  >
+                    Logo trang trại
+                  </label>
+                  <input
+                    type="file"
+                    placeholder="Logo trang trại"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    onChange={(e) => setFarmLogo(e.target.files[0])}
+                  />
+                  {farmlogoError && (
+                    <p className="text-red-500 italic">{farmlogoError}</p>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-end mt-5">
+                <button
+                  className="bg-primary hover:opacity-90 text-white font-bold py-2 px-3 m-3 rounded-lg"
+                  onClick={handleSubmit}
+                >
+                  Lưu thay đổi
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
