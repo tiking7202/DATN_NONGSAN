@@ -16,7 +16,7 @@ function SearchPage() {
   const location = useLocation();
   const productSearch = location.state.productSearch;
 
-  const handleAddToCart = (productId) => {
+  const handleAddToCart = (productId, batchId) => {
     const accessToken = localStorage.getItem("accessToken");
 
     if (!accessToken) {
@@ -29,19 +29,13 @@ function SearchPage() {
       const decodedToken = jwtDecode(accessToken);
       const userId = decodedToken.userid;
 
-      addToCart(productId, userId, 1)
+      addToCart(productId, userId, 1, batchId)
         .then((response) => {
           response;
-          toast.success("Thêm vào giỏ hàng thành công!", {
-            position: "top-right",
-            time: 500,
-          });
+          toast.success("Thêm vào giỏ hàng thành công!");
         })
         .catch((error) => {
-          toast.error(error.response.data.message, {
-            position: "top-right",
-            time: 500,
-          });
+          toast.error(error.response.data.message);
         });
     }
   };
@@ -74,19 +68,19 @@ function SearchPage() {
           return (
             <div
               key={product.productid}
-              className="bg-fourth max-w-xs rounded overflow-hidden shadow-lg m-4 cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1"
+              className="w-1/4 bg-fourth max-w-xs rounded overflow-hidden shadow-2xl m-4 cursor-pointer"
             >
               <Link
                 to={`/product/${product.productid}`}
                 key={product.productid}
               >
                 <img
-                  className="w-full h-64 object-cover hover:opacity-80"
+                  className="w-full h-64 object-cover transition duration-500 ease-in-out transform hover:scale-110"
                   src={product.productimage1}
                   alt={product.productname}
                 />
               </Link>
-              <div className="px-3 py-2 text-primary">
+              <div className="px-6 py-4 text-primary">
                 <Link
                   to={`/product/${product.productid}`}
                   key={product.productid}
@@ -95,7 +89,7 @@ function SearchPage() {
                     <p className="font-bold text-center text-2xl">
                       {product.productname}
                       <span className="ml-2 my-auto text-sm font-normal italic block">
-                        {product.productquality}
+                        {product.batchquality}
                       </span>
                     </p>
                   </div>
@@ -111,17 +105,17 @@ function SearchPage() {
                     Số lượng còn lại:{" "}
                     <span className="text-primary font-bold">
                       {" "}
-                      {product.productquantity}kg{" "}
-                      <span className="text-sm">/kg</span>
+                      {product.batchquantity}{" "}
+                      <span className="text-sm italic">({product.unitofmeasure})</span>
                     </span>
                   </p>
                   <div className="flex justify-between  m-3">
-                    <del className="text-2xl italic text-green-500">
-                      {product.productprice}đ
+                    <del className="text-xl italic text-green-500">
+                      {Number(product.batchprice)}đ
                     </del>
-                    <p className="text-2xl text-left font-bold">
-                      {product.productprice -
-                        product.productprice * product.promotion * 0.01}
+                    <p className="text-3xl text-left font-bold">
+                      {(product.batchprice) -
+                        (product.batchprice) * product.promotion * 0.01}
                       đ
                     </p>
                   </div>
@@ -133,15 +127,16 @@ function SearchPage() {
                         <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
                         <p className="ml-2">{product.farmprovince}</p>
                       </div>
-                      <div className="flex items-center mt-2">
+                      <div className="flex items-center mt-2 hover:opacity-90">
                         <FontAwesomeIcon icon={faTractor} size="lg" />
                         <p className="ml-2">{product.farmname}</p>
                       </div>
                     </div>
                   </Link>
+
                   <button
-                    className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200"
-                    onClick={() => handleAddToCart(product.productid)}
+                    className="p-4 bg-white text-primary rounded-full hover:bg-primary hover:text-white transition duration-200"
+                    onClick={() => handleAddToCart(product.productid, product.batchid)}
                   >
                     <FontAwesomeIcon icon={faCartPlus} size="2x" />
                   </button>

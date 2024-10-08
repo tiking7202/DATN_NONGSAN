@@ -35,7 +35,7 @@ export default function FarmInfoShow() {
     <div>
       <HeaderCustomer />
 
-      <div className="bg-fourth mt-32 shadow-xl">
+      <div className="bg-fourth mt-32 shadow-2xl">
         <div className="w-4/5 mx-auto bg-white px-3 pt-8 pb-5 rounded-md">
           {farm && farm.farmname && (
             <p className="font-bold text-2xl text-primary">
@@ -45,41 +45,41 @@ export default function FarmInfoShow() {
           )}
         </div>
 
-        <div className="w-4/5 bg-white rounded-md m-auto mt-3 flex items-stretch h-96 shadow-xl">
+        <div className="w-4/5 bg-white rounded-md m-auto mt-5 flex items-stretch h-96 shadow-2xl">
           <div className="w-3/12 object-fit">
             <img
               src={farm?.farmlogo}
               alt="farm"
-              className="object-cover h-full w-full"
+              className="object-cover h-full w-full rounded-md"
             />
           </div>
           <div className="w-9/12 object-fit">
             <img
               src={farm?.farmimage}
               alt="farm"
-              className="object-cover h-full w-full"
+              className="object-cover h-full w-full rounded-md"
             />
           </div>
         </div>
         {/* Navigation */}
-        <div className="w-4/5 bg-white rounded-md m-auto mt-3 flex p-5 shadow-xl">
+        <div className="w-4/5 bg-white rounded-md m-auto mt-5 flex p-5 shadow-2xl">
           <Link
             to={`/farm/info/${farm?.farmid}`}
-            className="text-2xl font-bold text-primary mx-5"
+            className="text-2xl font-bold text-primary mx-7"
           >
             Giới thiệu
           </Link>
 
           <Link
             to={`/farm/productdetail/${farm?.farmid}`}
-            className="text-2xl font-bold text-primary mx-5"
+            className="text-2xl font-bold text-primary mx-7"
           >
         
             Sản phẩm
           </Link>
           <Link
             to={`/farm/season/${farm?.farmid}`}
-            className="text-2xl font-bold text-primary mx-5"
+            className="text-2xl font-bold text-primary mx-7"
           >
             Thông tin mùa vụ
           </Link>

@@ -43,7 +43,8 @@ exports.getProductsByCategoryId = async (req, res) => {
         p.*, 
         f.farmname, 
         f.farmprovince, 
-        c.categoryname 
+        c.categoryname,
+        pb.*
       FROM 
         product p
       JOIN 
@@ -54,6 +55,13 @@ exports.getProductsByCategoryId = async (req, res) => {
         category c 
       ON 
         p.categoryid = c.categoryid
+      LEFT JOIN (
+        SELECT DISTINCT ON (productid) *
+        FROM product_batch
+        ORDER BY productid, batchid
+      ) pb
+      ON 
+        p.productid = pb.productid
       WHERE 
         p.categoryid = $1 AND p.isvisibleweb = true
     `;
@@ -127,7 +135,8 @@ exports.searchProduct = async (req, res) => {
         p.*, 
         f.farmname, 
         f.farmprovince,
-        c.categoryname
+        c.categoryname,
+        pb.*
       FROM 
         product p
       JOIN 
@@ -138,6 +147,13 @@ exports.searchProduct = async (req, res) => {
         category c
       ON
         p.categoryid = c.categoryid
+      LEFT JOIN (
+        SELECT DISTINCT ON (productid) *
+        FROM product_batch
+        ORDER BY productid, batchid
+      ) pb
+      ON 
+        p.productid = pb.productid
       WHERE 
         (p.productname ILIKE $1 OR c.categoryname ILIKE $1 OR f.farmprovince ILIKE $1 OR f.farmname ILIKE $1)  
         AND p.isvisibleweb = true
@@ -191,13 +207,21 @@ exports.getProductsByFarmId = async (req, res) => {
       SELECT 
         p.*, 
         f.farmname, 
-        f.farmprovince 
+        f.farmprovince,
+        pb.*
       FROM 
         product p
       JOIN 
         farm f 
       ON 
         p.farmid = f.farmid
+      LEFT JOIN (
+        SELECT DISTINCT ON (productid) *
+        FROM product_batch
+        ORDER BY productid, batchid
+      ) pb
+      ON 
+        p.productid = pb.productid
       WHERE 
         p.farmid = $1 AND p.isvisibleweb = true
     `;

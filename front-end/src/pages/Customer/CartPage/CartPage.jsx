@@ -118,11 +118,11 @@ export default function CartPage() {
     <div className="bg-fourth">
       <HeaderCustomer />
 
-      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32">
+      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32 shadow-2xl">
         <h1 className="font-bold text-primary text-2xl">GIỎ HÀNG CỦA BẠN</h1>
       </div>
 
-      <div className="w-4/5 mx-auto bg-white rounded-md p-5 my-5">
+      <div className="w-4/5 mx-auto bg-white rounded-md p-5 my-5 shadow-2xl">
         <table className="min-w-full divide-y divide-gray-900">
           <thead className="bg-white">
             <tr>

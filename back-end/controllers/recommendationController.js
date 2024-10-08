@@ -21,24 +21,7 @@ const getRecommendation = async (req, res) => {
     if (productIds.length === 0) {
       return res.status(200).json([]); 
     }
-
-    // Lấy thông tin sản phẩm cùng với thông tin từ bảng farm
-    // const query = `
-    //   SELECT 
-    //     p.*, 
-    //     f.farmname, 
-    //     f.farmprovince 
-    //   FROM 
-    //     product p
-    //   JOIN 
-    //     farm f 
-    //   ON 
-    //     p.farmid = f.farmid
-    //   WHERE 
-    //     p.productid IN (${productIds.map(id => `'${id}'`).join(",")}) 
-    //     AND p.isvisibleweb = true
-    // `;
-
+    
     const query = `
         SELECT 
           p.*, 

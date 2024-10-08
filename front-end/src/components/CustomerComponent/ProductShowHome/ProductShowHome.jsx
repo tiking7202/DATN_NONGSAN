@@ -108,7 +108,7 @@ export default function ProductShowHome() {
                     <p className="font-bold text-center text-2xl">
                       {product.productname}
                       <span className="ml-2 my-auto text-sm font-normal italic block">
-                        {product.productquality}
+                        {product.batchquality}
                       </span>
                     </p>
                   </div>
@@ -154,7 +154,7 @@ export default function ProductShowHome() {
                   </Link>
 
                   <button
-                    className="p-4 bg-white text-primary rounded-full hover:bg-primary-dark transition duration-200"
+                    className="p-4 bg-white text-primary rounded-full hover:bg-primary hover:text-white transition duration-200"
                     onClick={() => handleAddToCart(product.productid, product.batchid)}
                   >
                     <FontAwesomeIcon icon={faCartPlus} size="2x" />
