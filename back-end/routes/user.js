@@ -15,5 +15,7 @@ router.put(
   userController.updateAvatarFarm
 );
 router.get("/farmer", userController.getAllFarmer);
+router.get("/farmer/detail/:userId", userController.getFarmerDetails);
+router.put("/farmer/update/status/:userId", userController.updateFarmerStatus);
 
 module.exports = router;

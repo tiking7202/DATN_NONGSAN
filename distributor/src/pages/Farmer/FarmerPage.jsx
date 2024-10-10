@@ -8,6 +8,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import FarmerDetail from "./FarmerDetail";
 export default function FarmerPage() {
   const [farmers, setFarmers] = useState([]);
   const [page, setPage] = useState(1);
@@ -34,6 +35,25 @@ export default function FarmerPage() {
     setPage(newPage);
   };
 
+  const [isOpenDetailFarmer, setIsOpenDetailFarmer] = useState(false);
+  const [farmerId, setFarmerId] = useState(null);
+  const openDetailFarmer = (userId) => {
+    setIsOpenDetailFarmer(true);
+    setFarmerId(userId);
+  };
+  
+  const refreshFarmer = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/farmer`, {
+        params: { page, limit },
+      });
+      setFarmers(response.data.farmersWithFarms);
+      setTotalPages(response.data.totalPages);
+    } catch (error) {
+      console.error("Có lỗi xảy ra khi lấy thông tin farmer:", error);
+    }
+  };
+
   return (
     <div>
       <HeaderDistributor />
@@ -53,7 +73,7 @@ export default function FarmerPage() {
                     <th className="w-1/4 py-2">Địa chỉ</th>
                     <th className="w-1/6 py-2">Trang trại</th>
                     <th className="w-1/6 py-2">Trạng thái</th>
-                    <th className="w-1/6 py-2"></th>                    
+                    <th className="w-1/6 py-2"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -71,12 +91,15 @@ export default function FarmerPage() {
                         </td>
                         <td className="py-2">{farmer.farmname}</td>
                         <td className="py-2">
-                          {farmer.status === true
-                            ? "Đã cấp phép"
-                            : "Chưa cấp phép"}
+                          {farmer.status ? "Đã kích hoạt" : "Chưa kích hoạt"}
+
+                          
                         </td>
                         <td className="py-2">
-                          <button className="bg-primary text-white font-bold px-4 py-2 rounded-lg">
+                          <button
+                            className="bg-primary text-white font-bold px-4 py-2 rounded-lg"
+                            onClick={() => openDetailFarmer(farmer?.userid)}
+                          >
                             Xem chi tiết
                           </button>
                         </td>
@@ -130,6 +153,15 @@ export default function FarmerPage() {
           </div>
         </div>
       </div>
+      {isOpenDetailFarmer && (
+        <FarmerDetail
+          onClose={() => {
+            setIsOpenDetailFarmer(false)
+            refreshFarmer()
+          }}
+          farmerId={farmerId}
+        />
+      )}
     </div>
   );
 }

@@ -203,6 +203,44 @@ const getAllFarmer = async (req, res) => {
   }
 };
 
+const getFarmerDetails = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await pool.query(`
+      SELECT u.*, f.*
+      FROM "User" u
+      LEFT JOIN farm f ON u.userid = f.userid
+      WHERE u.userid = $1
+    `, [userId]);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error fetching farmer details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};  
+
+const updateFarmerStatus = async (req, res) => {
+  const { userId } = req.params;
+  const { status } = req.body;
+  try {
+    const result = await pool.query(`
+      UPDATE "User"
+      SET status = $1
+      WHERE userid = $2
+      RETURNING *
+    `, [status, userId]);
+    
+    // Sử dụng res.status(200).json(obj) để trả về phản hồi
+    res.status(200).json({
+      data: result.rows[0],
+      message: "Cập nhật trạng thái nông dân thành công"
+    });
+  } catch (error) {
+    console.error("Error updating farmer status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getUserById,
   changePassword,
@@ -211,4 +249,6 @@ module.exports = {
   updateAvatarFarm,
   changeAvatarCustomer,
   getAllFarmer,
+  getFarmerDetails,
+  updateFarmerStatus,
 };
