@@ -176,3 +176,39 @@ exports.getAllCategory = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+// Lấy số lượng sản phẩm theo userid của từng danh mục
+exports.getCategoryCountByFarmerId = async (req, res) => {
+  try {
+    const { userid } = req.params; // Lấy userid từ req.params
+    if (!userid) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // Từ user id lấy farm id
+    const farmResult = await pool.query(
+      `SELECT * FROM farm WHERE userid = $1`,
+      [userid]
+    );
+
+    if (farmResult.rows.length === 0) {
+      return res.status(404).json({ message: "Farm not found for this user ID" });
+    }
+
+    const farmid = farmResult.rows[0].farmid;
+
+    const categorySalesResult = await pool.query(
+      `SELECT category.categoryname, COUNT(product.productid) as quantity
+        FROM product
+        JOIN category ON product.categoryid = category.categoryid
+        WHERE product.farmid = $1
+        GROUP BY category.categoryname`,
+      [farmid]
+    );
+
+    res.json(categorySalesResult.rows);
+  } catch (error) {
+    console.error("Error fetching category count by farmer ID:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};

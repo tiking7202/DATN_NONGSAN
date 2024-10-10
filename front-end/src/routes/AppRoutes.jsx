@@ -20,7 +20,6 @@ import FarmerRegisterStep1 from "../pages/Farmer/FarmerRegister/FarmerRegisterSt
 import FarmerRegisterStep2 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep2/FarmerRegisterStep2";
 import FarmerRegisterStep3 from "../pages/Farmer/FarmerRegister/FarmerRegisterStep3/FarmerRegisterStep3";
 import FarmerShowProducts from "../pages/Farmer/FarmerProduct/FarmerShowProducts";
-import FarmerShowFarm from "../pages/Farmer/FarmerFarm/FarmerShowFarm";
 import FarmerCrop from "../pages/Farmer/FarmerCrop/FarmerCrop";
 import FarmerShowOrders from "../pages/Farmer/FarmerOrder/FarmerShowOrders";
 import CheckoutDetailPage from "../pages/Customer/CheckoutDetailPage/CheckoutDetailPage";
@@ -57,7 +56,6 @@ export default function AppRoutes() {
             <Route path="/farmer/login" element={<FarmerLogin />} />
             <Route path="/farmer" element={<FarmerDashboard />} />
             <Route path="/farmer/products" element={<FarmerShowProducts />} />
-            <Route path="/farmer/farms" element={<FarmerShowFarm />} />
             <Route path="/farmer/farms/crop" element={<FarmerCrop />} />
             <Route path="/farmer/farm/info" element={<FarmerProfile />} />;
             <Route

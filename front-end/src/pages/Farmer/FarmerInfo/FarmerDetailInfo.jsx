@@ -50,12 +50,12 @@ export default function FarmerDetailInfo() {
       <div className="flex">
         <FarmerNavBar />
         <div className="bg-fourth w-5/6 h-screen fixed right-0 top-0 mt-20">
-          <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg">
+          <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg shadow-2xl">
             <h1 className="font-bold text-primary text-2xl p-5">
               Thông tin cá nhân
             </h1>
           </div>
-          <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg p-5">
+          <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg p-5 shadow-2xl">
             {user && (
               <div className="flex flex-wrap justify-between ">
                 <div className="p-5 flex flex-col w-7/12">
@@ -82,7 +82,7 @@ export default function FarmerDetailInfo() {
                       Mật khẩu
                     </p>
                     <p
-                      className="text-xl p-3 text-primary cursor-pointer italic font-medium"
+                      className="text-xl p-3 text-primary cursor-pointer italic font-medium hover:opacity-85"
                       onClick={() => openChangePasswordDialog()}
                     >
                       Thay đổi
@@ -129,7 +129,7 @@ export default function FarmerDetailInfo() {
                   </div>
                   <div className="flex justify-end w-2/3">
                     <button
-                      className="bg-primary text-secondary font-bold text-xl p-2 rounded-md mt-5"
+                      className="bg-primary text-secondary font-bold text-xl py-2 px-5 rounded-lg mt-5 hover:opacity-85"
                       onClick={() => openChangeInfoDialog()}
                     >
                       Thay đổi thông tin
@@ -144,7 +144,7 @@ export default function FarmerDetailInfo() {
                       className="rounded-full w-2/3"
                     />
                     <button
-                      className="font-bold text-primary text-xl"
+                      className="font-bold text-primary text-xl hover:opacity-85 mt-5"
                       onClick={() => openChangeAvatarDialog()}
                     >
                       Thay đổi

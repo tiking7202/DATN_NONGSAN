@@ -23,5 +23,7 @@ router.put(
   categoryController.upload.single("categoryimage"),
   categoryController.updateCategoryforDistributor
 );
+router.get("/farmer/categories/count/:userid", categoryController.getCategoryCountByFarmerId);
+
 
 module.exports = router;

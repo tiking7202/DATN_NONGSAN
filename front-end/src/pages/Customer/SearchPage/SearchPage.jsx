@@ -20,10 +20,7 @@ function SearchPage() {
     const accessToken = localStorage.getItem("accessToken");
 
     if (!accessToken) {
-      toast.error("Đăng nhập để thêm vào giỏ hàng!", {
-        position: "top-right",
-        time: 500,
-      });
+      toast.error("Đăng nhập để thêm vào giỏ hàng!");
       navigate("/login");
     } else {
       const decodedToken = jwtDecode(accessToken);

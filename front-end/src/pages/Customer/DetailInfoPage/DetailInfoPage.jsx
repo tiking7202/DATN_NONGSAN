@@ -65,12 +65,12 @@ export default function DetailInfoPage() {
     <div>
       <HeaderCustomer />
       <div className="bg-fourth pb-7">
-        <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32">
+        <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32 shadow-2xl">
           <h1 className="font-bold text-primary text-2xl">Thông tin cá nhân</h1>
         </div>
-        <div className="rounded-lg w-4/5 m-auto bg-secondary mt-5 p-5">
+        <div className="rounded-lg w-4/5 m-auto bg-secondary mt-5 p-5 shadow-2xl">
           {loading ? (
-            <Loading /> // Display loading spinner when loading is true
+            <Loading /> 
           ) : (
             user && (
               <div className="flex flex-wrap justify-between ">
@@ -94,7 +94,7 @@ export default function DetailInfoPage() {
                   <div className="flex">
                     <p className="font-bold text-xl p-3 text-primary">Mật khẩu</p>
                     <p
-                      className="text-xl p-3 text-primary cursor-pointer italic font-medium"
+                      className="text-xl p-3 text-primary cursor-pointer italic font-medium hover:opacity-85"
                       onClick={() => openChangePasswordDialog()}
                     >
                       Thay đổi
@@ -137,7 +137,7 @@ export default function DetailInfoPage() {
                   </div>
                   <div className="flex justify-end">
                     <button
-                      className="bg-primary text-secondary font-bold text-xl p-2 rounded-md mt-5"
+                      className="bg-primary text-secondary font-bold text-xl py-2 px-5 rounded-lg mt-5 hover:opacity-85"
                       onClick={() => openChangeInfoDialog()}
                     >
                       Thay đổi thông tin
@@ -153,7 +153,7 @@ export default function DetailInfoPage() {
                       className="rounded-full w-60 h-60 object-cover"
                     />
                     <button
-                      className="font-bold text-primary text-xl"
+                      className="font-bold text-primary text-xl hover:opacity-75 mt-5"
                       onClick={() => openChangeAvatarDialog()}
                     >
                       Thay đổi
