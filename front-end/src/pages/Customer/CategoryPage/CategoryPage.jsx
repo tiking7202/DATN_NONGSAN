@@ -1,26 +1,22 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMapMarkerAlt,
-  faTractor,
-  faCartPlus,
-} from "@fortawesome/free-solid-svg-icons";
 import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
 import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer";
-import { Link } from "react-router-dom";
 import { API_BASE_URL } from "../../../config/config";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import { addToCart } from "../../../service/CustomerService/cartService";
+import Loading from "../../../components/Loading";
+import ProductList from "../../../components/CustomerComponent/ProductList/ProductList";
 
 function CategoryPage() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const { id } = useParams();
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
+    setLoading(true);
     const fetchProducts = async () => {
       const response = await axios.get(
         `${API_BASE_URL}/category/${id}/product`
@@ -29,6 +25,7 @@ function CategoryPage() {
     };
 
     fetchProducts();
+    setLoading(false);
   }, [id]);
 
   const handleAddToCart = (productId, batchId) => {
@@ -56,7 +53,7 @@ function CategoryPage() {
     <>
       <HeaderCustomer />
       <div className="bg-fourth">
-        <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32">
+        <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32 shadow-2xl">
           {products && products.length > 0 ? (
             <h1 className="font-bold text-primary text-2xl">
               Danh mục sản phẩm: {products[0].category}
@@ -67,95 +64,15 @@ function CategoryPage() {
             </h1>
           )}
         </div>
-        <div className="rounded-sm w-4/5 bg-white m-auto flex flex-wrap justify-center mt-5">
-          {products.map((product) => {
-            const currentDate = new Date();
-            const expireDate = new Date(product.expirydate);
-            const remainingTime = expireDate - currentDate;
-            const remainingDays = Math.floor(
-              remainingTime / (1000 * 60 * 60 * 24)
-            );
-
-            return (
-              <div
-                key={product.productid}
-                className="w-1/4 bg-fourth max-w-xs rounded overflow-hidden shadow-2xl m-4 cursor-pointer"
-              >
-                <Link
-                  to={`/product/${product.productid}`}
-                  key={product.productid}
-                >
-                  <img
-                    className="w-full h-64 object-cover transition duration-500 ease-in-out transform hover:scale-110"
-                    src={product.productimage1}
-                    alt={product.productname}
-                  />
-                </Link>
-                <div className="px-6 py-4 text-primary">
-                  <Link
-                    to={`/product/${product.productid}`}
-                    key={product.productid}
-                  >
-                    <div className="flex justify-center mb-2 ">
-                      <p className="font-bold text-center text-2xl">
-                        {product.productname}
-                        <span className="ml-2 my-auto text-sm font-normal italic block">
-                          {product.batchquality}
-                        </span>
-                      </p>
-                    </div>
-  
-                    <p className="m-2 text-primary">
-                      Hạn sử dụng còn:{" "}
-                      <span className="text-primary font-bold">
-                        {" "}
-                        {remainingDays} ngày
-                      </span>
-                    </p>
-                    <p className="text-sm m-2 text-primary">
-                      Số lượng còn lại:{" "}
-                      <span className="text-primary font-bold">
-                        {" "}
-                        {product.batchquantity}{" "}
-                        <span className="text-sm italic">({product.unitofmeasure})</span>
-                      </span>
-                    </p>
-                    <div className="flex justify-between  m-3">
-                      <del className="text-xl italic text-green-500">
-                        {Number(product.batchprice)}đ
-                      </del>
-                      <p className="text-3xl text-left font-bold">
-                        {(product.batchprice) -
-                          (product.batchprice) * product.promotion * 0.01}
-                        đ
-                      </p>
-                    </div>
-                  </Link>
-                  <div className="flex justify-between items-center mt-4">
-                    <Link to={`/farm/info/${product.farmid}`}>
-                      <div className="text-primary font-bold italic">
-                        <div className="flex items-center">
-                          <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-                          <p className="ml-2">{product.farmprovince}</p>
-                        </div>
-                        <div className="flex items-center mt-2 hover:opacity-90">
-                          <FontAwesomeIcon icon={faTractor} size="lg" />
-                          <p className="ml-2">{product.farmname}</p>
-                        </div>
-                      </div>
-                    </Link>
-  
-                    <button
-                      className="p-4 bg-white text-primary rounded-full hover:bg-primary hover:text-white transition duration-200"
-                      onClick={() => handleAddToCart(product.productid, product.batchid)}
-                    >
-                      <FontAwesomeIcon icon={faCartPlus} size="2x" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="rounded-md w-4/5 bg-white m-auto flex flex-wrap justify-center my-5 shadow-2xl mb-10">
+          {loading ? (
+            <Loading />
+          ) : (
+            <ProductList
+              products={products}
+              handleAddToCart={handleAddToCart}
+            />
+          )}
         </div>
         <FooterCustomer />
       </div>

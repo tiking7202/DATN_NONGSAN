@@ -43,15 +43,15 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
           },
         }
       );
-
-      onClose();
-      toast.success("Cập nhật logo thành công");
-      response;
-      refreshFarm();
+      if (response.status === 200) {
+        onClose();
+        toast.success("Thay đổi logo trang trại thành công");
+        refreshFarm();
+      }
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false); // Dừng loading
+      setLoading(false);
     }
   };
 
@@ -69,13 +69,14 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
         <h2 className="text-3xl text-center font-bold mb-4">
           Thay đổi logo trang trại
         </h2>
-        <div className="p-3 my-2">
-          {loading ? (
-            <div className="flex justify-center items-center h-full w-full">
+
+        {loading ? (
+          <div className="flex justify-center items-center h-full w-full">
             <Loading />
           </div>
-          ) : (
-            <>
+        ) : (
+          <>
+            <div className="p-3 my-2">
               <div className="bg-secondary m-3 flex">
                 <div className="w-full">
                   <label
@@ -103,9 +104,9 @@ export default function ChangeLogoDialog({ onClose, farm, refreshFarm }) {
                   Lưu thay đổi
                 </button>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

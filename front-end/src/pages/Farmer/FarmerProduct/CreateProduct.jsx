@@ -320,15 +320,16 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                     <option value="" className="bg-secondary">
                       Chọn trang trại
                     </option>
-                    {farms.map((farm) => (
-                      <option
-                        key={farm.farmid}
-                        value={farm.farmid}
-                        className="bg-secondary"
-                      >
-                        {farm.farmname}
-                      </option>
-                    ))}
+                    {Array.isArray(farms) &&
+                      farms.map((farm) => (
+                        <option
+                          key={farm.farmid}
+                          value={farm.farmid}
+                          className="bg-secondary"
+                        >
+                          {farm.farmname}
+                        </option>
+                      ))}
                   </select>
                   {farmidError && (
                     <p className="text-red-500 mt-1 text-xs italic">

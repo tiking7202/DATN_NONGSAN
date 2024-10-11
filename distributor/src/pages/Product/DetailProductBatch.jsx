@@ -256,7 +256,7 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
                       Số lượng:{" "}
                       <span className="font-semibold">
                         {productBatch.batchquantity}{" "}
-                        / ({productBatch.unitofmeasure})
+                          ({productBatch.unitofmeasure})
                       </span>
                     </p>
                     <p className=" mt-2">
