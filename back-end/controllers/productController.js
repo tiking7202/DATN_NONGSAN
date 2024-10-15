@@ -47,11 +47,11 @@ exports.getProductsByCategoryId = async (req, res) => {
         pb.*
       FROM 
         product p
-      JOIN 
+      LEFT JOIN 
         farm f 
       ON 
         p.farmid = f.farmid
-      JOIN 
+      LEFT JOIN 
         category c 
       ON 
         p.categoryid = c.categoryid
@@ -150,7 +150,7 @@ exports.searchProduct = async (req, res) => {
       LEFT JOIN (
         SELECT DISTINCT ON (productid) *
         FROM product_batch
-        ORDER BY productid, batchid
+        ORDER BY productid, batchid DESC
       ) pb
       ON 
         p.productid = pb.productid
