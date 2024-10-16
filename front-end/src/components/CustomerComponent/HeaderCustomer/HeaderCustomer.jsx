@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
+  faCamera,
   faCartPlus,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +17,7 @@ import { API_BASE_URL } from "../../../config/config";
 import { isCustomer } from "../../../utils/roleCheck";
 import { useToast } from "../../../context/ToastContext";
 import Loading from "../../Loading.jsx"; // Import the Loading component
+import SearchImageDialog from "../../../pages/Customer/SearchByImage/SearchImageDialog.jsx";
 
 export default function HeaderCustomer() {
   const navigate = useNavigate();
@@ -133,6 +135,12 @@ export default function HeaderCustomer() {
     }
   };
 
+  //Search Image
+  const [isSearchImageDialogOpen, setIsSearchImageDialogOpen] = useState(false);
+  const openSearchImageDialog = () => {
+    setIsSearchImageDialogOpen(true);
+  }
+
   return (
     <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40 shadow-2xl">
       <ToastContainer />
@@ -224,6 +232,7 @@ export default function HeaderCustomer() {
               }
             }}
           />
+          
           <button
             className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-4 py-1 sm:py-2 bg-green-500 text-white rounded-lg "
             onClick={handleSearch}
@@ -231,13 +240,24 @@ export default function HeaderCustomer() {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
+        <div className="border border-white rounded">
+          <button
+            className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0 hover:bg-white hover:text-primary"
+            onClick={() => openSearchImageDialog()}
+          >
+            <FontAwesomeIcon icon={faCamera} size="1x" />
+          </button>
+        </div>
         <button
-          className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0"
+          className="p-1 sm:p-2 text-white text-2xl sm:text-4xl mt-2 sm:mt-0 hover:bg-white hover:text-primary rounded-full"
           onClick={handleCartClick}
         >
           <FontAwesomeIcon icon={faCartPlus} size="1x" />
         </button>
       </section>
+      {
+        isSearchImageDialogOpen && <SearchImageDialog onClose={() => setIsSearchImageDialogOpen(false)} />
+      }
     </header>
   );
 }

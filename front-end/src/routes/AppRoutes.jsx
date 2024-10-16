@@ -28,6 +28,7 @@ import DetailInfoPage from "../pages/Customer/DetailInfoPage/DetailInfoPage";
 import FarmerProfile from "../pages/Farmer/FarmerProfile/FarmerProfile";
 import { ToastProvider } from "../context/ToastContext";
 import { LoadingProvider } from "../context/LoadingContext";
+import SearchByImage from "../pages/Customer/SearchByImage/SearchByImage";
 
 export default function AppRoutes() {
   return (
@@ -52,6 +53,8 @@ export default function AppRoutes() {
             <Route path="/farm/info/:id" element={<FarmInfoPage />} />
             <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
             <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
+            <Route path="/search-image" element={<SearchByImage />} />
+
             {/* Route cho farmer */}
             <Route path="/farmer/login" element={<FarmerLogin />} />
             <Route path="/farmer" element={<FarmerDashboard />} />
