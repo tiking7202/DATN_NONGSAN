@@ -11,12 +11,6 @@ import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/formatDate";
 import { useToast } from "../../../context/ToastContext";
 
-// import { loadStripe } from "@stripe/stripe-js";
-
-// Khởi tạo Stripe với Publishable Key của bạn
-// const stripePromise = loadStripe(
-//   "pk_test_51Q60zuLnoPrvRvUrrUcNQXTJ2J2uQLrR8TVVP42qNwAN3z5KEd4uk6W7IhWdrmSfhrKWyb3bX4Q1RI7xX9roDWrP00tHgppJjY"
-// );
 
 const CheckoutPage = () => {
   const location = useLocation();
@@ -166,37 +160,7 @@ const CheckoutPage = () => {
     }
   };
 
-  // const handleCheckout = async () => {
-  //   const orderDetails = {
-  //     userId: userId,
-  //     paymentMethod: paymentMethod,
-  //     items: selectedItems,
-  //     shippingAddress: shippingInfo.deliveryAddress,
-  //     estimatedDeliveryTime: shippingInfo.estimatedDeliveryTime,
-  //   };
-
-  //   try {
-  //     if (!paymentMethod) {
-  //       toast.error("Vui lòng chọn phương thức thanh toán!");
-  //       return;
-  //     }
-  //     const response = await axios.post(
-  //       `${API_BASE_URL}/checkout`,
-  //       orderDetails,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     setToastMessage(response.data.message);
-  //     navigate("/purchase-history");
-  //   } catch (error) {
-  //     console.error("Checkout failed:", error);
-  //   }
-  // };
-
+  
   return (
     <div className="bg-fourth">
       <HeaderCustomer />
