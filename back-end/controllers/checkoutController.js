@@ -1,5 +1,7 @@
 const pool = require("../config/dbConnect");
 
+const stripe = require("stripe")(process.env.STRIPE_KEY);
+
 // Các trạng thái đơn hàng: Đã tạo, Đã xác nhận, Đang giao, Đã giao, Đã hủy
 // Những trạng thái cập nhật số lượng trong bảng Product: Đã giao, Đã hủy
 // Các phương thức thanh toán: Thanh toán khi nhận hàng, Thanh toán qua thẻ
@@ -10,6 +12,7 @@ const addCheckOut = async (req, res) => {
     items,
     shippingAddress,
     estimatedDeliveryTime,
+    totalamount,
   } = req.body;
 
   if (
@@ -54,7 +57,8 @@ const addCheckOut = async (req, res) => {
 
     for (const farmItems of itemsByFarm) {
       const total = farmItems.reduce(
-        (sum, item) => sum + item.productprice * (1-0.01*item.promotion) * item.quantity,
+        (sum, item) =>
+          sum + item.productprice * (1 - 0.01 * item.promotion) * item.quantity,
         0
       );
 
@@ -162,12 +166,13 @@ const getPurchaseHistory = async (req, res) => {
       return res.status(400).json({ message: "No purchase history found" });
     }
 
-    // Fetch purchase history and order status in a single query
+    // Fetch purchase history, order status, and payment status in a single query
     const orderIdsArray = orderIds.rows.map((order) => order.orderid);
     const getPurchasesHistorySQL = `
-      SELECT ph.orderid, ph.purchasedate, ph.totalamount, o.orderstatus
+      SELECT ph.orderid, ph.purchasedate, ph.totalamount, o.orderstatus, p.paymentstatus
       FROM purchaseshistory ph
       JOIN "Order" o ON ph.orderid = o.orderid
+      JOIN payment p ON ph.paymentid = p.paymentid
       WHERE ph.orderid = ANY($1::uuid[])
     `;
     const purchasesHistory = await pool.query(getPurchasesHistorySQL, [
@@ -179,6 +184,7 @@ const getPurchaseHistory = async (req, res) => {
       purchaseDate: row.purchasedate,
       totalAmount: row.totalamount,
       orderStatus: row.orderstatus,
+      paymentStatus: row.paymentstatus, // Lấy thêm paymentstatus
     }));
 
     res.json({
@@ -265,7 +271,9 @@ const getAllOrdersByFarmer = async (req, res) => {
     ).map((orderId) => orderItems.find((item) => item.orderid === orderId));
 
     const totalItemsQuery = `SELECT COUNT(*) FROM "Order" WHERE orderid = ANY($1::uuid[])`;
-    const totalItemsResult = await pool.query(totalItemsQuery, [uniqueOrderItems.map(item => item.orderid)]);
+    const totalItemsResult = await pool.query(totalItemsQuery, [
+      uniqueOrderItems.map((item) => item.orderid),
+    ]);
     const totalItems = parseInt(totalItemsResult.rows[0].count);
     const totalPages = Math.ceil(totalItems / limit);
 
@@ -277,7 +285,11 @@ const getAllOrdersByFarmer = async (req, res) => {
       ORDER BY o.orderid
       LIMIT $2 OFFSET $3
     `;
-    const ordersResult = await pool.query(ordersQuery, [uniqueOrderItems.map(item => item.orderid), limit, offset]);
+    const ordersResult = await pool.query(ordersQuery, [
+      uniqueOrderItems.map((item) => item.orderid),
+      limit,
+      offset,
+    ]);
 
     res.json({
       totalItems,
@@ -369,6 +381,217 @@ const updateStatusOrder = async (req, res) => {
   }
 };
 
+const createPaymentSession = async (req, res) => {
+  const {
+    batchprice,
+    currency,
+    userId,
+    items,
+    shippingAddress,
+    estimatedDeliveryTime,
+  } = req.body;
+
+  try {
+    // Bắt đầu một transaction
+    await pool.query("BEGIN");
+
+    // Tính tổng tiền và tạo đơn hàng
+    const total = items.reduce(
+      (sum, item) =>
+        sum + item.batchprice * (1 - 0.01 * item.promotion) * item.quantity,
+      0
+    );
+
+    const sqlOrder = `INSERT INTO "Order" (userid, estimatedelivery, shippingaddress, orderstatus, ordercreatetime, orderupdatetime, totalamount) 
+                      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING orderid`;
+    const orderstatus = "Đã tạo";
+    const currentTime = new Date();
+    const resultOrder = await pool.query(sqlOrder, [
+      userId,
+      estimatedDeliveryTime,
+      shippingAddress,
+      orderstatus,
+      currentTime,
+      currentTime,
+      total,
+    ]);
+
+    const orderId = resultOrder.rows[0].orderid;
+
+    // Lưu các item vào Order
+    const sqlOrderItem = `INSERT INTO orderitem (orderid, productid, quantityofitem) VALUES ($1, $2, $3)`;
+    for (const item of items) {
+      await pool.query(sqlOrderItem, [orderId, item.productid, item.quantity]);
+    }
+
+    // Xóa sản phẩm khỏi giỏ hàng (cart) sau khi thanh toán thành công
+    const sqlDeleteCart = `DELETE FROM cart WHERE userid = $1 AND productid = $2`;
+    for (const item of items) {
+      await pool.query(sqlDeleteCart, [userId, item.productid]);
+    }
+
+    // Tạo session thanh toán với Stripe
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: items.map((item) => ({
+        price_data: {
+          unit_amount: Math.round(
+            item.batchprice * (1 - 0.01 * item.promotion) // Stripe expects the amount in cents
+          ),
+          currency: currency,
+          product_data: {
+            name: item.productname,
+          },
+        },
+        quantity: item.quantity,
+      })),
+      mode: "payment",
+      success_url: `http://localhost:5173/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `http://localhost:5173/payment-cancel`,
+      metadata: {
+        orderId: orderId.toString(),
+        userId: userId.toString(),
+      },
+    });
+
+    // Lưu thông tin thanh toán vào bảng payment
+    const sqlPayment = `INSERT INTO payment 
+      (orderid, userid, paymentmethod, totalamount, paymentstatus, paymentcreatetime, paymentupdatetime) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING paymentid`;
+
+    const paymentMethod = "Thanh toán online"; // Vì đây là thanh toán online
+    const paymentStatus = "Đang chờ thanh toán"; // Thanh toán chưa hoàn tất
+    const paymentCreateTime = currentTime;
+    const paymentUpdateTime = currentTime;
+
+    const resultPayment = await pool.query(sqlPayment, [
+      orderId,
+      userId,
+      paymentMethod,
+      total,
+      paymentStatus,
+      paymentCreateTime,
+      paymentUpdateTime,
+    ]);
+
+    const paymentId = resultPayment.rows[0].paymentid;
+
+    // Commit transaction và trả về URL của Stripe Checkout
+    await pool.query("COMMIT");
+
+    res.status(200).json({ url: session.url, paymentId });
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error("Error occurred:", error);
+    res.status(500).json({ error: "Failed to create payment session" });
+  }
+};
+
+const getOrderDetails = async (orderId) => {
+  const sqlOrderDetails = `
+    SELECT 
+      o.orderid, o.totalamount, o.ordercreatetime, o.estimatedelivery, o.shippingaddress, o.orderstatus,
+      oi.productid, oi.quantityofitem,
+      p.productname, p.productimage1, p.productsize,
+      pb.unitofmeasure, pb.batchprice,
+      pay.userid, pay.paymentmethod, pay.paymentstatus
+    FROM "Order" o
+    JOIN orderitem oi ON o.orderid = oi.orderid
+    JOIN product p ON oi.productid = p.productid
+    JOIN product_batch pb ON p.productid = pb.productid
+    JOIN payment pay ON o.orderid = pay.orderid
+    WHERE o.orderid = $1
+  `;
+
+  try {
+    const result = await pool.query(sqlOrderDetails, [orderId]);
+    if (result.rows.length === 0) {
+      return { error: "Order not found" };
+    }
+
+    const order = {
+      orderId: result.rows[0].orderid,
+      totalAmount: result.rows[0].totalamount,
+      orderCreateTime: result.rows[0].ordercreatetime,
+      estimatedDelivery: result.rows[0].estimatedelivery,
+      shippingAddress: result.rows[0].shippingaddress,
+      orderStatus: result.rows[0].orderstatus,
+      paymentMethod: result.rows[0].paymentmethod,
+      paymentStatus: result.rows[0].paymentstatus,
+      userId: result.rows[0].userid,
+      items: result.rows.map((row) => ({
+        productId: row.productid,
+        productName: row.productname,
+        productImage: row.productimage1,
+        productSize: row.productsize,
+        unitOfMeasure: row.unitofmeasure,
+        batchPrice: row.batchprice,
+        quantity: row.quantityofitem,
+      })),
+    };
+
+    return order;
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    throw error;
+  }
+};
+
+const confirmPaymentSession = async (req, res) => {
+  const sessionId = req.params.sessionId;
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const orderId = session.metadata.orderId;
+
+    // Lấy chi tiết đơn hàng từ orderId
+    const order = await getOrderDetails(orderId); // Giả sử bạn có hàm này để lấy chi tiết đơn hàng
+
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: "Error confirming payment", error });
+  }
+};
+
+const savePaymentToDB = async (req, res) => {
+  const { userId, orderId, amount, paymentMethod, paymentId, paymentStatus } =
+    req.body; // Bỏ paymentIntentId
+
+  console.log(paymentStatus);
+
+  try {
+    // Lưu thông tin thanh toán vào bảng "payment" (không cần paymentIntentId)
+    const sqlPayment = `
+      INSERT INTO payment 
+      (orderid, userid, totalamount, paymentstatus, paymentcreatetime, paymentmethod, paymentupdatetime) 
+      VALUES ($1, $2, $3, $4, NOW(), $5, NOW()) RETURNING paymentid`;
+
+    // const paymentStatus = "Đã thanh toán"; // Trạng thái thanh toán thành công từ Stripe
+    const result = await pool.query(sqlPayment, [
+      orderId,
+      userId,
+      amount,
+      paymentStatus,
+      paymentMethod,
+    ]);
+
+    const paymentId = result.rows[0].paymentid;
+
+    // Lưu lịch sử mua hàng vào bảng purchaseshistory
+    const sqlInsertHistory = `
+      INSERT INTO purchaseshistory 
+      (orderid, paymentid, purchasedate, totalamount) 
+      VALUES ($1, $2, NOW(), $3)`;
+
+    await pool.query(sqlInsertHistory, [orderId, paymentId, amount]);
+
+    res.status(200).json({ message: "Lưu thông tin thanh toán thành công" });
+  } catch (error) {
+    console.error("Error saving payment info:", error);
+    res.status(500).json({ error: "Failed to save payment info" });
+  }
+};
+
 module.exports = {
   addCheckOut,
   getShippingInfo,
@@ -377,4 +600,8 @@ module.exports = {
   getAllOrdersByFarmer,
   getOrderDetailFarmer,
   updateStatusOrder,
+  createPaymentSession,
+  getOrderDetails,
+  confirmPaymentSession,
+  savePaymentToDB,
 };

@@ -11,6 +11,13 @@ import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/formatDate";
 import { useToast } from "../../../context/ToastContext";
 
+// import { loadStripe } from "@stripe/stripe-js";
+
+// Khởi tạo Stripe với Publishable Key của bạn
+// const stripePromise = loadStripe(
+//   "pk_test_51Q60zuLnoPrvRvUrrUcNQXTJ2J2uQLrR8TVVP42qNwAN3z5KEd4uk6W7IhWdrmSfhrKWyb3bX4Q1RI7xX9roDWrP00tHgppJjY"
+// );
+
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -45,10 +52,12 @@ const CheckoutPage = () => {
     let totalPrice = 0;
     selectedItems.forEach((item) => {
       totalPrice +=
-        item.productprice * (1 - 0.01 * item.promotion) * item.quantity;
+        item.batchprice * (1 - 0.01 * item.promotion) * item.quantity;
     });
     return totalPrice;
   };
+
+  // console.log(selectedItems);
 
   const InfoOrder = () => {
     return selectedItems.map((item) => (
@@ -65,7 +74,7 @@ const CheckoutPage = () => {
           {item.productname}
         </h3>
         <p className="w-1/4 text-lg font-semibold text-primary">
-          {item.productprice} VNĐ
+          {item.batchprice * (1 - 0.01 * item.promotion)} VNĐ
         </p>
         <p className="w-1/4 text-lg font-semibold text-primary">
           {item.quantity}
@@ -104,12 +113,16 @@ const CheckoutPage = () => {
   };
 
   const handleCheckout = async () => {
+    const totalAmount = calculateTotalPrice();
     const orderDetails = {
       userId: userId,
       paymentMethod: paymentMethod,
       items: selectedItems,
       shippingAddress: shippingInfo.deliveryAddress,
       estimatedDeliveryTime: shippingInfo.estimatedDeliveryTime,
+      batchprice: selectedItems.batchprice,
+      totalamount: totalAmount,
+      currency: "VND",
     };
 
     try {
@@ -117,22 +130,72 @@ const CheckoutPage = () => {
         toast.error("Vui lòng chọn phương thức thanh toán!");
         return;
       }
-      const response = await axios.post(
-        `${API_BASE_URL}/checkout`,
-        orderDetails,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
 
-      setToastMessage(response.data.message);
-      navigate("/purchase-history");
+      if (paymentMethod === "Thanh toán online") {
+        // Gọi API tạo Checkout Session của Stripe
+        const response = await axios.post(
+          `${API_BASE_URL}/checkout/create-payment-session`,
+          orderDetails,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+
+        // Chuyển hướng người dùng đến URL của Stripe Checkout
+        window.location.href = response.data.url;
+        setToastMessage(response.data.message);
+        // navigate("/purchase-history");
+      } else {
+        // Xử lý thanh toán khi nhận hàng
+        const response = await axios.post(
+          `${API_BASE_URL}/checkout`,
+          orderDetails,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        setToastMessage(response.data.message);
+        navigate("/purchase-history");
+      }
     } catch (error) {
       console.error("Checkout failed:", error);
+      toast.error("Đặt hàng thất bại, vui lòng thử lại!");
     }
   };
+
+  // const handleCheckout = async () => {
+  //   const orderDetails = {
+  //     userId: userId,
+  //     paymentMethod: paymentMethod,
+  //     items: selectedItems,
+  //     shippingAddress: shippingInfo.deliveryAddress,
+  //     estimatedDeliveryTime: shippingInfo.estimatedDeliveryTime,
+  //   };
+
+  //   try {
+  //     if (!paymentMethod) {
+  //       toast.error("Vui lòng chọn phương thức thanh toán!");
+  //       return;
+  //     }
+  //     const response = await axios.post(
+  //       `${API_BASE_URL}/checkout`,
+  //       orderDetails,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     setToastMessage(response.data.message);
+  //     navigate("/purchase-history");
+  //   } catch (error) {
+  //     console.error("Checkout failed:", error);
+  //   }
+  // };
 
   return (
     <div className="bg-fourth">

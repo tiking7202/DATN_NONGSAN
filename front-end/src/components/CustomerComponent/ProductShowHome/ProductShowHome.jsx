@@ -125,7 +125,9 @@ export default function ProductShowHome() {
                     <span className="text-primary font-bold">
                       {" "}
                       {product.batchquantity}{" "}
-                      <span className="text-sm italic">({product.unitofmeasure})</span>
+                      <span className="text-sm italic">
+                        ({product.unitofmeasure})
+                      </span>
                     </span>
                   </p>
                   <div className="flex justify-between  m-3">
@@ -133,8 +135,8 @@ export default function ProductShowHome() {
                       {Number(product.batchprice)}đ
                     </del>
                     <p className="text-3xl text-left font-bold">
-                      {(product.batchprice) -
-                        (product.batchprice) * product.promotion * 0.01}
+                      {product.batchprice -
+                        product.batchprice * product.promotion * 0.01}
                       đ
                     </p>
                   </div>
@@ -155,7 +157,9 @@ export default function ProductShowHome() {
 
                   <button
                     className="p-4 bg-white text-primary rounded-full hover:bg-primary hover:text-white transition duration-200"
-                    onClick={() => handleAddToCart(product.productid, product.batchid)}
+                    onClick={() =>
+                      handleAddToCart(product.productid, product.batchid)
+                    }
                   >
                     <FontAwesomeIcon icon={faCartPlus} size="2x" />
                   </button>
