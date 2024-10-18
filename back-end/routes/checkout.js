@@ -9,4 +9,14 @@ router.get("/farmer/orders/:farmerId", checkoutController.getAllOrdersByFarmer);
 router.get("/farmer/order/:orderId", checkoutController.getOrderDetailFarmer);
 router.put("/farmer/order-update", checkoutController.updateStatusOrder);
 
+router.post(
+  "/checkout/create-payment-session",
+  checkoutController.createPaymentSession
+);
+router.get(
+  "/checkout/confirm-payment/:sessionId",
+  checkoutController.confirmPaymentSession
+);
+router.post("/checkout/save-payment", checkoutController.savePaymentToDB);
+
 module.exports = router;

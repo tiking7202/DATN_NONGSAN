@@ -28,7 +28,9 @@ import DetailInfoPage from "../pages/Customer/DetailInfoPage/DetailInfoPage";
 import FarmerProfile from "../pages/Farmer/FarmerProfile/FarmerProfile";
 import { ToastProvider } from "../context/ToastContext";
 import { LoadingProvider } from "../context/LoadingContext";
+import PaymentSuccessPage from "../pages/Customer/PaymentSuccessPage/PaymentSuccessPage";
 import SearchByImage from "../pages/Customer/SearchByImage/SearchByImage";
+
 
 export default function AppRoutes() {
   return (
@@ -45,13 +47,20 @@ export default function AppRoutes() {
             <Route path="/category/:id" element={<CategoryPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/checkout-detail/:id" element={<CheckoutDetailPage />} />
+            <Route
+              path="/checkout-detail/:id"
+              element={<CheckoutDetailPage />}
+            />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/purchase-history" element={<PurchasesHistory />} />
             <Route path="/detail-info" element={<DetailInfoPage />} />
             <Route path="/about-agri" element={<AboutAgriPage />} />
             <Route path="/farm/info/:id" element={<FarmInfoPage />} />
-            <Route path="/farm/productdetail/:id" element={<FarmProductPage />} />
+            <Route
+              path="/farm/productdetail/:id"
+              element={<FarmProductPage />}
+            />
+            <Route path="/payment-success" element={<PaymentSuccessPage />} />
             <Route path="/farm/season/:id" element={<FarmSeasonPage />} />
             <Route path="/search-image" element={<SearchByImage />} />
 
