@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
+  faCamera,
   faCartPlus,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
@@ -16,32 +17,38 @@ import { API_BASE_URL } from "../../../config/config";
 import { isCustomer } from "../../../utils/roleCheck";
 import { useToast } from "../../../context/ToastContext";
 import Loading from "../../Loading.jsx"; // Import the Loading component
+import SearchImageDialog from "../../../pages/Customer/SearchByImage/SearchImageDialog.jsx";
 
 export default function HeaderCustomer() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [fullName, setFullName] = useState(""); 
+  const [fullName, setFullName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [loading, setLoading] = useState(false); // Add loading state
-  
+  const { toastMessage, setToastMessage } = useToast();
   const token = localStorage.getItem("accessToken");
-  
+
   useEffect(() => {
-    if(token) {
+    if (token) {
       const decodedToken = jwtDecode(token);
       setFullName(decodedToken?.fullname);
       setAvatar(decodedToken?.avatar);
       //Kiểm tra có phải là customer hay không
-      if(!isCustomer(token)) {
+      if (!isCustomer(token)) {
         localStorage.removeItem("accessToken");
         navigate("/login");
       }
     }
-  
+    
   }, [token, navigate]);
 
-  const { setToastMessage } = useToast();
+  useEffect(() => {
+    if (toastMessage) {
+      toast.success(toastMessage);
+      setToastMessage(null);  
+    }
+  }, [toastMessage, setToastMessage, navigate]);
 
   const handleLogout = async () => {
     setLoading(true); // Set loading to true before API call
@@ -51,7 +58,7 @@ export default function HeaderCustomer() {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         setToastMessage("Đăng xuất thành công!");
-        
+
         navigate("/login");
         // console.log(response);
       } else {
@@ -76,20 +83,21 @@ export default function HeaderCustomer() {
   };
 
   const handleSearch = async () => {
-    
     try {
       const response = await axios.get(`${API_BASE_URL}/search`, {
         params: { search: query.trim() },
       });
       const data = response.data;
-      navigate(`/search?query=${encodeURIComponent(query.trim())}`, { state: { productSearch: data } });
+      navigate(`/search?query=${encodeURIComponent(query.trim())}`, {
+        state: { productSearch: data },
+      });
       setQuery("");
     } catch (error) {
       console.error("Error searching products:", error);
-    } 
+    }
   };
 
-  const handleRouteToLoginFarmer =  async () => {
+  const handleRouteToLoginFarmer = async () => {
     setLoading(true); // Set loading to true before API call
     try {
       const response = await axios.get(`${API_BASE_URL}/auth/logout`);
@@ -133,14 +141,31 @@ export default function HeaderCustomer() {
     }
   };
 
+  //Search Image
+  const [isSearchImageDialogOpen, setIsSearchImageDialogOpen] = useState(false);
+  const openSearchImageDialog = () => {
+    setIsSearchImageDialogOpen(true);
+  };
+
   return (
     <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40 shadow-2xl">
       <ToastContainer />
-      {loading && <Loading />} {/* Display loading spinner when loading is true */}
+      {loading && <Loading />}{" "}
+      {/* Display loading spinner when loading is true */}
       <nav className="flex flex-col w-4/5 m-auto sm:flex-row justify-between items-center">
         <section className="flex space-x-2 sm:space-x-4">
-          <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToLoginFarmer}>Kênh người nông dân</p>
-          <p className="cursor-pointer mx-1 sm:mx-2" onClick={handleRouteToRegisterFarmer}>Trở thành người nông dân</p>
+          <p
+            className="cursor-pointer mx-1 sm:mx-2"
+            onClick={handleRouteToLoginFarmer}
+          >
+            Kênh người nông dân
+          </p>
+          <p
+            className="cursor-pointer mx-1 sm:mx-2"
+            onClick={handleRouteToRegisterFarmer}
+          >
+            Trở thành người nông dân
+          </p>
         </section>
         <section className="flex space-x-2 sm:space-x-4 mt-2 sm:mt-4">
           <div className="flex items-center space-x-1 sm:space-x-2 cursor-pointer mx-1 sm:mx-2">
@@ -150,13 +175,16 @@ export default function HeaderCustomer() {
           <div className="flex space-x-1 sm:space-x-2">
             {fullName ? (
               <div className="relative inline-block text-left">
-                <div className="flex cursor-pointer " onClick={() => setIsOpen(!isOpen)}>
-                  <img src={avatar} alt="avatar" className="w-7 h-7 rounded-full" />
-                  <p
-                    className="mx-1 sm:mx-2"                    
-                  >
-                    {fullName}
-                  </p>
+                <div
+                  className="flex cursor-pointer "
+                  onClick={() => setIsOpen(!isOpen)}
+                >
+                  <img
+                    src={avatar}
+                    alt="avatar"
+                    className="w-7 h-7 rounded-full"
+                  />
+                  <p className="mx-1 sm:mx-2">{fullName}</p>
                 </div>
 
                 {isOpen && (
@@ -219,11 +247,12 @@ export default function HeaderCustomer() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 handleSearch();
               }
             }}
           />
+
           <button
             className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-4 py-1 sm:py-2 bg-green-500 text-white rounded-lg "
             onClick={handleSearch}
@@ -231,13 +260,24 @@ export default function HeaderCustomer() {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
+        <div className="border border-white rounded">
+          <button
+            className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0 hover:bg-white hover:text-primary"
+            onClick={() => openSearchImageDialog()}
+          >
+            <FontAwesomeIcon icon={faCamera} size="1x" />
+          </button>
+        </div>
         <button
-          className="p-1 sm:p-2 text-white rounded text-2xl sm:text-4xl mt-2 sm:mt-0"
+          className="p-1 sm:p-2 text-white text-2xl sm:text-4xl mt-2 sm:mt-0 hover:bg-white hover:text-primary rounded-full"
           onClick={handleCartClick}
         >
           <FontAwesomeIcon icon={faCartPlus} size="1x" />
         </button>
       </section>
+      {isSearchImageDialogOpen && (
+        <SearchImageDialog onClose={() => setIsSearchImageDialogOpen(false)} />
+      )}
     </header>
   );
 }

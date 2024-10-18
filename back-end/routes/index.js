@@ -9,6 +9,7 @@ const checkout = require("./checkout");
 const review = require("./review");
 const crop = require("./crop");
 const recommendation = require("./recommendation");
+const searchImg = require("./searchImg");
 
 router.use("/auth", auth);
 router.use("", user);
@@ -20,5 +21,6 @@ router.use("", checkout);
 router.use("", review);
 router.use("", crop);
 router.use("", recommendation);
+router.use("", searchImg);
 
 module.exports = router;

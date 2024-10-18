@@ -23,65 +23,6 @@ const getUserById = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-/*
-exports.updateFarmerProfile = async (req, res) => {
-  const { id } = req.params; // Lấy userId từ URL params
-  const {
-    email,
-    username,
-    fullname,
-    dob,
-    phonenumber,
-    indentitycard,
-    street,
-    commune,
-    district,
-    province,
-  } = req.body; // Lấy dữ liệu mới từ request body
-
-  try {
-    // Kiểm tra xem người dùng có tồn tại không
-    const farmer = await pool.query(`SELECT * FROM "User" WHERE userid = $1`, [
-      id,
-    ]);
-    if (farmer.rows.length === 0) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
-    }
-
-    // Cập nhật thông tin người dùng (không bao gồm mật khẩu)
-    const updatedFarmer = await pool.query(
-      `UPDATE "User"
-       SET email = $1, username = $2, fullname = $3, dob = $4,
-           phonenumber = $5, indentitycard = $6, street = $7, commune = $8, district = $9, province = $10
-       WHERE userid = $11
-       RETURNING *`,
-      [
-        email,
-        username,
-        fullname,
-        dob,
-        phonenumber,
-        indentitycard,
-        street,
-        commune,
-        district,
-        province,
-        id,
-      ]
-    );
-
-    res.json({
-      message: "Thông tin đã được cập nhật thành công",
-      data: updatedFarmer.rows[0],
-    });
-  } catch (error) {
-    console.error("Có lỗi xảy ra khi cập nhật thông tin:", error);
-    res.status(500).json({ message: "Có lỗi xảy ra khi cập nhật thông tin" });
-  }
-};
-
-exports.getUserById = getUserById;
-*/
 
 const changePassword = async (req, res) => {
   const { userId, oldPassword, newPassword } = req.body;
@@ -191,6 +132,7 @@ const changeAvatarCustomer = async (req, res) => {
   try {
     const avatar = req.file;
     let avatarUrl = null;
+
     if (avatar) {
       const avatarBuffer = avatar.buffer;
       const avatarFilename = `avatars/${uuidv4()}`;
@@ -200,16 +142,24 @@ const changeAvatarCustomer = async (req, res) => {
         contentType: avatar.mimetype,
       });
       avatarUrl = await getDownloadURL(avatarRef);
-
-      const newAvatar = await pool.query(
-        `UPDATE "User" SET avatar = $1 WHERE userid = $2 RETURNING *`,
-        [avatarUrl, userId]
+    } else {
+      // Lấy avatar hiện tại từ cơ sở dữ liệu nếu không có avatar mới
+      const currentAvatarQuery = await pool.query(
+        `SELECT avatar FROM "User" WHERE userid = $1`,
+        [userId]
       );
-      res.json({
-        message: "Avatar đã được cập nhật thành công",
-        data: newAvatar.rows[0],
-      });
+      avatarUrl = currentAvatarQuery.rows[0].avatar;
     }
+
+    const newAvatar = await pool.query(
+      `UPDATE "User" SET avatar = $1 WHERE userid = $2 RETURNING *`,
+      [avatarUrl, userId]
+    );
+
+    res.json({
+      message: "Avatar đã được cập nhật thành công",
+      data: newAvatar.rows[0],
+    });
   } catch (error) {
     console.error("Error uploading avatar:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -253,6 +203,44 @@ const getAllFarmer = async (req, res) => {
   }
 };
 
+const getFarmerDetails = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await pool.query(`
+      SELECT u.*, f.*
+      FROM "User" u
+      LEFT JOIN farm f ON u.userid = f.userid
+      WHERE u.userid = $1
+    `, [userId]);
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error fetching farmer details:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};  
+
+const updateFarmerStatus = async (req, res) => {
+  const { userId } = req.params;
+  const { status } = req.body;
+  try {
+    const result = await pool.query(`
+      UPDATE "User"
+      SET status = $1
+      WHERE userid = $2
+      RETURNING *
+    `, [status, userId]);
+    
+    // Sử dụng res.status(200).json(obj) để trả về phản hồi
+    res.status(200).json({
+      data: result.rows[0],
+      message: "Cập nhật trạng thái nông dân thành công"
+    });
+  } catch (error) {
+    console.error("Error updating farmer status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getUserById,
   changePassword,
@@ -261,4 +249,6 @@ module.exports = {
   updateAvatarFarm,
   changeAvatarCustomer,
   getAllFarmer,
+  getFarmerDetails,
+  updateFarmerStatus,
 };

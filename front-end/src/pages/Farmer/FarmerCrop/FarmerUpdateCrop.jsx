@@ -53,7 +53,7 @@ export default function FarmerUpdateCrop({
       }
     };
     fetchCategories();
-  }, [userId]);
+  }, []);
 
   const validateForm = () => {
     let isValid = true;
@@ -234,15 +234,16 @@ export default function FarmerUpdateCrop({
                 <option value={farmid} className="">
                   {farmName}
                 </option>
-                {farms.map((farm) => (
-                  <option
-                    key={farm.farmid}
-                    value={farm.farmid}
-                    className="bg-secondary"
-                  >
-                    {farm.farmname}
-                  </option>
-                ))}
+                {Array.isArray(farms) &&
+                  farms.map((farm) => (
+                    <option
+                      key={farm.farmid}
+                      value={farm.farmid}
+                      className="bg-secondary"
+                    >
+                      {farm.farmname}
+                    </option>
+                  ))}
               </select>
               {farmidError && (
                 <p className="mt-1 text-red-500">{farmidError}</p>

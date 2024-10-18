@@ -69,8 +69,13 @@ exports.getFarmByUserId = async (req, res) => {
       return res
         .status(400)
         .json({ message: "No farm found for this user ID" });
+    // Lấy tổng số sản phẩm trong farm
+    const productCount = await pool.query(
+      "SELECT COUNT(*) FROM product WHERE farmid = $1",
+      [rows[0].farmid]
+    );
 
-    res.json(rows);
+    res.json({ ...rows[0], productstotal: productCount.rows[0].count });
   } catch (error) {
     console.error("Error fetching farm:", error);
     res.status(500).json({ message: "Internal Server Error" });

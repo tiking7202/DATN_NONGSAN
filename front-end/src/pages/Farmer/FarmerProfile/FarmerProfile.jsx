@@ -16,7 +16,7 @@ export default function FarmDetailInfo() {
   useEffect(() => {
     const fetchFarm = async () => {
       const response = await axios.get(`${API_BASE_URL}/farm/user/${userId}`);
-      setFarm(response.data[0]);
+      setFarm(response.data);
     };
 
     fetchFarm();
@@ -33,7 +33,7 @@ export default function FarmDetailInfo() {
 
   const refreshFarm = async () => {
     const response = await axios.get(`${API_BASE_URL}/farm/user/${userId}`);
-    setFarm(response.data[0]);
+    setFarm(response.data);
   };
 
   return (
