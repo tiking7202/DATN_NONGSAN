@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/formatDate";
 import { useToast } from "../../../context/ToastContext";
 
-
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -160,7 +159,6 @@ const CheckoutPage = () => {
     }
   };
 
-  
   return (
     <div className="bg-fourth">
       <HeaderCustomer />
