@@ -6,10 +6,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useState } from "react";
+import ProductBatchDialog from "../ProductBatchDialog/ProductBatchDialog";
 
-const ProductList = ({ products, handleAddToCart }) => {
+const ProductList = ({ products }) => {
+  const [isOpenProductBatchDialog, setIsOpenProductBatchDialog] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const onAddToCart = (product) => {
+    setIsOpenProductBatchDialog(true);
+    setSelectedProduct(product);
+  }
+
   return (
-    <div className="bg-secondary m-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 rounded-lg shadow-2xl">
+    <div className="bg-secondary m-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-3 rounded-lg">
       {products.map((product) => {
         return (
           <div
@@ -41,11 +50,13 @@ const ProductList = ({ products, handleAddToCart }) => {
                 </p>
                 <div className="flex justify-between m-3">
                   <del className="text-xl italic text-green-500">
-                    {Number(product.batchprice)}đ
+                    {Number(product.batchprice).toLocaleString("vi-VN")}đ
                   </del>
                   <p className="text-3xl text-left font-bold">
-                    {product.batchprice -
-                      product.batchprice * product.promotion * 0.01}
+                    {(
+                      product.batchprice -
+                      product.batchprice * product.promotion * 0.01
+                    ).toLocaleString("vi-VN")}
                     đ
                   </p>
                 </div>
@@ -53,11 +64,11 @@ const ProductList = ({ products, handleAddToCart }) => {
               <div className="flex justify-between items-center mt-4">
                 <Link to={`/farm/info/${product.farmid}`}>
                   <div className="text-primary font-bold italic">
-                    <div className="flex items-center">
+                    <div className="flex items-center hover:opacity-90 hover:underline">
                       <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
                       <p className="ml-2">{product.farmprovince}</p>
                     </div>
-                    <div className="flex items-center mt-2 hover:opacity-90">
+                    <div className="flex items-center mt-2 hover:opacity-90 hover:underline">
                       <FontAwesomeIcon icon={faTractor} size="lg" />
                       <p className="ml-2">{product.farmname}</p>
                     </div>
@@ -67,7 +78,8 @@ const ProductList = ({ products, handleAddToCart }) => {
                 <button
                   className="p-4 bg-white text-primary rounded-full hover:bg-primary hover:text-white hover:scale-125 transform transition duration-300 ease-in-out hover:shadow-md"
                   onClick={() =>
-                    handleAddToCart(product.productid, product.batchid)
+                    // handleAddToCart(product.productid, product.batchid)
+                    onAddToCart(product)
                   }
                 >
                   <FontAwesomeIcon icon={faCartPlus} size="2x" />
@@ -77,6 +89,13 @@ const ProductList = ({ products, handleAddToCart }) => {
           </div>
         );
       })}
+
+      {isOpenProductBatchDialog && (
+        <ProductBatchDialog 
+          onClose={() => setIsOpenProductBatchDialog(false)}
+          selectedProduct={selectedProduct}
+        />
+      )}
     </div>
   );
 };

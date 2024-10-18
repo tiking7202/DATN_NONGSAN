@@ -10,6 +10,7 @@ import Loading from "../../../components/Loading";
 export default function SearchImageDialog({ onClose }) {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null); // Lưu trữ hình ảnh được tải lên
+  const [imagePreview, setImagePreview] = useState(null); // Lưu trữ URL tạm thời của hình ảnh
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -18,9 +19,11 @@ export default function SearchImageDialog({ onClose }) {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
       setImage(file);
+      setImagePreview(URL.createObjectURL(file)); // Tạo URL tạm thời cho hình ảnh
       setError('');
     } else {
       setImage(null);
+      setImagePreview(null);
       setError('Vui lòng chọn một file ảnh hợp lệ.');
     }
   };
@@ -33,7 +36,7 @@ export default function SearchImageDialog({ onClose }) {
     }
 
     const formData = new FormData();
-    formData.append('image', image); // Đính kèm file ảnh vào form data
+    formData.append('image', image); 
 
     setLoading(true);
     try {
@@ -89,10 +92,15 @@ export default function SearchImageDialog({ onClose }) {
                   />
                 </div>
               </div>
+              {imagePreview && (
+                <div className="flex justify-center my-3">
+                  <img src={imagePreview} alt="Preview" className="w-11/12 h-80 object-cover rounded-lg" />
+                </div>
+              )}
               {error && <p style={{ color: 'red' }}>{error}</p>}
               <div className="flex justify-end mt-5">
                 <button
-                  className="bg-primary hover:opacity-90 text-white font-bold py-2 px-5 m-2 rounded-lg"
+                  className="bg-primary hover:opacity-90 text-white font-bold py-3 px-7 mx-5 rounded-lg"
                   onClick={handleSearch}
                 >
                   Tìm kiếm
