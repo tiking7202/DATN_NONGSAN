@@ -78,7 +78,7 @@ const ProductList = ({ products }) => {
                 <button
                   className="p-4 bg-white text-primary rounded-full hover:bg-primary hover:text-white hover:scale-125 transform transition duration-300 ease-in-out hover:shadow-md"
                   onClick={() =>
-                    // handleAddToCart(product.productid, product.batchid)
+                    
                     onAddToCart(product)
                   }
                 >
@@ -102,7 +102,6 @@ const ProductList = ({ products }) => {
 
 ProductList.propTypes = {
   products: PropTypes.array.isRequired,
-  handleAddToCart: PropTypes.func.isRequired,
 };
 
 export default ProductList;

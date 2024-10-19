@@ -64,7 +64,7 @@ def search_image():
 
         # Sắp xếp kết quả theo độ tương tự và chỉ lấy productid
         similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
-        top_product_ids = [item[0] for item in similarities[:8]]  # Lấy top 5 sản phẩm tương tự
+        top_product_ids = [item[0] for item in similarities[:12]]  # Lấy top 5 sản phẩm tương tự
 
         return jsonify({'product_ids': top_product_ids})
     except Exception as e:
