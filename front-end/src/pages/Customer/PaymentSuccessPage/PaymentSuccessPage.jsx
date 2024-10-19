@@ -5,6 +5,8 @@ import { API_BASE_URL } from "../../../config/config";
 import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer/HeaderCustomer";
 import FooterCustomer from "../../../components/CustomerComponent/FooterCustomer/FooterCustomer";
 import { useToast } from "../../../context/ToastContext";
+import { formatDate } from './../../../utils/formatDate';
+import Loading from "../../../components/Loading";
 
 const PaymentSuccessPage = () => {
   const location = useLocation();
@@ -13,42 +15,29 @@ const PaymentSuccessPage = () => {
   const [orderDetails, setOrderDetails] = useState();
   const [loading, setLoading] = useState(true);
 
-  // Lấy session_id từ URL
   const searchParams = new URLSearchParams(location.search);
   const sessionId = searchParams.get("session_id");
 
-  // Gọi API để lấy thông tin đơn hàng từ session_id
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
         const response = await axios.get(
           `${API_BASE_URL}/checkout/confirm-payment/${sessionId}`
         );
-        console.log("Order details response:", response.data);
         setOrderDetails(response.data);
-        setToastMessage("Thanh toán thành công! Đơn hàng đã được ghi nhận.");
+        // setToastMessage("Thanh toán thành công! Đơn hàng đã được ghi nhận.");
         setLoading(false);
       } catch (error) {
         console.error("Error fetching order details:", error);
-        // setToastMessage("Thanh toán không thành công, vui lòng thử lại!");
         setLoading(false);
       }
     };
-
-    // console.log("Order Detail:", orderDetails);
 
     if (sessionId) {
       fetchOrderDetails();
     }
   }, [sessionId, setToastMessage]);
 
-  useEffect(() => {
-    if (orderDetails) {
-      console.log("Updated orderDetails:", orderDetails); // In ra khi state đã được cập nhật
-    }
-  }, [orderDetails]);
-
-  // Hàm lưu thông tin thanh toán vào DB
   const savePaymentToDB = async (paymentStatus) => {
     try {
       const response = await axios.post(
@@ -64,72 +53,69 @@ const PaymentSuccessPage = () => {
       setToastMessage(response.data.message);
     } catch (error) {
       console.error("Error saving payment info:", error);
-      setToastMessage("Lưu thông tin thanh toán không thành công.");
+      // setToastMessage("Lưu thông tin thanh toán không thành công.");
     }
   };
 
-  // Xử lý khi nhấn "Xác nhận"
   const handleConfirm = () => {
     savePaymentToDB("Đã thanh toán");
     navigate("/purchase-history");
   };
 
-  // Xử lý khi nhấn "Huỷ bỏ"
-  const handleCancel = () => {
-    savePaymentToDB("Đang chờ thanh toán");
-    navigate("/purchase-history"); // Giả sử đây là đường dẫn đến trang giỏ hàng
-  };
-
   return (
-    <div className="bg-fourth">
+    <div className="min-h-screen bg-fourth flex flex-col justify-between">
       <HeaderCustomer />
-      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32 text-center">
-        {loading ? (
-          <h1 className="font-bold text-primary text-2xl">Đang xử lý...</h1>
-        ) : orderDetails ? (
-          <>
-            <h1 className="font-bold text-primary text-2xl">
-              Thanh toán thành công!
-            </h1>
-            <p className="mt-4">
-              Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi!
-            </p>
-            <p className="mt-2">Mã đơn hàng: {orderDetails.orderId}</p>
-            <p className="mt-2">Tổng số tiền: {orderDetails.totalAmount} VND</p>
-            <p className="mt-2">
-              Ngày đặt hàng:{" "}
-              {new Date(orderDetails.orderCreateTime).toLocaleDateString()}
-            </p>
-            <p className="mt-2">
-              Địa chỉ giao hàng: {orderDetails.shippingAddress}
-            </p>
-            <p className="mt-2">
-              Trạng thái đơn hàng: {orderDetails.orderStatus}
-            </p>
-            <p className="mt-2">
-              Thời gian dự kiến giao hàng: {orderDetails.estimatedDelivery}
-            </p>
+      <div className="container mx-auto px-8 py-10 mt-32">
+        <div className="bg-white shadow-2xl rounded-lg p-8 md:p-12 max-w-3xl mx-auto text-center">
+          {loading ? (
+            <Loading />
+          ) : orderDetails ? (
+            <>
+              <h1 className="font-bold text-primary text-4xl">
+                Thanh toán thành công!
+              </h1>
+              <p className="mt-6 text-gray-900 text-xl font-medium ">
+                Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi!
+              </p>
+              <p className="mt-4 text-gray-900 font-bold">
+                Mã đơn hàng: <span className="font-medium">{orderDetails.orderId.slice(0,8)}</span>
+              </p>
+              <p className="mt-2 text-gray-900 font-bold">
+                Tổng số tiền:{" "}
+                <span className="font-medium">{orderDetails.totalAmount} đ</span>
+              </p>
+              <p className="mt-2 text-gray-900 font-bold">
+                Ngày đặt hàng:{" "}
+                <span className="font-medium">{formatDate(orderDetails.orderCreateTime)}</span>
+              </p>
+              <p className="mt-2 text-gray-900 font-bold">
+                Địa chỉ giao hàng:{" "}
+                <span className="font-medium">{orderDetails.shippingAddress}</span>
+              </p>
+              <p className="mt-2 text-gray-900 font-bold">
+                Trạng thái đơn hàng:{" "}
+                <span className="font-medium">{orderDetails.orderStatus}</span>
+              </p>
+              <p className="mt-2 text-gray-900 font-bold">
+                Thời gian dự kiến giao hàng:{" "}
+                <span className="font-medium">{formatDate(orderDetails.estimatedDelivery)}</span>
+              </p>
 
-            <div className="mt-5">
-              <button
-                onClick={handleConfirm}
-                className="bg-primary text-white p-2 rounded-md mx-2"
-              >
-                Xác nhận
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-red-500 text-white p-2 rounded-md mx-2"
-              >
-                Huỷ bỏ
-              </button>
-            </div>
-          </>
-        ) : (
-          <h1 className="font-bold text-red-500 text-2xl">
-            Đã xảy ra lỗi trong quá trình xử lý thanh toán!
-          </h1>
-        )}
+              <div className="mt-8">
+                <button
+                  onClick={handleConfirm}
+                  className="bg-primary hover:opacity-75 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300"
+                >
+                  Xác nhận
+                </button>
+              </div>
+            </>
+          ) : (
+            <h1 className="font-bold text-red-500 text-3xl">
+              Đã xảy ra lỗi trong quá trình xử lý thanh toán!
+            </h1>
+          )}
+        </div>
       </div>
       <FooterCustomer />
     </div>

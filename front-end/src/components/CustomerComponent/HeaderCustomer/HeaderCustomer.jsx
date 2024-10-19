@@ -26,7 +26,7 @@ export default function HeaderCustomer() {
   const [fullName, setFullName] = useState("");
   const [avatar, setAvatar] = useState("");
   const [loading, setLoading] = useState(false); // Add loading state
-  const { toastMessage, setToastMessage } = useToast();
+  const { setToastMessage } = useToast();
   const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -43,13 +43,7 @@ export default function HeaderCustomer() {
     
   }, [token, navigate]);
 
-  useEffect(() => {
-    if (toastMessage) {
-      toast.success(toastMessage);
-      setToastMessage(null);  
-    }
-  }, [toastMessage, setToastMessage, navigate]);
-
+  
   const handleLogout = async () => {
     setLoading(true); // Set loading to true before API call
     try {
@@ -148,7 +142,7 @@ export default function HeaderCustomer() {
   };
 
   return (
-    <header className="p-3 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40 shadow-2xl">
+    <header className="p-4 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40 shadow-2xl">
       <ToastContainer />
       {loading && <Loading />}{" "}
       {/* Display loading spinner when loading is true */}

@@ -85,92 +85,73 @@ export default function PurchasesHistory() {
   };
 
   return (
-    <div className="bg-fourth">
+    <div className="bg-fourth min-h-screen">
       <HeaderCustomer />
-      <div className="w-2/3 mx-auto bg-white rounded-md p-5 mt-32">
-        <h1 className="font-bold text-primary text-2xl">LỊCH SỬ MUA</h1>
+      <div className="w-2/3 mx-auto bg-white rounded-md p-6 mt-36 shadow-2xl">
+        <h1 className="font-bold text-primary text-3xl">Lịch sử mua hàng</h1>
       </div>
 
-      <div className="w-2/3 mx-auto mb-7 bg-white rounded-md p-5 mt-5">
-        <table className="min-w-full divide-y divide-gray-900">
+      <div className="w-2/3 mx-auto mb-7 bg-white rounded-md p-5 mt-5 shadow-2xl">
+        <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-secondary">
             <tr>
-              <th
-                scope="col"
-                className="px-6 py-4 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
-              >
+              <th className="px-6 py-4 text-xl font-bold text-gray-900 tracking-wider text-center">
                 STT
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
-              >
+              <th className="px-6 py-4 text-xl font-bold text-gray-900 tracking-wider text-center">
                 Mã đơn hàng
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
-              >
+              <th className="px-6 py-4 text-xl font-bold text-gray-900 tracking-wider text-center">
                 Trạng thái đơn hàng
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
-              >
+              <th className="px-6 py-4 text-xl font-bold text-gray-900 tracking-wider text-center">
                 Trạng thái thanh toán
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
-              >
+              <th className="px-6 py-4 text-xl font-bold text-gray-900 tracking-wider text-center">
                 Ngày mua
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
-              >
+              <th className="px-6 py-4 text-xl font-bold text-gray-900 tracking-wider text-center">
                 Tổng tiền
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-center"
-              >
-                {/* Không có nội dung */}
+              <th className="px-6 py-4 text-lg font-bold text-gray-900 tracking-wider text-center">
+                {/* Empty header */}
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white font-medium divide-y divide-gray-200">
-            {purchasesHistory ? (
+          <tbody className="bg-white divide-y divide-gray-200 font-medium">
+            {purchasesHistory.length ? (
               purchasesHistory.map((purchase, index) => (
-                <tr key={purchase.orderId}>
-                  <td className="px-5 py-3 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
+                <tr key={purchase.orderId} className="hover:bg-gray-100">
+                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
                     {index + 1}
                   </td>
 
-                  <td className="px-5 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
                     {purchase.orderId.slice(0, 8)}
                   </td>
 
-                  <td className="px-5 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
                     {purchase.orderStatus}
                   </td>
 
-                  <td className="px-5 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
-                    {purchase.paymentStatus}{" "}
-                    {/* Hiển thị trạng thái thanh toán */}
+                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
+                    {purchase.paymentStatus}
                   </td>
 
-                  <td className="px-5 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
                     {formatDate(purchase.purchaseDate)}
                   </td>
 
-                  <td className="px-5 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
-                    {purchase.totalAmount.toLocaleString()} VNĐ
+                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
+                    {Number(purchase.totalAmount)
+                      .toFixed(0)
+                      .toLocaleString("vi-VN")}{" "}
+                    VNĐ
                   </td>
 
-                  <td className="px-5 py-2 whitespace-nowrap text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="px-6 py-3 text-lg text-center bg-fourth ">
                     <button
-                      className="text-primary"
+                      className="text-primary hover:opacity-80 font-bold"
                       onClick={() => handleButtonClick(purchase.orderId)}
                     >
                       Xem chi tiết
@@ -182,7 +163,7 @@ export default function PurchasesHistory() {
               <tr>
                 <td
                   colSpan="7"
-                  className="text-center text-lg text-gray-900 bg-fourth"
+                  className="text-center text-lg text-gray-900 bg-fourth py-4"
                 >
                   Không có dữ liệu
                 </td>

@@ -2,9 +2,6 @@ const pool = require("../config/dbConnect");
 
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 
-// Các trạng thái đơn hàng: Đã tạo, Đã xác nhận, Đang giao, Đã giao, Đã hủy
-// Những trạng thái cập nhật số lượng trong bảng Product: Đã giao, Đã hủy
-// Các phương thức thanh toán: Thanh toán khi nhận hàng, Thanh toán qua thẻ
 const addCheckOut = async (req, res) => {
   const {
     userId,
@@ -38,14 +35,7 @@ const addCheckOut = async (req, res) => {
   const executeQuery = (query, values) => pool.query(query, values);
 
   try {
-    await pool.query(`START TRANSACTION`);
-
-    // Calculate total for all items
-    const total = items.reduce(
-      (sum, item) =>
-        sum + item.batch_price * (1 - 0.01 * item.promotion) * item.quantity,
-      0
-    );
+    await pool.query(`BEGIN`);
 
     // Insert into "Order" table
     const resultOrder = await executeQuery(sqlOrder, [
@@ -55,7 +45,7 @@ const addCheckOut = async (req, res) => {
       orderStatus,
       currentTime,
       currentTime,
-      total,
+      totalAmount,
     ]);
     const orderId = resultOrder.rows[0].orderid;
 
@@ -73,7 +63,7 @@ const addCheckOut = async (req, res) => {
       paymentStatus,
       currentTime,
       currentTime,
-      total,
+      totalAmount,
     ]);
     const paymentId = resultPayment.rows[0].paymentid;
 
@@ -84,16 +74,16 @@ const addCheckOut = async (req, res) => {
     await Promise.all(updateProductPromises);
 
     // Insert into purchases history
-    await executeQuery(sqlInsertHistory, [orderId, paymentId, total]);
+    await executeQuery(sqlInsertHistory, [orderId, paymentId, totalAmount]);
 
     // Delete items from cart
     const deleteCartPromises = items.map((item) =>
       executeQuery(sqlDeleteCart, [item.productid])
     );
     await Promise.all(deleteCartPromises);
-    res.json({ message: "Đơn hàng đã được tạo thành công" });
 
     await pool.query(`COMMIT`);
+    res.json({ message: "Đơn hàng đã được tạo thành công" });
   } catch (error) {
     console.error("Error occurred:", error);
     await pool.query("ROLLBACK");
@@ -173,7 +163,7 @@ const getPurchaseHistory = async (req, res) => {
       purchaseDate: row.purchasedate,
       totalAmount: row.totalamount,
       orderStatus: row.orderstatus,
-      paymentStatus: row.paymentstatus, // Lấy thêm paymentstatus
+      paymentStatus: row.paymentstatus, 
     }));
 
     res.json({

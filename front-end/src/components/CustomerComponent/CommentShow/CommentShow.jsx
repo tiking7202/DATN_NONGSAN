@@ -113,7 +113,7 @@ export default function CommentShow() {
         <Loading /> // Display loading spinner when loading is true
       ) : (
         <>
-          <div className="flex bg-fourth p-5 rounded-lg">
+          <div className="flex bg-fourth p-5 rounded-lg shadow-2xl">
             <div className="w-1/3 flex my-2 ">
               <div className="flex m-auto">
                 <p className="text-6xl font-bold m-auto mr-1">
@@ -122,8 +122,8 @@ export default function CommentShow() {
                 <FontAwesomeIcon icon={faStar} color="#ffd700" size="4x" />
               </div>
               <div className="h-full bg-black w-0 p-0.5 m-2"></div>
-              <div className="m-2">
-                <div className="flex m-1">
+              <div className="m-2 font-bold">
+                <div className="flex m-1 ">
                   <Rating
                     initialRating={5}
                     readonly
@@ -212,7 +212,7 @@ export default function CommentShow() {
               <div className="flex flex-col w-11/12 m-auto">
                 <form onSubmit={handleSubmit}>
                   <div className="flex mb-3">
-                    <p className="text-2xl font-bold mx-3">Đánh giá của bạn:</p>
+                    <p className="text-2xl font-bold mx-3 text-primary">Đánh giá của bạn:</p>
 
                     <Rating
                       initialRating={newRating}
@@ -227,7 +227,7 @@ export default function CommentShow() {
                   </div>
                   <input
                     type="text"
-                    className="w-full border-2 rounded-lg p-3 m-3"
+                    className="w-full border-2 border-slate-950 rounded-lg p-3 m-3"
                     placeholder="Nhập bình luận"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
@@ -242,12 +242,12 @@ export default function CommentShow() {
             </div>
           </div>
 
-          <div className="mt-5 flex bg-fourth p-3 rounded-lg flex-col">
+          <div className="mt-5 flex bg-fourth p-3 rounded-lg flex-col shadow-2xl">
             {comments.length > 0 ? (
               comments.map((comment) => (
                 <div
                   key={comment.reviewId}
-                  className="w-full my-2 bg-white p-1 rounded-lg"
+                  className="w-full my-2 bg-white p-1 rounded-lg shadow-2xl"
                 >
                   <div className="flex my-auto">
                     <img src={userInfo[comment.userid]?.avatar} alt="avatar" className="mx-3 my-auto w-8 h-8 rounded-full" />
@@ -271,7 +271,7 @@ export default function CommentShow() {
                       }
                       className="ml-5 my-2"
                     />
-                    <p className="text-lg ml-5 my-auto">{comment.comment}</p>
+                    <p className="text-lg ml-5 my-auto font-semibold">{comment.comment}</p>
                   </div>
                 </div>
               ))

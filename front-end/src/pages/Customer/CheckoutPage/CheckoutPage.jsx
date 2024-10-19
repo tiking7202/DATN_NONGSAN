@@ -114,7 +114,7 @@ const CheckoutPage = () => {
       shippingAddress: shippingInfo.deliveryAddress,
       estimatedDeliveryTime: shippingInfo.estimatedDeliveryTime,
       batchprice: selectedItems.batchprice,
-      totalamount: totalAmount,
+      totalAmount: totalAmount,
       currency: "VND",
     };
 
@@ -162,14 +162,19 @@ const CheckoutPage = () => {
   return (
     <div className="bg-fourth">
       <HeaderCustomer />
-      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32">
+      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-36 shadow-2xl">
         <h1 className="font-bold text-primary text-2xl">THÔNG TIN ĐƠN HÀNG</h1>
       </div>
-      <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-5 flex justify-center">
-        <div className="w-1/2 justify-between">{InfoOrder()}</div>
+      <div className="w-4/5 mx-auto bg-white rounded-md p-5 py-7 mt-5 flex justify-center shadow-2xl mb-10">
+        <div className="w-1/2 justify-between">
+          <h1 className="font-bold text-2xl mb-4 text-primary">
+            Thông tin sản phẩm
+          </h1>
+          {InfoOrder()}
+        </div>
 
-        <div className="w-1/3 bg-fourth rounded-sm flex flex-col justify-start text-center text-primary p-3">
-          <h1 className="font-bold text-xl mb-4">THÔNG TIN THANH TOÁN</h1>
+        <div className="w-5/12 bg-fourth rounded-md flex flex-col justify-start text-center text-primary p-5 shadow-2xl">
+          <h1 className="font-bold text-2xl mb-4">Thông tin thanh toán</h1>
 
           <div className="space-y-2">
             <div className="w-6/12 h-0.5 m-auto bg-primary"></div>
@@ -179,19 +184,19 @@ const CheckoutPage = () => {
               </h2>
               <div className="flex items-center ml-5 my-2">
                 <p className="font-bold w-1/3 text-left">Tên khách hàng:</p>
-                <p className="text-gray-900 w-2/3 text-left">
+                <p className="text-gray-900 w-2/3 text-left font-medium">
                   {userInfo ? userInfo.fullname : ""}
                 </p>
               </div>
               <div className="flex items-center ml-5 my-2">
                 <p className="font-bold w-1/3 text-left">Số điện thoại:</p>
-                <p className="text-gray-900 w-2/3 text-left">
+                <p className="text-gray-900 w-2/3 text-left font-medium">
                   {userInfo ? userInfo.phonenumber : ""}
                 </p>
               </div>
               <div className="flex items-center ml-5 my-2">
                 <p className="font-bold w-1/3 text-left">Địa chỉ:</p>
-                <p className="text-gray-900 w-2/3 text-left">
+                <p className="text-gray-900 w-2/3 text-left font-medium">
                   {userInfo
                     ? userInfo.street +
                       ", " +
@@ -209,8 +214,8 @@ const CheckoutPage = () => {
               <h2 className="font-bold text-xl ml-3 flex">
                 Chọn phương thức thanh toán
               </h2>
-              <div className="ml-5 my-3">
-                <div className="flex  my-1">
+              <div className="ml-5 my-3 font-medium">
+                <div className="flex my-1">
                   <input
                     type="radio"
                     name="payment"
@@ -245,7 +250,7 @@ const CheckoutPage = () => {
                   Địa chỉ nhận hàng:
                 </p>
                 {!isEditing && (
-                  <p className="text-gray-900 w-7/12 justify-start text-left">
+                  <p className="text-gray-900 w-7/12 justify-start text-left font-medium">
                     {shippingInfo ? shippingInfo.deliveryAddress : ""}
                     <button
                       className="ml-2 text-primary"
@@ -266,7 +271,7 @@ const CheckoutPage = () => {
                     />
                     <button
                       onClick={handleSaveClick}
-                      className="ml-2 p-2 rounded-lg bg-primary text-white"
+                      className="mx-2 px-4 py-2 rounded-lg bg-primary text-white font-medium"
                     >
                       Lưu
                     </button>
@@ -277,7 +282,7 @@ const CheckoutPage = () => {
                 <p className="font-bold w-5/12 ml-5 text-left">
                   Thời gian nhận hàng:
                 </p>
-                <p className="text-gray-900 w-7/12 justify-start text-left">
+                <p className="text-gray-900 w-7/12 justify-start text-left font-medium">
                   {shippingInfo
                     ? formatDate(shippingInfo.estimatedDeliveryTime)
                     : ""}
@@ -307,7 +312,7 @@ const CheckoutPage = () => {
             </div>
 
             <button
-              className="bg-primary text-white p-2 rounded-md w-2/3 mt-5 hover:opacity-80 transition duration-300"
+              className="bg-primary text-white py-2 px-5 rounded-lg w-5/6 mt-5 hover:opacity-80 transition duration-300 font-bold"
               onClick={handleCheckout}
             >
               Thanh toán

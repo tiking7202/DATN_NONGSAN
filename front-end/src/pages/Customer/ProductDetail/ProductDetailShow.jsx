@@ -227,7 +227,7 @@ export default function ProductDetail() {
                         {batchList.map((batch) => (
                           <div
                             key={batch.batchid}
-                            className={`p-2 rounded mr-2 my-2 shadow-xl cursor-pointer border hover:opacity-80 ${
+                            className={`p-2 rounded mr-2 my-2 shadow-2xl cursor-pointer border hover:opacity-80 ${
                               batchId === batch.batchid
                                 ? "bg-primary text-white"
                                 : "bg-fourth"
@@ -462,19 +462,20 @@ export default function ProductDetail() {
               )}
             </div>
 
-            <div className="w-4/5 mx-auto bg-secondary rounded-md p-5 mt-7 shadow-lg">
+            <div className="w-4/5 mx-auto bg-secondary rounded-md p-5 mt-7 shadow-2xl">
               <h1 className="font-bold text-primary text-2xl">
                 Bình luận, đánh giá về sản phẩm
               </h1>
             </div>
-            <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-2 shadow-lg">
+            <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-2xl">
               <CommentShow />
             </div>
-            <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-lg">
+            <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-2xl">
               <h1 className="font-bold text-primary text-2xl">
                 Sản phẩm liên quan
               </h1>
             </div>
+            <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-2xl"></div>
           </div>
         )
       )}
