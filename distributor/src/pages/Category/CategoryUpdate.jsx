@@ -14,11 +14,12 @@ export default function UpdateCategory({
   const [categoryname, setCategoryname] = useState(category.categoryname);
   const [categoryimage, setCategoryimage] = useState(category.categoryimage);
   const [categorydes, setCategorydes] = useState(category.categorydes);
+  const [standardexpiry, setStandardexpiry] = useState(category.standardexpiry);
   //   const [farmid, setFarmid] = useState("");
 
   const [categorynameErrol, setCategorynameErrol] = useState("");
   const [categorydesErrol, setCategorydesErrol] = useState("");
-
+  const [standardexpiryErrol, setStandardexpiryErrol] = useState("");
   const validateForm = () => {
     let isValid = true;
 
@@ -37,6 +38,13 @@ export default function UpdateCategory({
       setCategorydesErrol("");
     }
 
+    if (standardexpiry <= 0) {
+      setStandardexpiryErrol("Tiêu chuẩn hết hạn là bắt buộc");
+      isValid = false;
+    } else {
+      setStandardexpiryErrol("");
+    }
+
     return isValid;
   };
   const onUpdateCategory = async (categoryid) => {
@@ -47,6 +55,7 @@ export default function UpdateCategory({
     categorydata.append("categoryname", categoryname);
     categorydata.append("categorydes", categorydes);
     categorydata.append("categoryimage", categoryimage);
+    categorydata.append("standardexpiry", standardexpiry);
     try {
       const response = await axios.put(
         `${API_BASE_URL}/distributor/update/category/${categoryid}`,
@@ -111,6 +120,28 @@ export default function UpdateCategory({
               />
             </div>
           </div>
+          {/* 2 */}
+          <div className="flex justify-between my-2">
+            <div className="w-full mx-2">
+              <label
+                htmlFor="standardexpiry"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Tiêu chuẩn hết hạn
+              </label>
+              <input
+                type="number"
+                placeholder="Tiêu chuẩn hết hạn"
+                value={standardexpiry}
+                onChange={(e) => setStandardexpiry(e.target.value)}
+                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+              />
+              <p className="text-red-500 mt-1 text-xs italic">
+                {standardexpiryErrol}
+              </p>
+            </div>
+          </div>
+
           {/* 5 */}
           <div className="flex justify-between my-2">
             <div className="w-full mx-2">

@@ -6,7 +6,7 @@ const port = 3000;
 const cors = require("cors");
 const client = require('./config/dbConnect');
 const routes = require("./routes");
-
+const autoUpdateProductBatch = require('./utils/autoUpdateProductBatch');
 
 // Cấu hình CORS
 const corsOptions = {
@@ -37,9 +37,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api', routes);
 
-
+// Gọi hàm auto update productbatch
+autoUpdateProductBatch.autoUpdateProductBatch();
 
 // Khởi động máy chủ
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on http://localhost:${port} 😗` );
 });

@@ -10,10 +10,11 @@ const CreateCategory = ({ onClose, refreshCategoryList }) => {
   const [categoryname, setCategoryname] = useState("");
   const [categoryimage, setCategoryimage] = useState("");
   const [categorydes, setCategorydes] = useState("");
-
+  const [standardexpiry, setStandardexpiry] = useState("");
 
   const [categorynameErrol, setCategorynameErrol] = useState("");
   const [categorydesErrol, setCategorydesErrol] = useState("");
+  const [standardexpiryErrol, setStandardexpiryErrol] = useState("");
 
   const validateForm = () => {
     let isValid = true;
@@ -32,6 +33,13 @@ const CreateCategory = ({ onClose, refreshCategoryList }) => {
       setCategorydesErrol("");
     }
 
+    if(standardexpiry <= 0 ){
+      setStandardexpiryErrol("Tiêu chuẩn hết hạn không được để trống");
+      isValid = false;
+    } else {
+      setStandardexpiryErrol("");
+    }
+
     return isValid;
   };
 
@@ -45,7 +53,7 @@ const CreateCategory = ({ onClose, refreshCategoryList }) => {
     categorydata.append("categoryname", categoryname);
     categorydata.append("categorydes", categorydes);
     categorydata.append("categoryimage", categoryimage);
-
+    categorydata.append("standardexpiry", standardexpiry);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/distributor/create/category`,
@@ -69,6 +77,7 @@ const CreateCategory = ({ onClose, refreshCategoryList }) => {
       setCategoryname("");
       setCategoryimage("");
       setCategorydes("");
+      setStandardexpiry("");
     } catch (error) {
       console.error("Error creating crop:", error);
       toast.error(error.response.data, {
@@ -133,6 +142,29 @@ const CreateCategory = ({ onClose, refreshCategoryList }) => {
             </div>
           </div>
 
+          <div className="flex justify-between my-2">
+            <div className="w-full mx-2">
+              <label
+                htmlFor="standardexpiry"
+                className="block text-xl text-primary font-bold mb-2"
+              >
+                Tiêu chuẩn hết hạn
+              </label>
+              <input
+                id="standardexpiry"
+                type="number"
+                placeholder="Tiêu chuẩn hết hạn"
+                value={standardexpiry}
+                onChange={(e) => setStandardexpiry(e.target.value)}
+                className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+              />
+              {standardexpiryErrol && (
+                <p className="text-red-500 mt-1 text-xs italic">
+                  {standardexpiryErrol}
+                </p>
+              )}
+              </div>
+          </div>
           {/* 5 */}
           <div className="flex justify-between my-2">
             <div className="w-full mx-2">

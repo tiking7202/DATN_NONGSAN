@@ -49,15 +49,8 @@ exports.deleteCategory = async (req, res) => {
 
 exports.createCategoryforDistributor = async (req, res) => {
   try {
-    const { categoryname, categorydes } = req.body;
+    const { categoryname, categorydes, standardexpiry  } = req.body;
     const categoryimage = req.file;
-
-    // Kiểm tra các thông tin bắt buộc
-    // if (!categoryname || !categorydes) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Vui lòng nhập đầy đủ thông tin" });
-    // }
 
     let categoryimageUrl = null;
     if (categoryimage) {
@@ -73,8 +66,8 @@ exports.createCategoryforDistributor = async (req, res) => {
 
     // Tạo một category mới
     const newCategory = await pool.query(
-      `INSERT INTO category (categoryname, categorydes, categoryimage) VALUES ($1, $2, $3) RETURNING *`,
-      [categoryname, categorydes, categoryimageUrl]
+      `INSERT INTO category (categoryname, categorydes, categoryimage, standardexpiry) VALUES ($1, $2, $3, $4) RETURNING *`,
+      [categoryname, categorydes, categoryimageUrl, standardexpiry]
     );
 
     // Trả về phản hồi thành công
@@ -91,7 +84,7 @@ exports.createCategoryforDistributor = async (req, res) => {
 exports.updateCategoryforDistributor = async (req, res) => {
   try {
     const { id } = req.params;
-    const { categoryname, categorydes } = req.body;
+    const { categoryname, categorydes, standardexpiry } = req.body;
     const categoryimage = req.file;
     // Kiểm tra xem có category nào tồn tại hay không
     const categoryResult = await pool.query(
@@ -117,8 +110,8 @@ exports.updateCategoryforDistributor = async (req, res) => {
       : existingCategory.categoryimage;
     // Cập nhật category
     const updatedCategory = await pool.query(
-      `UPDATE category SET categoryname = $1, categorydes = $2, categoryimage = $3 WHERE categoryid = $4 RETURNING *`,
-      [categoryname, categorydes, categoryimageUrl, id]
+      `UPDATE category SET categoryname = $1, categorydes = $2, categoryimage = $3, standardexpiry = $4 WHERE categoryid = $5 RETURNING *`,
+      [categoryname, categorydes, categoryimageUrl, standardexpiry, id]
     );
 
     // Kiểm tra xem category có tồn tại hay không

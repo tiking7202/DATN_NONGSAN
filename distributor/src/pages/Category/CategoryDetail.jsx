@@ -31,7 +31,9 @@ export default function DetailCategory({ category, onClose }) {
 
         {/* Crop Details */}
         <div className="space-y-4">
-          {[{ label: "Mô tả:", value: category.categorydes }].map(
+          {[
+            { label: "Tiêu chuẩn hết hạn:", value: category.standardexpiry + " ngày" },
+            { label: "Mô tả:", value: category.categorydes }].map(
             (item, index) => (
               <div
                 key={index}

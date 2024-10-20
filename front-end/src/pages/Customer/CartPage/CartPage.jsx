@@ -130,7 +130,7 @@ export default function CartPage() {
         <div className="bg-fourth">
           <HeaderCustomer />
 
-          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-32 shadow-2xl">
+          <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-36 shadow-2xl">
             <h1 className="font-bold text-primary text-2xl">
               GIỎ HÀNG CỦA BẠN
             </h1>

@@ -141,7 +141,8 @@ export default function CategoryShow() {
                   <tr className="bg-primary text-white">
                     <th className="w-1/6 py-2">Tên danh mục</th>
                     <th className="w-1/6 py-2">Hình ảnh</th>
-                    <th className="w-1/2 py-2">Mô tả</th>
+                    <th className="w-1/6 py-2">Tiêu chuẩn hết hạn</th>
+                    <th className="w-1/3 py-2">Mô tả</th>
                     <th className="w-1/6 py-2">Hành động</th>
                   </tr>
                 </thead>
@@ -160,6 +161,7 @@ export default function CategoryShow() {
                             className="w-2/3 h-16 m-auto"
                           />
                         </td>
+                        <td className="py-2 px-4">{category.standardexpiry}</td>
                         <td className="py-2 px-4 text-justify">{category.categorydes}</td>
                         <td className="py-2 px-4">
                           <div className="flex justify-center space-x-4">
