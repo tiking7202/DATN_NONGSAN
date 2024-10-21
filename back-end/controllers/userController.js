@@ -179,6 +179,7 @@ const getAllFarmer = async (req, res) => {
       FROM "User" u
       LEFT JOIN farm f ON u.userid = f.userid
       WHERE u.role = 'farmer'
+      ORDER BY u.status ASC, u.userid
       LIMIT $1 OFFSET $2
     `, [limit, offset]);
     const farmersWithFarms = result.rows;
@@ -202,7 +203,6 @@ const getAllFarmer = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 const getFarmerDetails = async (req, res) => {
   const { userId } = req.params;
   try {

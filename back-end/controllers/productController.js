@@ -3,6 +3,7 @@ const { storage } = require("../config/firebase");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const notificationUtils = require("../utils/notificationsUtils");
 // Cấu hình Multer để xử lý upload
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -309,38 +310,34 @@ exports.createProduct = async (req, res) => {
     !healtbenefit ||
     !cookingmethod ||
     !storagemethod ||
-    !isdistributorview
+    isdistributorview === undefined
   ) {
-    return res.status(400).json({ message: "Các trường ko được để trống" });
+    return res.status(400).json({ message: "Các trường không được để trống" });
   }
 
   try {
-    // Upload images to Firebase
+    // Hàm tải ảnh lên Firebase
     const uploadImage = async (image) => {
       if (!image) return null;
-      const imageBuffer = image.buffer;
       const imageFileName = `products/${productname}/${uuidv4()}`;
       const imageRef = ref(storage, imageFileName);
-
-      await uploadBytes(imageRef, imageBuffer, { contentType: image.mimetype });
+      await uploadBytes(imageRef, image.buffer, { contentType: image.mimetype });
       return await getDownloadURL(imageRef);
     };
 
-    const productImage1Url = await uploadImage(
-      req.files.productimage1 ? req.files.productimage1[0] : null
-    );
-    const productImage2Url = await uploadImage(
-      req.files.productimage2 ? req.files.productimage2[0] : null
-    );
-    const productImage3Url = await uploadImage(
-      req.files.productimage3 ? req.files.productimage3[0] : null
-    );
+    // Upload tất cả ảnh cùng lúc
+    const [productImage1Url, productImage2Url, productImage3Url] = await Promise.all([
+      uploadImage(req.files.productimage1 ? req.files.productimage1[0] : null),
+      uploadImage(req.files.productimage2 ? req.files.productimage2[0] : null),
+      uploadImage(req.files.productimage3 ? req.files.productimage3[0] : null)
+    ]);
 
-    // Tạo sản phẩm mới
+    // Tạo sản phẩm mới trong cơ sở dữ liệu
     const newProduct = await pool.query(
-      `INSERT INTO product (productname, productimage1, productimage2, productimage3, categoryid, farmid, overviewdes, healtbenefit, cookingmethod, storagemethod, isdistributorview, isvisibleweb) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-        RETURNING *`,
+      `INSERT INTO product 
+      (productname, productimage1, productimage2, productimage3, categoryid, farmid, overviewdes, healtbenefit, cookingmethod, storagemethod, isdistributorview, isvisibleweb) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      RETURNING *`,
       [
         productname,
         productImage1Url,
@@ -353,20 +350,41 @@ exports.createProduct = async (req, res) => {
         cookingmethod,
         storagemethod,
         isdistributorview,
-        false,
+        false
       ]
     );
+
+    // Truy vấn lấy thông tin nông trại và distributor
+    const [farmQuery, distributorQuery] = await Promise.all([
+      pool.query(`SELECT farmname FROM farm WHERE farmid = $1`, [farmid]),
+      pool.query(`SELECT distributorid FROM distributor`)
+    ]);
+
+    const farmInfo = farmQuery.rows[0];
+    const distributorIds = distributorQuery.rows.map(row => row.distributorid);
+
+    // Gửi thông báo cho các nhà phân phối
+    const userRole = "Distributor";
+    const title = "Đăng sản phẩm mới";
+    const message = `Nông dân trang trại ${farmInfo.farmname} đã đăng sản phẩm mới`;
+    const notificationtype = 'CreateNewProduct';
+
+    // Gửi thông báo cho tất cả các distributor đầu tiên
+    await notificationUtils.createNotification(distributorIds[0], userRole, title, message, notificationtype);
+    
 
     // Trả về thông tin sản phẩm vừa tạo
     res.json({
       product: newProduct.rows[0],
       message: "Tạo sản phẩm thành công",
     });
+
   } catch (error) {
     console.error("Error creating product:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Lỗi máy chủ" });
   }
 };
+
 
 // Sửa thông tin sản phẩm
 exports.updateProduct = async (req, res) => {
@@ -812,4 +830,3 @@ exports.updateProductPromotion = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-

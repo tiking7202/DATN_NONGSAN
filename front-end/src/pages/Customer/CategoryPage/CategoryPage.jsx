@@ -56,7 +56,7 @@ function CategoryPage() {
         <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-36 shadow-2xl">
           {products && products.length > 0 ? (
             <h1 className="font-bold text-primary text-2xl">
-              Danh mục sản phẩm: {products[0].category}
+              Danh mục sản phẩm: {products[0].categoryname} 
             </h1>
           ) : (
             <h1 className="font-bold text-primary text-2xl">

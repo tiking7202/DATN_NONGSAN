@@ -1,7 +1,5 @@
 import HeaderDistributor from "../../components/HeaderDistributor";
 import {
-  faChevronLeft,
-  faChevronRight,
   faEye,
   faPlusCircle,
   faSearch,
@@ -15,6 +13,7 @@ import { toast, ToastContainer } from "react-toastify";
 import DetailProductDialog from "./DetailProductDialog";
 import CreateProductBatch from "./CreateProductBatch";
 import DetailProductBatch from "./DetailProductBatch";
+import { Pagination } from "../../components/Pagination";
 export default function ProductPage() {
   const [products, setProducts] = useState([]);
 
@@ -213,136 +212,105 @@ export default function ProductPage() {
               </button>
             </div>
           </div>
-          <table className="w-9/12 mx-auto rounded-lg shadow-xl border border-black">
-            <thead className="">
-              <tr className="bg-primary text-secondary rounded-lg border border-black">
-                <th className="py-3 w-1/12">Tên sản phẩm</th>
-                <th className="py-3 w-1/12">Hình ảnh</th>
-                <th className="py-3 w-1/12">Danh mục</th>
-                <th className="py-3 w-2/12">Trang trại</th>
-                <th className="py-3 w-3/12">Mô tả</th>
-                <th className="py-3 w-2/12">Ẩn sản phẩm</th>
-                <th className="py-3 w-1/12">Các lô hàng</th>
+          {/* <div className="overflow-x-auto shadow-2xl"> */}
+            <table className="w-9/12 mx-auto rounded-lg ">
+              <thead className="">
+                <tr className="bg-primary text-secondary rounded-lg border">
+                  <th className="py-3 w-1/12">Tên sản phẩm</th>
+                  <th className="py-3 w-1/12">Hình ảnh</th>
+                  <th className="py-3 w-1/12">Danh mục</th>
+                  <th className="py-3 w-2/12">Trang trại</th>
+                  <th className="py-3 w-3/12">Mô tả</th>
+                  <th className="py-3 w-2/12">Ẩn sản phẩm</th>
+                  <th className="py-3 w-1/12">Các lô hàng</th>
 
-                <th className="py-3 w-1/12"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {products && products.length > 0 ? (
-                products.map((product) => (
-                  <tr
-                    key={product.productid}
-                    className="text-center font-medium border border-black"
-                  >
-                    <td className="w-1/12 text-center p-2">
-                      {product.productname}
-                      <br />
-                    </td>
-                    <td className="w-1/12 text-center p-2">
-                      <img
-                        src={product.productimage1}
-                        alt={product.productname}
-                        className="h-16 w-full m-auto"
-                      />
-                    </td>
-                    <td className="w-1/12 text-center p-2">
-                      {product.categoryname}
-                    </td>
-                    <td className="w-2/12 text-center p-2">
-                      {product.farmname}
-                    </td>
-                    <td className="w-3/12 text-justify">
-                      {truncateText(product.overviewdes, 70)}
-                    </td>
+                  <th className="py-3 w-1/12"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {products && products.length > 0 ? (
+                  products.map((product) => (
+                    <tr
+                      key={product.productid}
+                      className="text-center font-medium border"
+                    >
+                      <td className="w-1/12 text-center p-2">
+                        {product.productname}
+                        <br />
+                      </td>
+                      <td className="w-1/12 text-center p-2">
+                        <img
+                          src={product.productimage1}
+                          alt={product.productname}
+                          className="h-16 w-full m-auto"
+                        />
+                      </td>
+                      <td className="w-1/12 text-center p-2">
+                        {product.categoryname}
+                      </td>
+                      <td className="w-2/12 text-center p-2">
+                        {product.farmname}
+                      </td>
+                      <td className="w-3/12 text-justify">
+                        {truncateText(product.overviewdes, 70)}
+                      </td>
 
-                    <td className="w-2/12 text-center p-2">
-                      <select
-                        value={product.isvisibleweb ? "visible" : "hidden"}
-                        onChange={(e) =>
-                          handleVisibilityChange(
-                            product.productid,
-                            e.target.value === "visible"
-                          )
-                        }
-                      >
-                        <option value="visible">Đã hiển thị</option>
-                        <option value="hidden">Đã ẩn</option>
-                      </select>
-                    </td>
-                    <td className="w-1/12 text-center p-2">
-                      <FontAwesomeIcon
-                        icon={faEye}
-                        className="hover:opacity-50 mx-2 cursor-pointer"
-                        size="xl"
-                        onClick={() =>
-                          onOpenDetailProductBatch(product.productid)
-                        }
-                      />
-                      <FontAwesomeIcon
-                        icon={faPlusCircle}
-                        className="hover:opacity-50 mx-2 cursor-pointer"
-                        size="xl"
-                        onClick={() =>
-                          openCreateProductBatch(product.productid)
-                        }
-                      />
-                    </td>
-                    <td className="w-1/12 text-center p-2">
-                      <div className="flex justify-center">
-                        <button
-                          className="font-bold mx-3 text-primary hover:opacity-80"
-                          onClick={() =>
-                            onOpenDetailProductDialog(product.productid)
+                      <td className="w-2/12 text-center p-2">
+                        <select
+                          value={product.isvisibleweb ? "visible" : "hidden"}
+                          onChange={(e) =>
+                            handleVisibilityChange(
+                              product.productid,
+                              e.target.value === "visible"
+                            )
                           }
                         >
-                          Chi tiết
-                        </button>
-                      </div>
-                    </td>
+                          <option value="visible">Đã hiển thị</option>
+                          <option value="hidden">Đã ẩn</option>
+                        </select>
+                      </td>
+                      <td className="w-1/12 text-center p-2">
+                        <FontAwesomeIcon
+                          icon={faEye}
+                          className="hover:opacity-50 mx-2 cursor-pointer"
+                          size="xl"
+                          onClick={() =>
+                            onOpenDetailProductBatch(product.productid)
+                          }
+                        />
+                        <FontAwesomeIcon
+                          icon={faPlusCircle}
+                          className="hover:opacity-50 mx-2 cursor-pointer"
+                          size="xl"
+                          onClick={() =>
+                            openCreateProductBatch(product.productid)
+                          }
+                        />
+                      </td>
+                      <td className="w-1/12 text-center p-2">
+                        <div className="flex justify-center">
+                          <button
+                            className="font-bold mx-3 text-primary hover:opacity-80"
+                            onClick={() =>
+                              onOpenDetailProductDialog(product.productid)
+                            }
+                          >
+                            Chi tiết
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="11">Không có sản phẩm nào</td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="11">Không có sản phẩm nào</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          <div className="flex justify-center my-4">
-            <button
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page === 1}
-              className="text-primary border border-black font-bold px-4 py-2 rounded-l-xl"
-            >
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </button>
-            {page > 1 && (
-              <button
-                className="text-primary border border-black font-bold px-4 py-2 "
-                onClick={() => handlePageChange(page - 1)}
-              >
-                {page - 1}
-              </button>
-            )}
-            <button className="bg-primary text-secondary border border-black font-bold px-4 py-2 ">
-              {page}
-            </button>
-            {page < totalPages && (
-              <button
-                className="text-primary border border-black font-bold px-4 py-2 "
-                onClick={() => handlePageChange(page + 1)}
-              >
-                {page + 1}
-              </button>
-            )}
-            <button
-              onClick={() => handlePageChange(page + 1)}
-              disabled={page === totalPages}
-              className="text-primary border border-black font-bold px-4 py-2 rounded-r-xl"
-            >
-              <FontAwesomeIcon icon={faChevronRight} />
-            </button>
-          </div>
+                )}
+              </tbody>
+            </table>
+          {/* </div> */}
+            {/* Pagination */}
+            <Pagination page={page} totalPages={totalPages} handlePageChange={handlePageChange} />
         </div>
       </div>
       {isOpenDetailProductDialog && (

@@ -7,6 +7,7 @@ const { storage } = require("../config/firebase");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const notificationUtils = require("../utils/notificationsUtils");
 // Cấu hình Multer để xử lý upload
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -425,14 +426,45 @@ const registerFarmerStep2 = async (req, res) => {
       ]
     );
 
-    res.json(newFarm.rows[0]);
+    res.json({
+      farm: newFarm.rows[0],
+      message: "Đăng ký trang trại thành công"
+    });
   } catch (error) {
     console.error("Error updating additional info:", error);
     res.status(500).send("Internal Server Error");
   }
 };
 
-const registerFarmerStep3 = async (req, res) => {};
+const registerFarmerStep3 = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    //Lấy thông tin nhà phân phối
+    const distributor = await pool.query(
+      `SELECT distributorid FROM distributor`
+    );
+
+    // Lấy thông tin nông dân
+    const farmer = await pool.query(
+      `SELECT fullname FROM "User" WHERE userid = $1`,
+      [userId]
+    );
+    const distributorid = distributor.rows[0];
+    // Gọi hàm để gửi thông báo cho nhà phân phối
+    notificationUtils.createNotification(
+      distributorid.distributorid,
+      "Distributor",
+      "Đăng ký tài khoản nông dân mới",
+      `Có nông dân ${farmer.rows[0].fullname} mới đăng ký tài khoản, hãy xét duyệt để nông dân hoàn tất thủ tục đăng ký`,
+      "CreateNewFarmer"
+    );
+    // Trả về kết quả
+    res.json({ message: "Đã gửi yêu cầu đăng ký thành công" });
+  } catch (error) {
+    console.error("Error updating additional info:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 const loginDistributor = async (req, res) => {
   try {

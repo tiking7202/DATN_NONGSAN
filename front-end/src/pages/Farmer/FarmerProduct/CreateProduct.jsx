@@ -46,6 +46,7 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
         const farm = await axios.get(`${API_BASE_URL}/farm/user/${userId}`);
         let farmsData = farm.data;
         setFarms(farmsData);
+        setFarmid(farmsData.farmid);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -312,25 +313,13 @@ const CreateProduct = ({ onClose, userId, refreshProductList }) => {
                   >
                     Trang trại
                   </label>
-                  <select
+                  <input
+                    type="text"
                     id="farm"
                     className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
-                    onChange={(e) => setFarmid(e.target.value)}
-                  >
-                    <option value="" className="bg-secondary">
-                      Chọn trang trại
-                    </option>
-                    {Array.isArray(farms) &&
-                      farms.map((farm) => (
-                        <option
-                          key={farm.farmid}
-                          value={farm.farmid}
-                          className="bg-secondary"
-                        >
-                          {farm.farmname}
-                        </option>
-                      ))}
-                  </select>
+                    value={farms.farmname}
+                    disabled
+                  />
                   {farmidError && (
                     <p className="text-red-500 mt-1 text-xs italic">
                       {farmidError}

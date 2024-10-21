@@ -6,8 +6,6 @@ import { API_BASE_URL } from "../../../config/config";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronLeft,
-  faChevronRight,
   faEdit,
   faEye,
   faPlus,
@@ -18,6 +16,7 @@ import CreateProduct from "./CreateProduct";
 import FarmerDetailProduct from "./FarmerDetailProduct";
 import FarmerDeleteProduct from "./FarmerDeleteProduct";
 import FarmerUpdateProduct from "./FarmerUpdateProduct";
+import { Pagination } from "../../../components/Pagination";
 
 export default function FarmerShowProducts() {
   const [products, setProducts] = useState([]);
@@ -212,41 +211,7 @@ export default function FarmerShowProducts() {
                 </tbody>
               </table>
               {/* Pagination */}
-              <div className="flex justify-center my-4">
-                <button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                  className="text-primary border border-black font-bold px-4 py-2 rounded-l-xl"
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} />
-                </button>
-                {page > 1 && (
-                  <button
-                    className="text-primary border border-black font-bold px-4 py-2 "
-                    onClick={() => handlePageChange(page - 1)}
-                  >
-                    {page - 1}
-                  </button>
-                )}
-                <button className="bg-primary text-secondary border border-black font-bold px-4 py-2 ">
-                  {page}
-                </button>
-                {page < totalPages && (
-                  <button
-                    className="text-primary border border-black font-bold px-4 py-2 "
-                    onClick={() => handlePageChange(page + 1)}
-                  >
-                    {page + 1}
-                  </button>
-                )}
-                <button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page === totalPages}
-                  className="text-primary border border-black font-bold px-4 py-2 rounded-r-xl"
-                >
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </button>
-              </div>
+              <Pagination page={page} totalPages={totalPages} handlePageChange={handlePageChange} />
             </div>
           </div>
         </div>

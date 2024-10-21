@@ -6,12 +6,8 @@ import axios from "axios";
 import { API_BASE_URL } from "../../../config/config";
 import { jwtDecode } from "jwt-decode";
 import { formatDate } from "../../../utils/formatDate";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
 import FarmerOrderDetail from "./FarmerOrderDetail";
+import { Pagination } from "../../../components/Pagination";
 
 export default function FarmerShowOrders() {
   const [orders, setOrders] = useState([]);
@@ -139,41 +135,8 @@ export default function FarmerShowOrders() {
                   ))}
                 </tbody>
               </table>
-              <div className="flex justify-center my-4">
-                <button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                  className="text-primary border border-black font-bold px-4 py-2 rounded-l-xl"
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} />
-                </button>
-                {page > 1 && (
-                  <button
-                    className="text-primary border border-black font-bold px-4 py-2 "
-                    onClick={() => handlePageChange(page - 1)}
-                  >
-                    {page - 1}
-                  </button>
-                )}
-                <button className="bg-primary text-secondary border border-black font-bold px-4 py-2 ">
-                  {page}
-                </button>
-                {page < totalPages && (
-                  <button
-                    className="text-primary border border-black font-bold px-4 py-2 "
-                    onClick={() => handlePageChange(page + 1)}
-                  >
-                    {page + 1}
-                  </button>
-                )}
-                <button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page === totalPages}
-                  className="text-primary border border-black font-bold px-4 py-2 rounded-r-xl"
-                >
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </button>
-              </div>
+              {/* Pagination */}
+              <Pagination page={page} totalPages={totalPages} handlePageChange={handlePageChange} />
             </div>
           </div>
         </div>

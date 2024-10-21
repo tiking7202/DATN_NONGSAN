@@ -11,9 +11,16 @@ import { useEffect } from "react";
 import { useToast } from "../../../../context/ToastContext";
 import Loading from "../../../../components/Loading";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { API_BASE_URL } from "../../../../config/config";
+import axios from "axios";
+
 function RegisterFarmerStep3() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const location = useLocation();
+  const userId = new URLSearchParams(location.search).get("userId");
 
   const { toastMessage, setToastMessage } = useToast();
   useEffect(() => {
@@ -23,9 +30,21 @@ function RegisterFarmerStep3() {
     }
   }, [toastMessage, setToastMessage, navigate]);
 
+    const registerFarmerStep3 = async () => {
+      try {
+        // Call api to register farmer step 3
+        const response = await axios.post(
+          `${API_BASE_URL}/auth/farmer/register/step3/${userId}`
+        );
+        setToastMessage(response.data.message);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+  
   const handleNext = async () => {
     setLoading(true);
-    setToastMessage("Gửi yêu cầu thành công, chờ xác nhận từ AgriMart");
+    registerFarmerStep3()
     setLoading(false);
     navigate(`/farmer/login`);
   };
@@ -104,7 +123,7 @@ function RegisterFarmerStep3() {
               <div className="flex justify-center w-full mt-10">
                 <button
                   onClick={handleNext}
-                  className="bg-primary text-white py-2 px-4 rounded-md"
+                  className="bg-primary text-white py-2 px-4 rounded-lg font-bold"
                 >
                   Hoàn Thành
                 </button>

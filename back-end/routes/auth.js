@@ -33,6 +33,10 @@ router.post(
   ]),
   authController.registerFarmerStep2
 );
+router.post(
+  "/farmer/register/step3/:userId",
+  authController.registerFarmerStep3
+);
 
 router.post("/distributor/login", authController.loginDistributor);
 

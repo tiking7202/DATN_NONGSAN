@@ -60,6 +60,12 @@ export default function HeaderDistributor() {
             Đơn hàng
           </Link>
           <Link
+            to="/notification"
+            className="btn btn-primary font-medium hover:text-fourth m-2"
+          >
+            Thông báo
+          </Link>
+          <Link
             to="/login"
             className="btn btn-primary font-medium hover:text-fourth m-2"
             onClick={onLogout}

@@ -10,12 +10,8 @@ import HeaderCustomer from "../../../components/CustomerComponent/HeaderCustomer
 import { useNavigate } from "react-router-dom";
 import { updateQuantityCart } from "../../../service/CustomerService/cartService";
 import DeleteCartDialog from "./DeleteCartDialog";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
 import Loading from "../../../components/Loading";
+import { Pagination } from "../../../components/Pagination";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -268,41 +264,7 @@ export default function CartPage() {
               </span>
             </div> */}
             {/* pagination */}
-            <div className="flex justify-center my-4">
-              <button
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page === 1}
-                className="text-primary border border-black font-bold px-4 py-2 rounded-l-xl"
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
-              </button>
-              {page > 1 && (
-                <button
-                  className="text-primary border border-black font-bold px-4 py-2 "
-                  onClick={() => handlePageChange(page - 1)}
-                >
-                  {page - 1}
-                </button>
-              )}
-              <button className="bg-primary text-secondary border border-black font-bold px-4 py-2 ">
-                {page}
-              </button>
-              {page < totalPages && (
-                <button
-                  className="text-primary border border-black font-bold px-4 py-2 "
-                  onClick={() => handlePageChange(page + 1)}
-                >
-                  {page + 1}
-                </button>
-              )}
-              <button
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page === totalPages}
-                className="text-primary border border-black font-bold px-4 py-2 rounded-r-xl"
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-              </button>
-            </div>
+            <Pagination page={page} totalPages={totalPages} handlePageChange={handlePageChange} />
             {/* Checkout */}
             <div className="flex justify-end">
               <button

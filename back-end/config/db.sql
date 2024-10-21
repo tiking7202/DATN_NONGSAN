@@ -236,4 +236,19 @@ VALUES
     ('d1220d94-9d13-49c0-9f75-7bcf57051b7d', 'cf6bda3c-8f22-4594-bdd8-8dc75b0ebd3d', 'Hello, how are you?', CURRENT_TIMESTAMP, FALSE),
     ('cf6bda3c-8f22-4594-bdd8-8dc75b0ebd3d', 'd1220d94-9d13-49c0-9f75-7bcf57051b7d', 'I am good, thank you!', CURRENT_TIMESTAMP, TRUE);
 
+CREATE TABLE notifications (
+    notificationid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    userid UUID REFERENCES "User"(userid), -- Người nhận thông báo là người dùng (nếu có)
+    distributorid UUID REFERENCES distributor(distributorid), -- Người nhận thông báo là nhà phân phối (nếu có)
+    title VARCHAR(255), -- Tiêu đề thông báo
+    message TEXT, -- Nội dung thông báo
+    notificationtype VARCHAR(50), 
+    is_read BOOLEAN DEFAULT FALSE, -- Trạng thái đã đọc hay chưa
+    created_at TIMESTAMP DEFAULT NOW(), -- Thời gian tạo thông báo
+    CONSTRAINT check_only_one_receiver CHECK (
+        (userid IS NOT NULL AND distributorid IS NULL) OR
+        (userid IS NULL AND distributorid IS NOT NULL)
+    ) -- Chỉ cho phép hoặc userid hoặc distributorid được sử dụng, không cả hai cùng lúc
+);
+
 select * from "User" 

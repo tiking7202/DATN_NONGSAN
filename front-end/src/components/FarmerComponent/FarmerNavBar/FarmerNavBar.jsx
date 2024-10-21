@@ -16,7 +16,7 @@ const FarmerNavBar = () => {
         >
           Thống kê
         </Link>
-        <Link
+        {/* <Link
           to="/farmer/farms/crop"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
             location.pathname === "/farmer/farms/crop"
@@ -25,7 +25,7 @@ const FarmerNavBar = () => {
           }`}
         >
           Quản lý vụ mùa
-        </Link>
+        </Link> */}
         <Link
           to="/farmer/products"
           className={`text-center text-black p-2 w-full border-2 border-slate-700 ${

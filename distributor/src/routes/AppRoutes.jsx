@@ -7,6 +7,7 @@ import LoginPage from "../pages/LoginPage";
 import { ToastProvider } from "../context/ToastContext";
 import FarmerPage from "../pages/Farmer/FarmerPage";
 import { LoadingProvider } from "../context/LoadingContext";
+import NotificatonPage from "../pages/Notification/NotificatonPage";
 
 export default function AppRoutes() {
   return (
@@ -20,6 +21,7 @@ export default function AppRoutes() {
             <Route path="/category" element={<CategoryPage />} />
             <Route path="/product" element={<ProductPage />} />
             <Route path="/order" element={<OrderPage />} />
+            <Route path="/notification" element={<NotificatonPage />} />
             <Route path="*" element={<div>404</div>} />
           </Routes>
         </Router>

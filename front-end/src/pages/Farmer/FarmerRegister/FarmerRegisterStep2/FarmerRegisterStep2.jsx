@@ -250,11 +250,9 @@ export default function FarmerRegisterStep2() {
         }
       );
 
-      const farmId = response.data.farmid;
-
       // Điều hướng sang trang nhập thông tin phụ
-      setToastMessage("Đăng ký trang trại thành công");
-      navigate(`/farmer/register/step3?farmId=${farmId}`);
+      setToastMessage(response.data.message);
+      navigate(`/farmer/register/step3?userId=${userId}`);
     } catch (error) {
       console.error("Error during registration:", error);
       toast.error(error.response.data, {
