@@ -184,15 +184,15 @@ export default function FarmerLogin() {
                   htmlFor="usernameOrEmail"
                   className="block text-xl text-primary font-bold mb-2"
                 >
-                  Username hoặc email
+                  Tên đăng nhập hoặc email
                 </label>
                 <input
                   type="text"
-                  placeholder="Username hoặc email"
+                  placeholder="Tên đăng nhập hoặc email"
                   name="usernameOrEmail"
                   value={credentials.usernameOrEmail}
                   onChange={handleChange}
-                  className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                  className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-fourth"
                 />
               </div>
               <div className="bg-secondary mx-2 rounded-b-xl p-2">
@@ -209,7 +209,7 @@ export default function FarmerLogin() {
                     placeholder="Mật khẩu"
                     value={credentials.password}
                     onChange={handleChange}
-                    className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-fourth"
                   />
                   <FontAwesomeIcon
                     icon={showPassword ? faEyeSlash : faEye}
@@ -237,7 +237,7 @@ export default function FarmerLogin() {
               >
                 Đăng nhập
               </button>
-              <p className="text-primary text-xl m-2">Hoặc</p>
+              <p className="text-primary text-xl m-2 font-bold">Hoặc</p>
               <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-3 rounded-xl w-full">
                 Đăng nhập với google
               </button>

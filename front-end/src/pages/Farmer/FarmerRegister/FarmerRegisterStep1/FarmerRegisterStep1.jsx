@@ -210,15 +210,15 @@ function FarmerRegisterStep1() {
       ) : (
         <>
           <div className="bg-fourth px-10 py-3">
-            <div className="bg-white flex flex-col py-2  ml-10 mr-10 rounded-xl ">
-              <p className="text-center text-2xl">
+          <div className="bg-white ml-10 mr-10  flex flex-col py-2 rounded-xl shadow-2xl">
+              <p className="text-center text-2xl text-primary font-bold p-2">
                 ĐĂNG KÝ ĐỂ ĐƯA NÔNG SẢN CỦA BẠN ĐẾN VỚI NGƯỜI TIÊU DÙNG KHẮP NƠI
                 TRÊN LÃNH THỔ VIỆT NAM
               </p>
             </div>
 
             {/* Register form */}
-            <div className="bg-white mt-5 ml-10 mr-10 flex justify-center py-10 rounded-xl">
+            <div className="bg-white mt-5 ml-10 mr-10 flex justify-center py-10 rounded-xl  shadow-2xl">
               {/* Icon tài khoản */}
               <div className="mr-40 relative flex flex-col items-center">
                 {/* Icon */}
@@ -226,11 +226,11 @@ function FarmerRegisterStep1() {
                   icon={faUser}
                   className="text-green-600 text-4xl"
                 />
-                <p className="text-center text-green-600 mt-2">
+                <p className="text-center text-green-600 mt-2 font-bold">
                   Đăng ký tài khoản
                 </p>
                 {/* Đường kẻ */}
-                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-500 w-40"></div>
+                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-900 w-40"></div>
               </div>
 
               {/* Icon giỏ hàng */}
@@ -238,11 +238,11 @@ function FarmerRegisterStep1() {
                 {/* Icon */}
                 <FontAwesomeIcon
                   icon={faShoppingCart}
-                  className="text-gray-500 text-4xl"
+                  className="text-gray-900 text-4xl"
                 />
                 <p className="text-center mt-2">Đăng ký trang trại</p>
                 {/* Đường kẻ */}
-                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-500 w-40"></div>
+                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-900 w-40"></div>
               </div>
 
               {/* Icon hoàn thành */}
@@ -250,7 +250,7 @@ function FarmerRegisterStep1() {
                 {/* Icon */}
                 <FontAwesomeIcon
                   icon={faCheckCircle}
-                  className="text-gray-500 text-4xl"
+                  className="text-gray-900 text-4xl"
                 />
                 <p className="text-center mt-2">Hoàn thành</p>
               </div>
@@ -259,12 +259,12 @@ function FarmerRegisterStep1() {
             {/* Nhập thông tin */}
             <div className="flex ml-10 mr-10 mb-5 py-5 px-10 rounded-xl">
               {/* Left Block - Form */}
-              <div className="w-1/2 bg-white p-6 rounded-lg text-white">
+              <div className="w-1/2 bg-white p-10 rounded-lg text-white  shadow-2xl">
                 <div className="w-full pr-4">
                   <div className="mb-3">
                     <label
                       htmlFor="email"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Email:
                     </label>
@@ -274,7 +274,7 @@ function FarmerRegisterStep1() {
                       placeholder="email@gmail.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {emailError && (
                       <p className="text-red-500 text-sm italic">
@@ -285,7 +285,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="username"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Tên đăng nhập:
                     </label>
@@ -295,7 +295,7 @@ function FarmerRegisterStep1() {
                       placeholder="Tên đăng nhập"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {usernameError && (
                       <p className="text-red-500 text-sm italic">
@@ -306,7 +306,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3 relative">
                     <label
                       htmlFor="password"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Mật khẩu:
                     </label>
@@ -317,12 +317,12 @@ function FarmerRegisterStep1() {
                         placeholder="********"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500 pr-10" // Add padding to the right
+                        className="border border-fourth rounded-xl py-2 px-3 w-full bg-ebffeb text-gray-900 pr-10" // Add padding to the right
                       />
                       <FontAwesomeIcon
                         icon={showPassword ? faEyeSlash : faEye}
                         onClick={handlePasswordVisibility}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-900"
                       />
                     </div>
                     {passwordError && (
@@ -334,7 +334,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3 relative">
                     <label
                       htmlFor="confirmPassword"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Xác nhận mật khẩu:
                     </label>
@@ -345,12 +345,12 @@ function FarmerRegisterStep1() {
                         placeholder="********"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500 pr-10" // Add padding to the right
+                        className="border border-fourth rounded-xl py-2 px-3 w-full text-primary pr-10" // Add padding to the right
                       />
                       <FontAwesomeIcon
                         icon={showPassword ? faEyeSlash : faEye}
                         onClick={handlePasswordVisibility}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-900"
                       />
                     </div>
                     {confirmPasswordError && (
@@ -362,7 +362,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="fullname"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Tên đầy đủ:
                     </label>
@@ -372,7 +372,7 @@ function FarmerRegisterStep1() {
                       placeholder="Tên đầy đủ"
                       value={fullname}
                       onChange={(e) => setFullname(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {fullnameError && (
                       <p className="text-red-500 italic text-sm">
@@ -383,7 +383,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="dob"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Ngày sinh:
                     </label>
@@ -392,7 +392,7 @@ function FarmerRegisterStep1() {
                       id="dob"
                       value={dob}
                       onChange={(e) => setDob(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-1 px-2 w-full text-primary"
                     />
                     {dobError && (
                       <p className="text-red-500 italic text-sm">{dobError}</p>
@@ -401,7 +401,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="phonenumber"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Số điện thoại:
                     </label>
@@ -411,7 +411,7 @@ function FarmerRegisterStep1() {
                       placeholder="Số điện thoại"
                       value={phonenumber}
                       onChange={(e) => setPhonenumber(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {phonenumberError && (
                       <p className="text-red-500 italic text-sm">
@@ -422,7 +422,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="indentitycard"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Số CMND/CCCD:
                     </label>
@@ -432,7 +432,7 @@ function FarmerRegisterStep1() {
                       placeholder="Số CMND/CCCD:"
                       value={indentitycard}
                       onChange={(e) => setIndentitycard(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {indentitycardError && (
                       <p className="text-red-500 text-sm italic">
@@ -444,7 +444,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="avatar"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Chọn ảnh đại diện:
                     </label>
@@ -453,7 +453,7 @@ function FarmerRegisterStep1() {
                       id="avatar"
                       placeholder="Chọn ảnh đại diện"
                       onChange={handleFileChange}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {avatarError && (
                       <p className="text-red-500 text-sm italic">
@@ -465,7 +465,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="street"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Tên đường:
                     </label>
@@ -475,7 +475,7 @@ function FarmerRegisterStep1() {
                       placeholder="Tên đường"
                       value={street}
                       onChange={(e) => setStreet(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {streetError && (
                       <p className="text-red-500 text-sm italic">
@@ -486,7 +486,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="commune"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Tên phường/xã:
                     </label>
@@ -496,7 +496,7 @@ function FarmerRegisterStep1() {
                       placeholder="Phường/xã"
                       value={commune}
                       onChange={(e) => setCommune(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {communeError && (
                       <p className="text-red-500 text-sm italic">
@@ -507,7 +507,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="district"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Tên quận/huyện:
                     </label>
@@ -517,7 +517,7 @@ function FarmerRegisterStep1() {
                       placeholder="Quận/Huyện"
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {districtError && (
                       <p className="text-red-500 text-sm italic">
@@ -528,7 +528,7 @@ function FarmerRegisterStep1() {
                   <div className="mb-3">
                     <label
                       htmlFor="province"
-                      className="block text-gray-700 font-bold mb-2 text-sm"
+                      className="block text-primary font-bold mb-2 text-sm"
                     >
                       Tên tỉnh/thành phố:
                     </label>
@@ -538,7 +538,7 @@ function FarmerRegisterStep1() {
                       placeholder="Tỉnh/Thành phố"
                       value={province}
                       onChange={(e) => setProvince(e.target.value)}
-                      className="border border-gray-500 rounded-xl py-1 px-2 w-full bg-ebffeb text-gray-500"
+                      className="border border-fourth rounded-xl py-2 px-3 w-full text-primary"
                     />
                     {provinceError && (
                       <p className="text-red-500 text-sm italic">
@@ -550,15 +550,15 @@ function FarmerRegisterStep1() {
                   <div className="flex items-center justify-between">
                     <button
                       onClick={handleNext}
-                      className="bg-primary text-white font-bold py-2 px-4 rounded-2xl w-full my-3"
+                      className="bg-primary text-white font-bold py-3 px-5 rounded-2xl w-full my-3"
                     >
                       Tiếp tục
                     </button>
                   </div>
-                  <p className="text-center text-gray-600">Hoặc</p>
+                  <p className="text-center text-primary font-bold">Hoặc</p>
                   <button
                     onClick={handleNext}
-                    className="bg-white text-gray-600 border-2 border-gray-500 font-bold py-2 px-4 rounded-2xl w-full my-3"
+                    className="bg-white text-gray-600 border-2 border-fourth font-bold py-2 px-4 rounded-2xl w-full my-3"
                   >
                     Đăng ký với Google
                   </button>
@@ -577,12 +577,12 @@ function FarmerRegisterStep1() {
               </div>
 
               {/* Right Block - Image */}
-              <div className="w-1/2 flex flex-col justify-center items-center p-6">
+              <div className="w-1/2 flex flex-col justify-start items-center p-6 mt-20">
                 <div className="mb-4 text-center">
                   <p className="font-bold text-2xl text-primary">
                     ĐĂNG KÝ BÁN HÀNG CÙNG AGRIMART
                   </p>
-                  <p className="text-gray-700 mt-2 text-xl">
+                  <p className="text-primary mt-2 text-xl font-semibold">
                     Với mục tiêu tiếp cận hàng ngàn khách hàng, tăng cường
                     thương hiệu nông trại và nâng cao doanh thu, đồng thời góp
                     phần xây dựng nền nông nghiệp bền vững
@@ -591,7 +591,7 @@ function FarmerRegisterStep1() {
                 <img
                   src="/src/assets/logimFarmer.jpg"
                   alt="Đăng ký"
-                  className="rounded-lg w-full h-auto object-cover"
+                  className="rounded-lg w-3/4 h-auto object-cover"
                 />
               </div>
             </div>

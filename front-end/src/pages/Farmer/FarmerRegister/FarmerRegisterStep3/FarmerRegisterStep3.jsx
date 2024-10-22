@@ -58,25 +58,25 @@ function RegisterFarmerStep3() {
         <>
           <ToastContainer />
           <div className=" bg-fourth px-10 py-3">
-            <div className="bg-white ml-10 mr-10  flex flex-col py-2 rounded-full ">
-              <p className="text-center text-2xl">
+            <div className="bg-white ml-10 mr-10  flex flex-col py-2 rounded-xl shadow-2xl">
+              <p className="text-center text-2xl text-primary font-bold p-2">
                 ĐĂNG KÝ ĐỂ ĐƯA NÔNG SẢN CỦA BẠN ĐẾN VỚI NGƯỜI TIÊU DÙNG KHẮP NƠI
                 TRÊN LÃNH THỔ VIỆT NAM
               </p>
             </div>
 
             {/* Register form */}
-            <div className=" ml-10 mr-10  bg-white mt-5 flex justify-center py-10 rounded-xl">
+            <div className=" ml-10 mr-10 shadow-2xl bg-white mt-5 flex justify-center py-10 rounded-xl">
               {/* Icon tài khoản */}
               <div className="mr-40 relative flex flex-col items-center">
                 {/* Icon */}
                 <FontAwesomeIcon
                   icon={faUser}
-                  className="text-gray-500 text-4xl"
+                  className="text-gray-900 text-4xl"
                 />
                 <p className="text-center mt-2">Đăng ký tài khoản</p>
                 {/* Đường kẻ */}
-                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-500 w-40  "></div>
+                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-900 w-40  "></div>
               </div>
 
               {/* Icon giỏ hàng */}
@@ -84,11 +84,11 @@ function RegisterFarmerStep3() {
                 {/* Icon */}
                 <FontAwesomeIcon
                   icon={faShoppingCart}
-                  className=" text-gray-500 text-4xl"
+                  className=" text-gray-900 text-4xl"
                 />
                 <p className="text-center mt-2">Đăng ký gian hàng</p>
                 {/* Đường kẻ */}
-                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-500 w-40"></div>
+                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-900 w-40"></div>
               </div>
 
               {/* Icon hoàn thành */}
@@ -98,7 +98,7 @@ function RegisterFarmerStep3() {
                   icon={faCheckCircle}
                   className="text-green-600 text-4xl"
                 />
-                <p className="text-center text-green-600 mt-2">Hoàn thành</p>
+                <p className="text-center text-green-600 mt-2 font-bold">Hoàn thành</p>
               </div>
             </div>
 
@@ -111,19 +111,19 @@ function RegisterFarmerStep3() {
               />
 
               {/* Dòng "ĐĂNG KÝ THÀNH CÔNG" */}
-              <p className="text-xl font-bold mt-4">
+              <p className="text-xl font-extrabold mt-4 text-primary">
                 YÊU CẦU ĐÃ GỬI THÀNH CÔNG
               </p>
 
               {/* Dòng "Chúc mừng bạn đã trở thành nhà cung cấp của AgriMart" */}
-              <p className="text-center mt-2">
+              <p className="text-center mt-2 font-semibold text-primary">
                 Cảm ơn bạn đã gửi yêu cầu để trở thành nhà cung cấp của AgriMart
               </p>
 
               <div className="flex justify-center w-full mt-10">
                 <button
                   onClick={handleNext}
-                  className="bg-primary text-white py-2 px-4 rounded-lg font-bold"
+                  className="bg-primary text-white py-3 px-14 rounded-xl font-bold"
                 >
                   Hoàn Thành
                 </button>

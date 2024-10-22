@@ -37,7 +37,7 @@ export default function FarmerPage() {
     setIsOpenDetailFarmer(true);
     setFarmerId(userId);
   };
-  
+
   const refreshFarmer = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/farmer`, {
@@ -88,8 +88,6 @@ export default function FarmerPage() {
                         <td className="py-2">{farmer.farmname}</td>
                         <td className="py-2">
                           {farmer.status ? "Đã kích hoạt" : "Chưa kích hoạt"}
-
-                          
                         </td>
                         <td className="py-2">
                           <button
@@ -111,16 +109,21 @@ export default function FarmerPage() {
                 </tbody>
               </table>
             </div>
-              {/* Pagination */}
-              <Pagination page={page} totalPages={totalPages} handlePageChange={handlePageChange} />
+            {totalPages > 1 && (
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
+            )}
           </div>
         </div>
       </div>
       {isOpenDetailFarmer && (
         <FarmerDetail
           onClose={() => {
-            setIsOpenDetailFarmer(false)
-            refreshFarmer()
+            setIsOpenDetailFarmer(false);
+            refreshFarmer();
           }}
           farmerId={farmerId}
         />

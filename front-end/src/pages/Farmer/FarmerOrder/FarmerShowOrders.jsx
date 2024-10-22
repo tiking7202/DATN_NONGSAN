@@ -136,7 +136,13 @@ export default function FarmerShowOrders() {
                 </tbody>
               </table>
               {/* Pagination */}
-              <Pagination page={page} totalPages={totalPages} handlePageChange={handlePageChange} />
+              {totalPages > 1 && (
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
+            )}
             </div>
           </div>
         </div>

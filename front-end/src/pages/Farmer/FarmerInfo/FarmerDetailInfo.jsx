@@ -73,7 +73,7 @@ export default function FarmerDetailInfo() {
                   </div>
                   <div className="flex">
                     <p className="font-bold text-xl p-3 text-primary">
-                      Username:{" "}
+                      Tên đăng nhập:{" "}
                     </p>
                     <p className="text-xl p-3 font-medium">{user.username}</p>
                   </div>

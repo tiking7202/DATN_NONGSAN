@@ -153,10 +153,7 @@ export default function FarmerShowCrop() {
                 <tbody>
                   {crops && crops.length > 0 ? (
                     crops.map((crop) => (
-                      <tr
-                        key={crop.cropid}
-                        className="font-medium border "
-                      >
+                      <tr key={crop.cropid} className="font-medium border ">
                         <td className="w-1/12 text-center">{crop.cropname}</td>
                         <td className="w-1/12 text-center m-auto">
                           <img
@@ -219,7 +216,13 @@ export default function FarmerShowCrop() {
                 </tbody>
               </table>
               {/* Pagination */}
-              <Pagination page={page} totalPages={totalPages} handlePageChange={handlePageChange} />
+              {totalPages > 1 && (
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  handlePageChange={handlePageChange}
+                />
+              )}
             </div>
           </div>
         </div>

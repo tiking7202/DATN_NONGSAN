@@ -321,16 +321,25 @@ exports.createProduct = async (req, res) => {
       if (!image) return null;
       const imageFileName = `products/${productname}/${uuidv4()}`;
       const imageRef = ref(storage, imageFileName);
-      await uploadBytes(imageRef, image.buffer, { contentType: image.mimetype });
+      await uploadBytes(imageRef, image.buffer, {
+        contentType: image.mimetype,
+      });
       return await getDownloadURL(imageRef);
     };
 
     // Upload tất cả ảnh cùng lúc
-    const [productImage1Url, productImage2Url, productImage3Url] = await Promise.all([
-      uploadImage(req.files.productimage1 ? req.files.productimage1[0] : null),
-      uploadImage(req.files.productimage2 ? req.files.productimage2[0] : null),
-      uploadImage(req.files.productimage3 ? req.files.productimage3[0] : null)
-    ]);
+    const [productImage1Url, productImage2Url, productImage3Url] =
+      await Promise.all([
+        uploadImage(
+          req.files.productimage1 ? req.files.productimage1[0] : null
+        ),
+        uploadImage(
+          req.files.productimage2 ? req.files.productimage2[0] : null
+        ),
+        uploadImage(
+          req.files.productimage3 ? req.files.productimage3[0] : null
+        ),
+      ]);
 
     // Tạo sản phẩm mới trong cơ sở dữ liệu
     const newProduct = await pool.query(
@@ -350,41 +359,46 @@ exports.createProduct = async (req, res) => {
         cookingmethod,
         storagemethod,
         isdistributorview,
-        false
+        false,
       ]
     );
 
     // Truy vấn lấy thông tin nông trại và distributor
     const [farmQuery, distributorQuery] = await Promise.all([
       pool.query(`SELECT farmname FROM farm WHERE farmid = $1`, [farmid]),
-      pool.query(`SELECT distributorid FROM distributor`)
+      pool.query(`SELECT distributorid FROM distributor`),
     ]);
 
     const farmInfo = farmQuery.rows[0];
-    const distributorIds = distributorQuery.rows.map(row => row.distributorid);
+    const distributorIds = distributorQuery.rows.map(
+      (row) => row.distributorid
+    );
 
     // Gửi thông báo cho các nhà phân phối
     const userRole = "Distributor";
     const title = "Đăng sản phẩm mới";
     const message = `Nông dân trang trại ${farmInfo.farmname} đã đăng sản phẩm mới`;
-    const notificationtype = 'CreateNewProduct';
+    const notificationtype = "CreateNewProduct";
 
     // Gửi thông báo cho tất cả các distributor đầu tiên
-    await notificationUtils.createNotification(distributorIds[0], userRole, title, message, notificationtype);
-    
+    await notificationUtils.createNotification(
+      distributorIds[0],
+      userRole,
+      title,
+      message,
+      notificationtype
+    );
 
     // Trả về thông tin sản phẩm vừa tạo
     res.json({
       product: newProduct.rows[0],
       message: "Tạo sản phẩm thành công",
     });
-
   } catch (error) {
     console.error("Error creating product:", error);
     res.status(500).json({ message: "Lỗi máy chủ" });
   }
 };
-
 
 // Sửa thông tin sản phẩm
 exports.updateProduct = async (req, res) => {
@@ -512,12 +526,12 @@ exports.createProductBatch = async (req, res) => {
   const {
     unitofmeasure,
     batchquantity,
-    batchquality,
+    // batchquality,
     plantingdate,
     harvestdate,
     expirydate,
     batchprice,
-    promotion,
+    // promotion,
   } = req.body;
   try {
     // Kiểm tra sản phẩm có tồn tại không
@@ -533,9 +547,7 @@ exports.createProductBatch = async (req, res) => {
     if (
       !unitofmeasure ||
       !batchquantity ||
-      !batchquality ||
-      !batchprice ||
-      !promotion
+      !batchprice 
     ) {
       return res
         .status(400)
@@ -551,12 +563,12 @@ exports.createProductBatch = async (req, res) => {
         productid,
         unitofmeasure,
         batchquantity,
-        batchquality,
+        'Tươi',
         plantingdate,
         harvestdate,
         expirydate,
         batchprice,
-        promotion,
+        0,
       ]
     );
 
@@ -713,6 +725,82 @@ exports.getAllProductsToDistributor = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching products:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Tìm kiếm cho distributor theo productname, farmname, categoryname
+exports.searchProductsForDistributor = async (req, res) => {
+  const { page = 1, pageSize = 10, query } = req.query;
+  const offset = (page - 1) * pageSize;
+  const limit = parseInt(pageSize, 10);
+
+  try {
+    // Câu truy vấn lấy sản phẩm theo các tiêu chí
+    const baseQuery = `
+      SELECT 
+        p.*, 
+        f.farmname, 
+        f.farmprovince,
+        c.categoryname
+      FROM 
+        product p
+      JOIN 
+        farm f 
+      ON 
+        p.farmid = f.farmid
+      JOIN
+        category c
+      ON
+        p.categoryid = c.categoryid
+      WHERE 
+        (p.productname ILIKE $1 OR c.categoryname ILIKE $1 OR f.farmprovince ILIKE $1 OR f.farmname ILIKE $1)  
+      LIMIT $2 OFFSET $3
+    `;
+
+    const countQuery = `
+      SELECT 
+        COUNT(*)
+      FROM 
+        product p
+      JOIN 
+        farm f 
+      ON 
+        p.farmid = f.farmid
+      JOIN
+        category c
+      ON
+        p.categoryid = c.categoryid
+      WHERE 
+        (p.productname ILIKE $1 OR c.categoryname ILIKE $1 OR f.farmprovince ILIKE $1 OR f.farmname ILIKE $1)  
+        AND p.isvisibleweb = true
+    `;
+
+    const searchQuery = `%${query}%`;
+
+    // Truy vấn tổng số sản phẩm
+    const totalProductsResult = await pool.query(countQuery, [searchQuery]);
+    const totalProducts = parseInt(totalProductsResult.rows[0].count, 10);
+
+    // Truy vấn lấy sản phẩm dựa trên các tiêu chí
+    const productsResult = await pool.query(baseQuery, [
+      searchQuery,
+      limit,
+      offset,
+    ]);
+
+    // Trả về kết quả sản phẩm và thông tin phân trang
+    res.json({
+      products: productsResult.rows,
+      pagination: {
+        totalProducts,
+        currentPage: parseInt(page, 10),
+        pageSize: limit,
+        totalPages: Math.ceil(totalProducts / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Error searching products:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

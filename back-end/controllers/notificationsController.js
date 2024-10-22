@@ -7,7 +7,7 @@ exports.getAllNotificationsDistributor = async (req, res) => {
     const query = `
       SELECT * FROM notifications
       WHERE distributorid = $1
-      ORDER BY created_at DESC
+      ORDER BY is_read ASC, created_at DESC
     `;
     const notifications = await pool.query(query, [distributorid]);
     res.json(notifications.rows);

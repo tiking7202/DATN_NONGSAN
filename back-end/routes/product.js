@@ -62,5 +62,6 @@ router.patch(
   "/distributor/update/promotion/:productid",
   productController.updateProductPromotion
 );
+router.get("/distributor/search", productController.searchProductsForDistributor);
 
 module.exports = router;

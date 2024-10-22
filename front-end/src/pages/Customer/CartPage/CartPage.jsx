@@ -264,7 +264,13 @@ export default function CartPage() {
               </span>
             </div> */}
             {/* pagination */}
-            <Pagination page={page} totalPages={totalPages} handlePageChange={handlePageChange} />
+            {totalPages > 1 && (
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
+            )}
             {/* Checkout */}
             <div className="flex justify-end">
               <button

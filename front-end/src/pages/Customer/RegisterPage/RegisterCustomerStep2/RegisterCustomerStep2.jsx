@@ -146,8 +146,8 @@ const RegisterCustomerStep2 = () => {
       ) : (
         <>
           <div className="backgroundImg">
-            <div className="w-2/5 m-auto bg-fourth rounded-2xl">
-              <h1 className="text-primary py-3 font-bold text-center text-40">
+            <div className="w-1/2 m-auto bg-fourth rounded-2xl px-2 py-4 shadow-2xl">
+              <h1 className="text-primary py-3 font-bold text-center text-4xl">
                 Đăng ký
               </h1>
               <div className="flex justify-center px-5 my-3">
@@ -164,7 +164,7 @@ const RegisterCustomerStep2 = () => {
                     placeholder="Tên đường"
                     value={street}
                     onChange={(e) => setStreet(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {streetError && (
                     <p className="text-red-500 italic">{streetError}</p>
@@ -183,7 +183,7 @@ const RegisterCustomerStep2 = () => {
                     placeholder="Tên phường/xã"
                     value={commune}
                     onChange={(e) => setCommune(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {communeError && (
                     <p className="text-red-500 italic">{communeError}</p>
@@ -204,7 +204,7 @@ const RegisterCustomerStep2 = () => {
                     placeholder="District"
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {districtError && (
                     <p className="text-red-500 italic">{districtError}</p>
@@ -223,7 +223,7 @@ const RegisterCustomerStep2 = () => {
                     placeholder="Tỉnh/Thành phố"
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {provinceError && (
                     <p className="text-red-500 italic">{provinceError}</p>
@@ -244,7 +244,7 @@ const RegisterCustomerStep2 = () => {
                     placeholder="Số CMND/CCCD"
                     value={identityCard}
                     onChange={(e) => setIdentityCard(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {identityCardError && (
                     <p className="text-red-500 italic">{identityCardError}</p>
@@ -259,7 +259,7 @@ const RegisterCustomerStep2 = () => {
                   </label>
                   <input
                     id="dateOfBirth"
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                     type="date"
                     placeholder="Ngày sinh"
                     value={dateOfBirth}
@@ -280,7 +280,7 @@ const RegisterCustomerStep2 = () => {
                   </label>
                   <input
                     id="avatar"
-                    className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-fourth"
                     type="file"
                     placeholder="Chọn ảnh đại diện"
                     onChange={handleFileChange}

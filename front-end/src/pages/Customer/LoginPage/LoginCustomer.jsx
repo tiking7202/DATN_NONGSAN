@@ -165,29 +165,29 @@ const LoginCustomer = () => {
       {loading ? (
         <Loading /> // Display loading spinner when loading is true
       ) : (
-        <div className="w-1/4 m-auto bg-fourth rounded-2xl  shadow-2xl">
-          <h1 className="text-primary py-3 font-bold text-center text-40">
+        <div className="w-1/3 m-auto bg-fourth rounded-2xl shadow-2xl px-2 py-4">
+          <h1 className="text-primary py-3 font-bold text-center text-3xl">
             Đăng Nhập
           </h1>
 
           <div className="p-3 my-2">
-            <div className="bg-secondary mx-2 rounded-t-xl p-2">
+            <div className="bg-secondary mx-2 rounded-t-xl p-4">
               <label
                 htmlFor="usernameOrEmail"
                 className="block text-xl text-primary font-bold mb-2"
               >
-                Username hoặc email
+                Tên đăng nhập hoặc email
               </label>
               <input
                 type="text"
-                placeholder="Username hoặc email"
+                placeholder="Tên đăng nhập hoặc email"
                 name="usernameOrEmail"
                 value={credentials.usernameOrEmail}
                 onChange={handleChange}
-                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-fourth"
               />
             </div>
-            <div className="bg-secondary mx-2 rounded-b-xl p-2">
+            <div className="bg-secondary mx-2 rounded-b-xl px-4">
               <label
                 htmlFor="usernameOrEmail"
                 className="block text-xl text-primary font-bold mb-2"
@@ -201,7 +201,7 @@ const LoginCustomer = () => {
                   placeholder="Mật khẩu"
                   value={credentials.password}
                   onChange={handleChange}
-                  className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-gray-500"
+                  className="bg-fourth text-base text-primary p-2 rounded-2xl w-full border border-fourth"
                 />
                 <FontAwesomeIcon
                   icon={showPassword ? faEyeSlash : faEye}
@@ -229,7 +229,7 @@ const LoginCustomer = () => {
             >
               Đăng nhập
             </button>
-            <p className="text-primary text-xl m-1">Hoặc</p>
+            <p className="text-primary text-xl m-2 font-bold">Hoặc</p>
             <button className="bg-third hover:opacity-90 text-white font-bold py-2 px-4 m-2 rounded-xl w-full">
               Đăng nhập với google
             </button>

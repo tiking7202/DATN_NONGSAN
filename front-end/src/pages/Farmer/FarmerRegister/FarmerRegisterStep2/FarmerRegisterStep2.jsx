@@ -274,25 +274,25 @@ export default function FarmerRegisterStep2() {
         <>
           <ToastContainer />
           <div className=" bg-fourth px-10 py-3">
-            <div className="bg-white flex flex-col py-2 ml-10 mr-10 rounded-full ">
-              <p className="text-center text-2xl ">
+          <div className="bg-white ml-10 mr-10  flex flex-col py-2 rounded-xl shadow-2xl">
+              <p className="text-center text-2xl text-primary font-bold p-2">
                 ĐĂNG KÝ ĐỂ ĐƯA NÔNG SẢN CỦA BẠN ĐẾN VỚI NGƯỜI TIÊU DÙNG KHẮP NƠI
                 TRÊN LÃNH THỔ VIỆT NAM
               </p>
             </div>
 
             {/* Register form */}
-            <div className="bg-white mt-5 ml-10 mr-10 flex justify-center py-10 rounded-xl">
+            <div className="bg-white mt-5 ml-10 mr-10 flex justify-center py-10 rounded-xl shadow-2xl">
               {/* Icon tài khoản */}
               <div className="mr-40 relative flex flex-col items-center">
                 {/* Icon */}
                 <FontAwesomeIcon
                   icon={faUser}
-                  className="text-gray-500 text-4xl"
+                  className=" text-4xl"
                 />
                 <p className="text-center mt-2">Đăng ký tài khoản</p>
                 {/* Đường kẻ */}
-                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-500 w-40  "></div>
+                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-900 w-40  "></div>
               </div>
 
               {/* Icon giỏ hàng */}
@@ -302,11 +302,11 @@ export default function FarmerRegisterStep2() {
                   icon={faShoppingCart}
                   className=" text-green-600 text-4xl"
                 />
-                <p className="text-center text-green-600 mt-2">
+                <p className="text-center text-green-600 mt-2 font-bold">
                   Đăng ký trang trại
                 </p>
                 {/* Đường kẻ */}
-                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-500 w-40"></div>
+                <div className="absolute top-1/2 left-full transform -translate-y-1/2 h-0.5 bg-gray-900 w-40"></div>
               </div>
 
               {/* Icon hoàn thành */}
@@ -314,7 +314,7 @@ export default function FarmerRegisterStep2() {
                 {/* Icon */}
                 <FontAwesomeIcon
                   icon={faCheckCircle}
-                  className="text-gray-500 text-4xl"
+                  className=" text-4xl"
                 />
                 <p className="text-center mt-2">Hoàn thành</p>
               </div>
@@ -322,12 +322,12 @@ export default function FarmerRegisterStep2() {
 
             <div className="flex  ml-10 mr-10 mb-5 py-5 px-10 rounded-xl">
               {/* Left section - Input form */}
-              <div className="w-1/2 pr-4 bg-white p-6  mr-5 rounded-lg text-white">
+              <div className="w-1/2 bg-white p-10  mr-5 rounded-lg shadow-2xl">
                 {/* Form fields */}
                 <div className="mb-4">
                   <label
                     htmlFor="farmName"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Tên trang trại:
                   </label>
@@ -337,7 +337,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Tên trang trại"
                     value={farmname}
                     onChange={(e) => setFarmName(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {farmNameError && (
                     <p className="text-red-500 text-sm italic">
@@ -349,7 +349,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmType"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Loại trang trại:
                   </label>
@@ -359,7 +359,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Loại trang trại"
                     value={farmtype}
                     onChange={(e) => setFarmType(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {farmTypeError && (
                     <p className="text-red-500 text-sm italic">
@@ -371,7 +371,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmemail"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Email trang trại:
                   </label>
@@ -381,7 +381,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Email của trang trại"
                     value={farmemail}
                     onChange={(e) => setFarmemail(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {farmemailError && (
                     <p className="text-red-500 text-sm italic">
@@ -392,7 +392,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmstreet"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Tên đường:
                   </label>
@@ -402,7 +402,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Tên đường"
                     value={farmstreet}
                     onChange={(e) => setStreet(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {streetError && (
                     <p className="text-red-500 text-sm italic">{streetError}</p>
@@ -412,7 +412,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmommune"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Tên xã/phường:
                   </label>
@@ -422,7 +422,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Xã/Phường"
                     value={farmcommune}
                     onChange={(e) => setCommune(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {communeError && (
                     <p className="text-red-500 text-sm italic">
@@ -434,7 +434,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmdistrict"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Tên quận/huyện:
                   </label>
@@ -444,7 +444,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Quận/Huyện"
                     value={farmdistrict}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {districtError && (
                     <p className="text-red-500 text-sm italic">
@@ -456,7 +456,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmprovince"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Tên tỉnh/thành phố:
                   </label>
@@ -466,7 +466,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Tỉnh/Thành phố"
                     value={farmprovince}
                     onChange={(e) => setProvince(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {provinceError && (
                     <p className="text-red-500 text-sm italic">
@@ -478,7 +478,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmArea"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Quy mô trang trại:
                   </label>
@@ -488,7 +488,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Quy mô trang trại (m2)"
                     value={farmarea}
                     onChange={(e) => setFarmArea(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {farmAreaError && (
                     <p className="text-red-500 text-sm italic">
@@ -500,17 +500,17 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmDescription"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Mô tả trang trại:
                   </label>
-                  <input
+                  <textarea
                     id="farmDescription"
                     placeholder="Mô tả trang trại"
                     value={farmdescription}
                     onChange={(e) => setFarmDescription(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
-                  ></input>
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
+                  />
                   {farmDescriptionError && (
                     <p className="text-red-500 text-sm italic">
                       {farmDescriptionError}
@@ -523,7 +523,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmphone"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Số điện thoại:
                   </label>
@@ -533,7 +533,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Số điện thoại"
                     value={farmphone}
                     onChange={(e) => setFarmPhone(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {farmphoneErrol && (
                     <p className="text-red-500 text-sm italic">
@@ -545,7 +545,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmproductstotal"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Số loại sản phẩm:
                   </label>
@@ -555,7 +555,7 @@ export default function FarmerRegisterStep2() {
                     placeholder="Số loại sản phẩm"
                     value={farmproductstotal}
                     onChange={(e) => setFarmProductTotal(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {farmproductotalErrol && (
                     <p className="text-red-500 text-sm italic">
@@ -567,17 +567,17 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmservice"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Dịch vụ trang trại:
                   </label>
-                  <input
+                  <textarea
                     type="text"
                     id="farmservice"
                     placeholder="Dịch vụ trang trại"
                     value={farmservice}
                     onChange={(e) => setFarmservice(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {farmserviceErrol && (
                     <p className="text-red-500 text-sm italic">
@@ -589,17 +589,17 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farminvite"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Lời mời gọi:
                   </label>
-                  <input
+                  <textarea
                     type="text"
                     id="farminvite"
                     placeholder="Lời mời gọi"
                     value={farminvite}
                     onChange={(e) => setFarminVite(e.target.value)}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {farminviteErrol && (
                     <p className="text-red-500 text-sm italic">
@@ -611,7 +611,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmlogo"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Logo nông trại:
                   </label>
@@ -620,7 +620,7 @@ export default function FarmerRegisterStep2() {
                     id="farmlogo"
                     placeholder="Logo nông trại"
                     onChange={(e) => setFarmLogo(e.target.files[0])}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {
                     <p className="text-red-500 text-sm italic">
@@ -632,7 +632,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmimage"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Ảnh đại diện nông trại:
                   </label>
@@ -641,7 +641,7 @@ export default function FarmerRegisterStep2() {
                     id="farmimage"
                     placeholder="Ảnh đại diện nông trại"
                     onChange={(e) => setFarmImage(e.target.files[0])}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {
                     <p className="text-red-500 text-sm italic">
@@ -653,7 +653,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmimage1"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Hình ảnh 1:
                   </label>
@@ -662,7 +662,7 @@ export default function FarmerRegisterStep2() {
                     id="farmimage1"
                     placeholder="Hình ảnh 2"
                     onChange={(e) => setFarmImage1(e.target.files[0])}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {
                     <p className="text-red-500 text-sm italic">
@@ -674,7 +674,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmimage2"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Hình ảnh 2:
                   </label>
@@ -683,7 +683,7 @@ export default function FarmerRegisterStep2() {
                     id="farmimage2"
                     placeholder="Hình ảnh 2"
                     onChange={(e) => setFarmImage2(e.target.files[0])}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {
                     <p className="text-red-500 text-sm italic">
@@ -695,7 +695,7 @@ export default function FarmerRegisterStep2() {
                 <div className="mb-4">
                   <label
                     htmlFor="farmimage3"
-                    className="block text-gray-700 font-bold mb-2"
+                    className="block text-primary font-bold mb-2"
                   >
                     Hình ảnh 3:
                   </label>
@@ -704,7 +704,7 @@ export default function FarmerRegisterStep2() {
                     id="farmimage3"
                     placeholder="Hình ảnh 3"
                     onChange={(e) => setFarmImage3(e.target.files[0])}
-                    className="border border-gray-500 rounded-2xl py-2 px-3 w-full bg-ebffeb text-gray-500"
+                    className="border border-fourth rounded-2xl py-2 px-3 w-full text-primary"
                   />
                   {
                     <p className="text-red-500 text-sm italic">
@@ -716,7 +716,7 @@ export default function FarmerRegisterStep2() {
                 <div className="flex mt-4 w-full justify-end">
                   <button
                     onClick={handleNext}
-                    className="bg-primary text-white font-bold hover:opacity-95 py-2 w-full px-4 rounded-xl"
+                    className="bg-primary text-white font-bold hover:opacity-95 py-3 w-full px-4 rounded-xl my-2"
                   >
                     Tiếp tục
                   </button>
@@ -724,18 +724,18 @@ export default function FarmerRegisterStep2() {
               </div>
 
               {/* Right section - Image and text */}
-              <div className="w-1/2 flex flex-col items-center justify-center">
+              <div className="w-1/2 flex flex-col items-center justify-start mt-20">
                 <h2 className="text-2xl font-bold mb-4 text-center text-primary">
                   ĐĂNG KÝ THÔNG TIN TRANG TRẠI
                 </h2>
-                <p className="text-gray-600 text-xl mb-6 text-center">
+                <p className="text-primary text-xl mb-6 text-center font-semibold">
                   Hãy điền thông tin chi tiết về trang trại của bạn để bắt đầu
                   hành trình cung cấp sản phẩm tươi ngon đến người tiêu dùng.
                 </p>
                 <img
                   src="/src/assets/logimFarmer.jpg"
                   alt="Đăng ký"
-                  className="rounded-lg w-3/4 h-1/2 object-cover"
+                  className="rounded-lg w-3/4 h-auto object-cover"
                 />
               </div>
             </div>

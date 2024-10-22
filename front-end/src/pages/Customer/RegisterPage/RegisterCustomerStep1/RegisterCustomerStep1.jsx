@@ -120,8 +120,8 @@ const RegisterCustomerStep1 = () => {
         <>
           <div className="backgroundImg">
             
-            <div className="w-2/5 m-auto bg-fourth rounded-2xl">
-              <h1 className="text-primary py-3 font-bold text-center text-40">
+            <div className="w-1/2 m-auto bg-fourth rounded-2xl px-2 py-4 shadow-2xl">
+              <h1 className="text-primary py-3 font-bold text-center text-4xl">
                 Đăng ký
               </h1>
               <div className="flex justify-center px-5 my-3">
@@ -130,7 +130,7 @@ const RegisterCustomerStep1 = () => {
                     htmlFor="username"
                     className="block text-xl text-primary font-bold mb-2"
                   >
-                    Username:
+                    Tên đăng nhập:
                   </label>
                   <input
                     id="username"
@@ -138,7 +138,7 @@ const RegisterCustomerStep1 = () => {
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {usernameError && <p className="text-red-500">{usernameError}</p>}
                 </div>
@@ -156,7 +156,7 @@ const RegisterCustomerStep1 = () => {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {emailError && <p className="text-red-500">{emailError}</p>}
                 </div>
@@ -177,7 +177,7 @@ const RegisterCustomerStep1 = () => {
                       placeholder="Mật khẩu"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                      className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                     />
                     <FontAwesomeIcon
                       icon={showPassword ? faEyeSlash : faEye}
@@ -201,7 +201,7 @@ const RegisterCustomerStep1 = () => {
                       placeholder="Xác nhận mật khẩu"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                      className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                     />
                     <FontAwesomeIcon
                       icon={showPassword ? faEyeSlash : faEye}
@@ -229,7 +229,7 @@ const RegisterCustomerStep1 = () => {
                     placeholder="Số điện thoại"
                     value={phonenumber}
                     onChange={(e) => setPhonenumber(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {phonenumberError && (
                     <p className="text-red-500">{phonenumberError}</p>
@@ -248,7 +248,7 @@ const RegisterCustomerStep1 = () => {
                     placeholder="Họ và tên"
                     value={fullname}
                     onChange={(e) => setFullname(e.target.value)}
-                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                    className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-fourth"
                   />
                   {fullnameError && <p className="text-red-500">{fullnameError}</p>}
                 </div>

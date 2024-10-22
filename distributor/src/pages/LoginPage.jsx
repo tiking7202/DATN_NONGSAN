@@ -64,20 +64,20 @@ export default function LoginPage() {
           Đăng nhập cho nhà phân phối
         </h1>
         <div className="p-3">
-          <div className="bg-secondary mx-2 rounded-t-xl p-2">
+          <div className="bg-secondary mx-2 rounded-t-xl p-2 shadow-xl">
             <label
               htmlFor="usernameOrEmail"
               className="block text-xl text-primary font-bold mb-2"
             >
-              Username hoặc email
+              Tên đăng nhập hoặc email
             </label>
             <input
               type="text"
-              placeholder="Username hoặc email"
+              placeholder="Tên đăng nhập hoặc email"
               name="usernameOrEmail"
               value={credentials.usernameOrEmail}
               onChange={handleChange}
-              className="bg-secondary text-base text-primary p-2 rounded-lg w-full border border-gray-500"
+              className="bg-secondary text-base text-primary p-2 rounded-lg w-full border border-fourth"
             />
           </div>
           <div className="bg-secondary mx-2 rounded-b-xl p-2">
@@ -94,7 +94,7 @@ export default function LoginPage() {
                 placeholder="Mật khẩu"
                 value={credentials.password}
                 onChange={handleChange}
-                className="bg-secondary text-base text-primary p-2 rounded-lg w-full border border-gray-500"
+                className="bg-secondary text-base text-primary p-2 rounded-lg w-full border border-fourth"
               />
               <FontAwesomeIcon
                 icon={showPassword ? faEyeSlash : faEye}
