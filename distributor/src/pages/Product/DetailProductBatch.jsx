@@ -165,6 +165,7 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
                       value={editedBatch.promotion}
                       onChange={handleInputChange}
                       className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                      disabled
                     />
                     <label
                       htmlFor="plantingdate"
@@ -220,6 +221,7 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
                       value={editedBatch.batchquality}
                       onChange={handleInputChange}
                       className="bg-fourth text-base text-primary p-2 rounded-xl w-full border border-gray-500"
+                      disabled
                     >
                       <option value="Tươi">Tươi</option>
                       <option value="Tương đối tươi">Tương đối tươi</option>

@@ -82,7 +82,7 @@ const PaymentSuccessPage = () => {
               </p>
               <p className="mt-2 text-gray-900 font-bold">
                 Tổng số tiền:{" "}
-                <span className="font-medium">{orderDetails.totalAmount} đ</span>
+                <span className="font-medium">{Number(orderDetails.totalAmount).toLocaleString("vi-VN")} đ</span>
               </p>
               <p className="mt-2 text-gray-900 font-bold">
                 Ngày đặt hàng:{" "}

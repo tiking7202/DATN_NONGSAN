@@ -107,7 +107,7 @@ function RegisterFarmerStep3() {
               {/* Icon hoàn thành */}
               <FontAwesomeIcon
                 icon={faCheckCircle}
-                className="text-green-500 text-8xl"
+                className="text-primary text-8xl"
               />
 
               {/* Dòng "ĐĂNG KÝ THÀNH CÔNG" */}

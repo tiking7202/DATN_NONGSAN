@@ -154,7 +154,7 @@ def recommend():
             # Người dùng mới: Gợi ý các sản phẩm được người dùng tương tác nhiều nhất
             product_popularity = user_item_df.groupby('productid')['interaction_score'].sum().reset_index()
             product_popularity = product_popularity.sort_values(by='interaction_score', ascending=False)
-            top_n_popular = 30
+            top_n_popular = 32
             popular_products = product_popularity['productid'].head(top_n_popular).tolist()
             recommendations = product_content_df[product_content_df['productid'].isin(popular_products)].to_dict(orient='records')
     

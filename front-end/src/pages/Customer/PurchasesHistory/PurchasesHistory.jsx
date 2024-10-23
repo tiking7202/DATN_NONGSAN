@@ -81,13 +81,13 @@ export default function PurchasesHistory() {
   };
 
   return (
-    <div className="bg-fourth min-h-screen">
+    <div className="bg-fourth">
       <HeaderCustomer />
-      <div className="w-2/3 mx-auto bg-white rounded-md p-6 mt-36 shadow-2xl">
+      <div className="w-9/12 mx-auto bg-white rounded-md p-6 mt-36 shadow-2xl">
         <h1 className="font-bold text-primary text-3xl">Lịch sử mua hàng</h1>
       </div>
 
-      <div className="w-2/3 mx-auto mb-7 bg-white rounded-md p-5 mt-5 shadow-2xl">
+      <div className="w-9/12 mx-auto mb-7 bg-white rounded-md p-5 mt-5 shadow-2xl">
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="bg-secondary">
             <tr>
@@ -161,7 +161,7 @@ export default function PurchasesHistory() {
                   colSpan="7"
                   className="text-center text-lg text-gray-900 bg-fourth py-4"
                 >
-                  Không có dữ liệu
+                  Chưa có thanh toán nào!
                 </td>
               </tr>
             )}

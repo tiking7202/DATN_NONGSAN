@@ -10,23 +10,23 @@ export default function CreateProductBatch({ onClose, producid }) {
   const [productBatch, setProductBatch] = useState({
     unitofmeasure: "",
     batchquantity: "",
-    batchquality: "",
+    // batchquality: "",
     plantingdate: "",
     harvestdate: "",
     expirydate: "",
     batchprice: "",
-    promotion: "",
+    // promotion: "",
   });
 
   const [productBatchError, setProductBatchError] = useState({
     unitofmeasure: "",
     batchquantity: "",
-    batchquality: "",
+    // batchquality: "",
     plantingdate: "",
     harvestdate: "",
     expirydate: "",
     batchprice: "",
-    promotion: "",
+    // promotion: "",
   });
 
   // Hàm check lỗi dữ liệu đầu vào
@@ -35,12 +35,12 @@ export default function CreateProductBatch({ onClose, producid }) {
     const errors = {
       unitofmeasure: "",
       batchquantity: "",
-      batchquality: "",
+      // batchquality: "",
       plantingdate: "",
       harvestdate: "",
       expirydate: "",
       batchprice: "",
-      promotion: "",
+      // promotion: "",
     };
 
     if (productBatch.unitofmeasure === "") {
@@ -53,10 +53,10 @@ export default function CreateProductBatch({ onClose, producid }) {
       errors.batchquantity = "Số lượng lô hàng không được để trống";
     }
 
-    if (productBatch.batchquality === "") {
-      isError = true;
-      errors.batchquality = "Chất lượng lô hàng không được để trống";
-    }
+    // if (productBatch.batchquality === "") {
+    //   isError = true;
+    //   errors.batchquality = "Chất lượng lô hàng không được để trống";
+    // }
 
     if (productBatch.plantingdate === "") {
       isError = true;
@@ -78,10 +78,10 @@ export default function CreateProductBatch({ onClose, producid }) {
       errors.batchprice = "Giá lô hàng không được để trống";
     }
 
-    if (productBatch.promotion === "") {
-      isError = true;
-      errors.promotion = "Giảm giá không được để trống";
-    }
+    // if (productBatch.promotion === "") {
+    //   isError = true;
+    //   errors.promotion = "Giảm giá không được để trống";
+    // }
 
     setProductBatchError(errors);
     return isError;
@@ -107,12 +107,12 @@ export default function CreateProductBatch({ onClose, producid }) {
       {
         unitofmeasure: productBatch.unitofmeasure,
         batchquantity: productBatch.batchquantity,
-        batchquality: productBatch.batchquality,
+        // batchquality: productBatch.batchquality,
         plantingdate: productBatch.plantingdate,
         harvestdate: productBatch.harvestdate,
         expirydate: productBatch.expirydate,
         batchprice: productBatch.batchprice,
-        promotion: productBatch.promotion,
+        // promotion: productBatch.promotion,
       }
     );
     if (response.status === 200) {
@@ -183,7 +183,7 @@ export default function CreateProductBatch({ onClose, producid }) {
             </div>
           </div>
           <div className="flex justify-between my-2">
-            <div className="w-1/2 mx-2">
+            {/* <div className="w-1/2 mx-2">
               <label
                 htmlFor="batchquality"
                 className="block text-xl text-primary font-bold mb-2"
@@ -208,7 +208,7 @@ export default function CreateProductBatch({ onClose, producid }) {
                   {productBatchError.batchquality}
                 </p>
               )}
-            </div>
+            </div> */}
             <div className="w-1/2 mx-2">
               <label
                 htmlFor="plantingdate"
@@ -231,8 +231,6 @@ export default function CreateProductBatch({ onClose, producid }) {
                 </p>
               )}
             </div>
-          </div>
-          <div className="flex justify-between my-2">
             <div className="w-1/2 mx-2">
               <label
                 htmlFor="harvestdate"
@@ -255,6 +253,9 @@ export default function CreateProductBatch({ onClose, producid }) {
                 </p>
               )}
             </div>
+          </div>
+          <div className="flex justify-between my-2">
+            
             <div className="w-1/2 mx-2">
               <label
                 htmlFor="expirydate"
@@ -277,8 +278,6 @@ export default function CreateProductBatch({ onClose, producid }) {
                 </p>
               )}
             </div>
-          </div>
-          <div className="flex justify-between my-2">
             <div className="w-1/2 mx-2">
               <label
                 htmlFor="batchprice"
@@ -302,6 +301,9 @@ export default function CreateProductBatch({ onClose, producid }) {
                 </p>
               )}
             </div>
+          </div>
+          {/* <div className="flex justify-between my-2">
+            
             <div className="w-1/2 mx-2">
               <label
                 htmlFor="promotion"
@@ -324,7 +326,7 @@ export default function CreateProductBatch({ onClose, producid }) {
                 </p>
               )}
             </div>
-          </div>
+          </div> */}
           <div className="flex justify-end mt-5 font-bold">
             <button
               className="bg-red-500 text-secondary px-5 py-2 rounded-lg hover:opacity-75 mx-2"
