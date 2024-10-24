@@ -28,7 +28,7 @@ const addCheckOut = async (req, res) => {
   const sqlOrder = `INSERT INTO "Order" (userid, estimatedelivery, shippingaddress, orderstatus, ordercreatetime, orderupdatetime, totalamount) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING orderid`;
   const sqlOrderItem = `INSERT INTO orderitem (orderid, productid, quantityofitem) VALUES ($1, $2, $3)`;
   const sqlPayment = `INSERT INTO payment (orderid, userid, paymentmethod, paymentstatus, paymentcreatetime, paymentupdatetime, totalamount) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING paymentid`;
-  const sqlUpdateProduct = `UPDATE product SET productquantity = productquantity - $1 WHERE productid = $2`;
+  const sqlUpdateProduct = `UPDATE product_batch SET batchquantity = batchquantity - $1 WHERE productid = $2`;
   const sqlDeleteCart = `DELETE FROM cart WHERE productid = $1`;
   const sqlInsertHistory = `INSERT INTO purchaseshistory (orderid, paymentid, purchasedate, totalamount) VALUES ($1, $2, NOW(), $3)`;
 
@@ -564,7 +564,7 @@ const savePaymentToDB = async (req, res) => {
 
     await pool.query(sqlInsertHistory, [orderId, paymentId, amount]);
 
-    res.status(200).json({ message: "Lưu thông tin thanh toán thành công" });
+    res.status(200).json({ message: "Đơn hàng được tạo thành công" });
   } catch (error) {
     console.error("Error saving payment info:", error);
     res.status(500).json({ error: "Failed to save payment info" });

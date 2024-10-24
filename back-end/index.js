@@ -7,6 +7,7 @@ const cors = require("cors");
 const client = require('./config/dbConnect');
 const routes = require("./routes");
 const autoUpdateProductBatch = require('./utils/autoUpdateProductBatch');
+const productUtils = require('./utils/productUtils');
 
 // Cấu hình CORS
 const corsOptions = {
@@ -39,6 +40,18 @@ app.use('/api', routes);
 
 // Gọi hàm auto update productbatch
 autoUpdateProductBatch.autoUpdateProductBatch();
+
+const updateProductVisibility = async () => {
+  try {
+    const updatedCount = await productUtils.setVisiblityFalse();
+    console.log(`Updated visibility for ${updatedCount} products`);
+  } catch (error) {
+    console.error("Error updating product visibility:", error);
+  }
+};
+
+// Gọi hàm updateProductVisibility khi server khởi động
+updateProductVisibility();
 
 // Khởi động máy chủ
 app.listen(port, () => {
