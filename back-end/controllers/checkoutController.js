@@ -1,6 +1,6 @@
 const pool = require("../config/dbConnect");
-
 const stripe = require("stripe")(process.env.STRIPE_KEY);
+const notificationUtils = require("../utils/notificationsUtils");
 
 const addCheckOut = async (req, res) => {
   const {
@@ -83,6 +83,34 @@ const addCheckOut = async (req, res) => {
     await Promise.all(deleteCartPromises);
 
     await pool.query(`COMMIT`);
+
+    // Lấy username từ userid
+    const {
+      rows: [{ fullname: username }],
+    } = await pool.query(`SELECT fullname FROM "User" WHERE userid = $1`, [
+      userId,
+    ]);
+    // Lấy distributorid chỉ lấy distributor đầu
+    const distributorQuery = `SELECT distributorid FROM distributor`;
+    const distributorResult = await pool.query(distributorQuery);
+    const distributorId = distributorResult.rows[0].distributorid;
+    // Gọi hàm thông báo cho customer về việc đặt hàng thành công
+    notificationUtils.createNotification(
+      userId,
+      "User",
+      "Tạo đơn hàng mới",
+      `Đơn hàng ${orderId.slice(0, 8)} đã được tạo thành công!`,
+      "CreateNewOrder"
+    );
+    // Gọi hàm thông báo cho distributor về việc có đơn hàng mới
+    notificationUtils.createNotification(
+      distributorId,
+      "Distributor",
+      "Đơn hàng mới",
+      `Đơn hàng ${orderId.slice(0, 8)} từ ${username} đã được tạo!`,
+      "CreateNewOrder"
+    );
+
     res.json({ message: "Đơn hàng đã được tạo thành công" });
   } catch (error) {
     console.error("Error occurred:", error);
@@ -490,6 +518,33 @@ const createPaymentSession = async (req, res) => {
 
     // Commit transaction và trả về URL của Stripe Checkout
     await pool.query("COMMIT");
+
+    // Lấy username từ userid
+    const {
+      rows: [{ fullname: username }],
+    } = await pool.query(`SELECT fullname FROM "User" WHERE userid = $1`, [
+      userId,
+    ]);
+    // Lấy distributorid chỉ lấy distributor đầu
+    const distributorQuery = `SELECT distributorid FROM distributor`;
+    const distributorResult = await pool.query(distributorQuery);
+    const distributorId = distributorResult.rows[0].distributorid;
+    // Gọi hàm thông báo cho customer về việc đặt hàng thành công
+    notificationUtils.createNotification(
+      userId,
+      "User",
+      "Tạo đơn hàng mới",
+      `Đơn hàng ${orderId.slice(0, 8)} đã được tạo thành công!`,
+      "CreateNewOrder"
+    );
+    // Gọi hàm thông báo cho distributor về việc có đơn hàng mới
+    notificationUtils.createNotification(
+      distributorId,
+      "Distributor",
+      "Đơn hàng mới",
+      `Đơn hàng ${orderId.slice(0, 8)} từ ${username} đã được tạo!`,
+      "CreateNewOrder"
+    );
 
     res.status(200).json({ url: session.url, paymentId });
   } catch (error) {

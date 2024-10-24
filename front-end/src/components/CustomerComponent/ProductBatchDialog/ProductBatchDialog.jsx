@@ -9,14 +9,12 @@ import { addToCart } from "../../../service/CustomerService/cartService";
 import { jwtDecode } from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "../../../context/ToastContext";
 
 export default function ProductBatchDialog({ onClose, selectedProduct }) {
   const navigate = useNavigate();
 
   const [productBatchs, setProductBatchs] = useState([]);
   const [batchId, setBatchId] = useState("");
-  const {setToastMessage} = useToast();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,7 +47,7 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
         setBatchId("");
         setTimeout(() => {
           onClose();
-        }, 2000);
+        }, 500);
       } catch (error) {
         toast.error(error.response.data.message);
       } 

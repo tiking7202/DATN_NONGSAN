@@ -17,6 +17,23 @@ exports.getAllNotificationsDistributor = async (req, res) => {
   }
 };
 
+// Lấy tất cả thông báo của người dùng
+exports.getAllNotificationsUser = async (req, res) => {
+  const { userid } = req.params;
+  try {
+    const query = `
+      SELECT * FROM notifications
+      WHERE userid = $1
+      ORDER BY is_read ASC, created_at DESC
+    `;
+    const notifications = await pool.query(query, [userid]);
+    res.json(notifications.rows);
+  } catch (error) {
+    console.error("Error getting notifications:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 // update notification
 exports.updateNotification = async (req, res) => {
   const { notificationid } = req.params;
@@ -50,3 +67,4 @@ exports.getNotificationById = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+

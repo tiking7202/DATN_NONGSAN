@@ -81,7 +81,7 @@ export default function PurchasesHistory() {
   };
 
   return (
-    <div className="bg-fourth">
+    <div className="bg-fourth min-h-screen">
       <HeaderCustomer />
       <div className="w-9/12 mx-auto bg-white rounded-md p-6 mt-36 shadow-2xl">
         <h1 className="font-bold text-primary text-3xl">Lịch sử mua hàng</h1>

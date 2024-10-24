@@ -49,7 +49,7 @@ export default function FarmerOrderDetail({
 
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center m-auto">
-      <div className="bg-white p-6 rounded-lg w-1/2 m-auto text-primary h-3/4 overflow-auto shadow-xl border border-primary">
+      <div className="bg-white p-6 rounded-lg w-5/12 m-auto text-primary h-3/4 overflow-auto shadow-xl border border-primary">
         <div className="flex justify-end">
           <button
             className="text-primary px-2 hover:bg-primary hover:text-secondary hover:px-2 text-3xl font-bold fixed"
@@ -64,25 +64,25 @@ export default function FarmerOrderDetail({
         <div className="py-4">
           <div className="flex flex-col">
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">Tên khách hàng:</p>
+              <p className="font-bold text-xl w-1/4 mx-3">Tên khách hàng:</p>
               <p className="text-lg w-3/4">{orderDetail?.user.fullName}</p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">Email:</p>
+              <p className="font-bold text-xl w-1/4 mx-3">Email:</p>
               <p className="text-lg w-3/4">{orderDetail?.user.email}</p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">Email:</p>
+              <p className="font-bold text-xl w-1/4 mx-3">Email:</p>
               <p className="text-lg w-3/4">{orderDetail?.user.phonenumber}</p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">
+              <p className="font-bold text-xl w-1/4 mx-3">
                 Địa chỉ giao hàng:
               </p>
               <p className="text-lg w-3/4">{orderDetail?.deliveryAddress}</p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">
+              <p className="font-bold text-xl w-1/4 mx-3">
                 Ngày tạo đơn hàng:
               </p>
               <p className="text-lg w-3/4">
@@ -90,7 +90,7 @@ export default function FarmerOrderDetail({
               </p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">
+              <p className="font-bold text-xl w-1/4 mx-3">
                 Trạng thái đơn hàng:
               </p>
               <p className="text-lg w-3/4">
@@ -101,14 +101,14 @@ export default function FarmerOrderDetail({
                   className="mr-1"
                 >
                   <option value="Đã tạo">Đã tạo</option>
-                  <option value="Đang xử lý">Đang xử lý</option>
+                  <option value="Đang đóng gói">Đã đóng gói</option>
                   <option value="Đang giao hàng">Đang giao hàng</option>
                   <option value="Đã giao hàng">Đã giao hàng</option>
                   <option value="Đã hủy">Đã hủy</option>
                 </select>
 
                 <a
-                  className="font-medium cursor-pointer"
+                  className="font-bold cursor-pointer"
                   onClick={() => onChangeStatus(orderIdDetail, orderStatus)}
                 >
                   Thay đổi
@@ -116,7 +116,7 @@ export default function FarmerOrderDetail({
               </p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">Ngày cập nhật:</p>
+              <p className="font-bold text-xl w-1/4 mx-3">Ngày cập nhật:</p>
               <p className="text-lg w-3/4">
                 {updateTime
                   ? formatDate(updateTime)
@@ -125,7 +125,7 @@ export default function FarmerOrderDetail({
             </div>
             <div className="border border-primary"></div>
             <div className="flex flex-col my-2">
-              <div className="font-medium text-xl my-2">
+              <div className="font-bold text-xl my-3 mx-3">
                 Danh sách sản phẩm:
               </div>
               <div className="">
@@ -134,17 +134,18 @@ export default function FarmerOrderDetail({
                     orderDetail.items.map((item, index) => (
                       <li
                         key={index}
-                        className="flex justify-between text-center"
+                        className="flex  text-center"
                       >
-                        <p className="text-lg w-2/12">{item.productName}</p>
+                        <p className="text-lg w-2/12 mx-3 font-medium">{item.productName}</p>
                         <img
                           src={item.productImage}
                           alt={item.productName}
-                          className="h-24 w-36 w-1/6"
+                          className="h-24 w-36 "
                         />
-                        <p className="text-lg ml-3 w-1/6">
-                          {item.price} VNĐ
-                          <br />
+                        <p className="text-lg mx-3 font-medium">
+                          {Number(item.price.toLocaleString())} đ
+                        </p>
+                        <p className="text-lg mx-3 font-medium">
                           {item.quantity} {item.unitofmeasure}
                         </p>
                       </li>
@@ -157,17 +158,17 @@ export default function FarmerOrderDetail({
               <div className="border border-primary my-3"></div>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">Tổng tiền:</p>
+              <p className="font-bold text-xl w-1/4 mx-3">Tổng tiền:</p>
               <p className="text-lg w-3/4">{orderDetail?.totalAmount} VNĐ</p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">
+              <p className="font-bold text-xl w-1/4 mx-3">
                 Phương thức thanh toán:
               </p>
               <p className="text-lg w-3/4">{orderDetail?.paymentMethod}</p>
             </div>
             <div className="flex my-2">
-              <p className="font-medium text-xl w-1/4 mr-3">
+              <p className="font-bold text-xl w-1/4 mx-3">
                 Trạng thái thanh toán:
               </p>
               <p className="text-lg w-3/4">{orderDetail?.paymentStatus}</p>

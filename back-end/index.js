@@ -44,7 +44,7 @@ autoUpdateProductBatch.autoUpdateProductBatch();
 const updateProductVisibility = async () => {
   try {
     const updatedCount = await productUtils.setVisiblityFalse();
-    console.log(`Updated visibility for ${updatedCount} products`);
+    console.log(`Updated visibility for ${updatedCount} products 🤐`);
   } catch (error) {
     console.error("Error updating product visibility:", error);
   }
