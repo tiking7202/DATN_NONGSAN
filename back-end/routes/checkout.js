@@ -19,4 +19,6 @@ router.get(
 );
 router.post("/checkout/save-payment", checkoutController.savePaymentToDB);
 
+router.get("/distributor/orders", checkoutController.getAllOrderToDistributor);
+
 module.exports = router;

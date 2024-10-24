@@ -163,7 +163,7 @@ const getPurchaseHistory = async (req, res) => {
       purchaseDate: row.purchasedate,
       totalAmount: row.totalamount,
       orderStatus: row.orderstatus,
-      paymentStatus: row.paymentstatus, 
+      paymentStatus: row.paymentstatus,
     }));
 
     res.json({
@@ -290,32 +290,64 @@ const getOrderDetailFarmer = async (req, res) => {
     if (orderResult.rows.length === 0) {
       return res.status(404).json({ error: "Order not found" });
     }
+
     const order = orderResult.rows[0];
     const orderItemQuery = `SELECT * FROM orderitem WHERE orderid = $1`;
     const orderItemResult = await pool.query(orderItemQuery, [orderId]);
     const orderItems = orderItemResult.rows;
+
     const items = await Promise.all(
       orderItems.map(async (item) => {
+        // Kiểm tra item có tồn tại và có productid không
+        if (!item || !item.productid) {
+          console.error("Invalid order item:", item);
+          return null; // Hoặc có thể throw error
+        }
+
         const productQuery = `SELECT * FROM product WHERE productid = $1`;
         const productResult = await pool.query(productQuery, [item.productid]);
         const product = productResult.rows[0];
+
+        // Kiểm tra sản phẩm có tồn tại không
+        if (!product) {
+          console.error("Product not found for productid:", item.productid);
+          return null; // Hoặc có thể throw error
+        }
+
+        // Lấy giá từ bảng product_batch
+        const batchQuery = `SELECT * FROM product_batch WHERE productid = $1 LIMIT 1`; // Chọn một batch giá đầu tiên
+        const batchResult = await pool.query(batchQuery, [item.productid]);
+        const batch = batchResult.rows[0];
+
+        // Kiểm tra batch có tồn tại không
+        if (!batch) {
+          console.error("Batch not found for productid:", item.productid);
+          return null; // Hoặc có thể throw error
+        }
+
         return {
           productId: product.productid,
           productName: product.productname,
           productImage: product.productimage1,
           quantity: item.quantityofitem,
-          price: product.productprice,
-          unitofmeasure: product.unitofmeasure,
+          price: batch.batchprice, // Sử dụng batchprice từ bảng product_batch
+          unitofmeasure: batch.unitofmeasure,
           overviewdes: product.overviewdes,
         };
       })
     );
+
+    // Lọc ra những items hợp lệ (không null)
+    const validItems = items.filter((item) => item !== null);
+
     const userQuery = `SELECT * FROM "User" WHERE userid = $1`;
     const userResult = await pool.query(userQuery, [order.userid]);
     const user = userResult.rows[0];
+
     const paymentQuery = `SELECT * FROM payment WHERE orderid = $1`;
     const paymentResult = await pool.query(paymentQuery, [orderId]);
     const payment = paymentResult.rows[0];
+
     const returnResult = {
       orderId: order.orderid,
       orderStatus: order.orderstatus,
@@ -334,8 +366,9 @@ const getOrderDetailFarmer = async (req, res) => {
         email: user.email,
         phonenumber: user.phonenumber,
       },
-      items,
+      items: validItems, // Chỉ bao gồm các item hợp lệ
     };
+
     res.json(returnResult);
   } catch (error) {
     console.error("Error fetching order:", error);
@@ -571,6 +604,40 @@ const savePaymentToDB = async (req, res) => {
   }
 };
 
+const getAllOrderToDistributor = async (req, res) => {
+  const { page = 1, pageSize = 10 } = req.query;
+  const offset = (page - 1) * pageSize;
+  const limit = parseInt(pageSize, 10);
+
+  try {
+    // Lấy tổng số đơn hàng
+    const totalOrdersResult = await pool.query('SELECT COUNT(*) FROM "Order"');
+    const totalOrders = parseInt(totalOrdersResult.rows[0].count, 10);
+
+    // Lấy đơn hàng với thông tin chi tiết (có thể kết hợp với bảng khác nếu cần)
+    const ordersQuery = `
+      SELECT o.*, u.fullname
+      FROM "Order" o
+      JOIN "User" u ON o.userid = u.userid
+      LIMIT $1 OFFSET $2
+    `;
+    const ordersResult = await pool.query(ordersQuery, [limit, offset]);
+
+    res.json({
+      orders: ordersResult.rows,
+      pagination: {
+        totalOrders,
+        currentPage: parseInt(page, 10),
+        pageSize: limit,
+        totalPages: Math.ceil(totalOrders / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   addCheckOut,
   getShippingInfo,
@@ -583,4 +650,5 @@ module.exports = {
   getOrderDetails,
   confirmPaymentSession,
   savePaymentToDB,
+  getAllOrderToDistributor,
 };
