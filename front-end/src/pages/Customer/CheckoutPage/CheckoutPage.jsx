@@ -50,7 +50,41 @@ const CheckoutPage = () => {
     return totalPrice;
   };
 
-  // console.log(selectedItems);
+  // Tính phí vận chuyển dựa trên địa chỉ
+  const calculateShippingFee = () => {
+    if (!shippingInfo) return 0;
+    const totalQuantity = selectedItems.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+
+    // Giả định: Bạn có thể thay đổi điều kiện này dựa trên thông tin địa chỉ thực tế
+    const deliveryDistrict = shippingInfo.districtDelivery;
+
+    // Ví dụ điều kiện để xác định khu vực giao hàng
+    if (
+      deliveryDistrict.includes("Quận 1") ||
+      deliveryDistrict.includes("Quận 3") ||
+      deliveryDistrict.includes("Quận 5") ||
+      deliveryDistrict.includes("Quận 10") ||
+      deliveryDistrict.includes("Quận 4") ||
+      deliveryDistrict.includes("Quận Phú Nhuận") ||
+      deliveryDistrict.includes("Quận Bình Thạnh")
+    ) {
+      return 10000 + 4000 * totalQuantity; // Phí giao hàng cho khu vực 1
+    } else if (
+      deliveryDistrict.includes("Quận Tân Bình") ||
+      deliveryDistrict.includes("Quận Tân Phú") ||
+      deliveryDistrict.includes("Quận Gò Vấp") ||
+      deliveryDistrict.includes("Quận 8") ||
+      deliveryDistrict.includes("Quận 11") ||
+      deliveryDistrict.includes("Quận 7")
+    ) {
+      return 15000 + 4000 * totalQuantity; // Phí giao hàng cho khu vực 2
+    } else {
+      return 25000 + 4000 * totalQuantity; // Phí giao hàng cho khu vực khác
+    }
+  };
 
   const InfoOrder = () => {
     return selectedItems.map((item) => (
@@ -106,7 +140,8 @@ const CheckoutPage = () => {
   };
 
   const handleCheckout = async () => {
-    const totalAmount = calculateTotalPrice();
+    const totalAmount = calculateTotalPrice() + calculateShippingFee();
+    const shippingFee = calculateShippingFee();
     const orderDetails = {
       userId: userId,
       paymentMethod: paymentMethod,
@@ -115,6 +150,7 @@ const CheckoutPage = () => {
       estimatedDeliveryTime: shippingInfo.estimatedDeliveryTime,
       batchprice: selectedItems.batchprice,
       totalAmount: totalAmount,
+      shippingFee,
       currency: "VND",
     };
 
@@ -301,12 +337,14 @@ const CheckoutPage = () => {
               </div>
               <div className="flex items-center ml-5 my-3">
                 <p className="font-bold w-1/3 text-left">Phí vận chuyển:</p>
-                <p className="text-gray-900 w-2/3 text-left font-bold">0 VNĐ</p>
+                <p className="text-gray-900 w-2/3 text-left font-bold">
+                  {calculateShippingFee()} VNĐ
+                </p>
               </div>
               <div className="flex items-center ml-5 my-3">
                 <p className="font-bold  w-1/3 text-left">Tổng cộng:</p>
                 <p className="text-gray-900 w-2/3 text-left font-bold">
-                  {calculateTotalPrice()} VNĐ
+                  {calculateTotalPrice() + calculateShippingFee()} VNĐ
                 </p>
               </div>
             </div>
