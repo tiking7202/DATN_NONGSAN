@@ -127,6 +127,7 @@ const getShippingInfo = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
+    const districtDelivery = result.rows[0].district;
     const deliveryAddress =
       result.rows[0].street +
       ", " +
@@ -137,9 +138,12 @@ const getShippingInfo = async (req, res) => {
       result.rows[0].province;
     // Calculate estimated delivery time as now + 4 hours
     const estimatedDeliveryTime = new Date(Date.now() + 4 * 60 * 60 * 1000);
+
+    console.log(estimatedDeliveryTime);
     const returnResult = {
       deliveryAddress,
       estimatedDeliveryTime,
+      districtDelivery,
     };
     res.json(returnResult);
   } catch (error) {
@@ -429,18 +433,23 @@ const createPaymentSession = async (req, res) => {
     items,
     shippingAddress,
     estimatedDeliveryTime,
+    totalAmount,
+    shippingFee, // Giả sử phí vận chuyển được gửi từ client
   } = req.body;
 
   try {
     // Bắt đầu một transaction
     await pool.query("BEGIN");
 
-    // Tính tổng tiền và tạo đơn hàng
+    // Tính tổng tiền cho các sản phẩm
     const total = items.reduce(
       (sum, item) =>
         sum + item.batchprice * (1 - 0.01 * item.promotion) * item.quantity,
       0
     );
+
+    // Cộng phí vận chuyển vào tổng tiền
+    const finalTotalAmount = total + shippingFee;
 
     const sqlOrder = `INSERT INTO "Order" (userid, estimatedelivery, shippingaddress, orderstatus, ordercreatetime, orderupdatetime, totalamount) 
                       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING orderid`;
@@ -453,8 +462,9 @@ const createPaymentSession = async (req, res) => {
       orderstatus,
       currentTime,
       currentTime,
-      total,
+      finalTotalAmount, // Sử dụng tổng số tiền đã bao gồm phí vận chuyển
     ]);
+    console.log(finalTotalAmount);
 
     const orderId = resultOrder.rows[0].orderid;
 
@@ -473,18 +483,31 @@ const createPaymentSession = async (req, res) => {
     // Tạo session thanh toán với Stripe
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: items.map((item) => ({
-        price_data: {
-          unit_amount: Math.round(
-            item.batchprice * (1 - 0.01 * item.promotion) // Stripe expects the amount in cents
-          ),
-          currency: currency,
-          product_data: {
-            name: item.productname,
+      line_items: items
+        .map((item) => ({
+          price_data: {
+            unit_amount: Math.round(
+              item.batchprice * (1 - 0.01 * item.promotion) // Stripe expects the amount in cents
+            ),
+            currency: currency,
+            product_data: {
+              name: item.productname,
+            },
           },
-        },
-        quantity: item.quantity,
-      })),
+          quantity: item.quantity,
+        }))
+        .concat([
+          {
+            price_data: {
+              unit_amount: Math.round(shippingFee), // Phí vận chuyển
+              currency: currency,
+              product_data: {
+                name: "Phí vận chuyển",
+              },
+            },
+            quantity: 1, // Thêm một mục cho phí vận chuyển
+          },
+        ]),
       mode: "payment",
       success_url: `http://localhost:5173/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `http://localhost:5173/payment-cancel`,
@@ -508,7 +531,7 @@ const createPaymentSession = async (req, res) => {
       orderId,
       userId,
       paymentMethod,
-      total,
+      finalTotalAmount, // Sử dụng tổng số tiền đã bao gồm phí vận chuyển
       paymentStatus,
       paymentCreateTime,
       paymentUpdateTime,
