@@ -544,11 +544,7 @@ exports.createProductBatch = async (req, res) => {
     }
 
     // Kiểm tra dữ liệu đầu vào
-    if (
-      !unitofmeasure ||
-      !batchquantity ||
-      !batchprice 
-    ) {
+    if (!unitofmeasure || !batchquantity || !batchprice) {
       return res
         .status(400)
         .json({ message: "Các trường không được để trống" });
@@ -563,7 +559,7 @@ exports.createProductBatch = async (req, res) => {
         productid,
         unitofmeasure,
         batchquantity,
-        'Tươi',
+        "Tươi",
         plantingdate,
         harvestdate,
         expirydate,
@@ -703,13 +699,14 @@ exports.getAllProductsToDistributor = async (req, res) => {
     );
     const totalProducts = parseInt(totalProductsResult.rows[0].count, 10);
 
-    // Lấy sản phẩm với thông tin farmname và categoryname
+    // Lấy sản phẩm với thông tin farmname và categoryname, sắp xếp theo isvisibleweb
     const productsQuery = `
       SELECT p.*, f.farmname, c.categoryname
       FROM product p
       JOIN farm f ON p.farmid = f.farmid
       JOIN category c ON p.categoryid = c.categoryid
       WHERE p.isdistributorview = true
+      ORDER BY p.isvisibleweb ASC
       LIMIT $1 OFFSET $2
     `;
     const productsResult = await pool.query(productsQuery, [limit, offset]);

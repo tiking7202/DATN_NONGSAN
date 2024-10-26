@@ -23,8 +23,8 @@ exports.getAllNotificationsUser = async (req, res) => {
   try {
     const query = `
       SELECT * FROM notifications
-      WHERE userid = $1 AND is_read = false
-      ORDER BY created_at DESC
+      WHERE userid = $1
+      ORDER BY is_read ASC, created_at DESC
     `;
     const notifications = await pool.query(query, [userid]);
     res.json(notifications.rows);
@@ -67,3 +67,4 @@ exports.getNotificationById = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
