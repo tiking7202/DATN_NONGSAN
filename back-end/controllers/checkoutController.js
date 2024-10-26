@@ -110,6 +110,8 @@ const getShippingInfo = async (req, res) => {
       result.rows[0].province;
     // Calculate estimated delivery time as now + 4 hours
     const estimatedDeliveryTime = new Date(Date.now() + 4 * 60 * 60 * 1000);
+
+    console.log(estimatedDeliveryTime);
     const returnResult = {
       deliveryAddress,
       estimatedDeliveryTime,

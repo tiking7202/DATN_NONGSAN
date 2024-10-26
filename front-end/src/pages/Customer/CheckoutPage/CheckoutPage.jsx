@@ -8,7 +8,7 @@ import { getUserInfo } from "../../../service/CustomerService/userService";
 import { useEffect, useState } from "react";
 import { getShippingInfo } from "../../../service/CustomerService/checkoutService";
 import { toast } from "react-toastify";
-import { formatDate } from "../../../utils/formatDate";
+// import { formatDate } from "../../../utils/formatDate";
 import { useToast } from "../../../context/ToastContext";
 
 const CheckoutPage = () => {
@@ -49,6 +49,39 @@ const CheckoutPage = () => {
     });
     return totalPrice;
   };
+
+  const calculateEstimatedDeliveryTime = () => {
+    if (!shippingInfo) return 0; // Add check for shippingInfo existence
+    const estimatedDeliveryTime = new Date(
+      shippingInfo.estimatedDeliveryTime
+    ).getTime();
+    const deliveryDistrict = shippingInfo.districtDelivery;
+
+    if (
+      deliveryDistrict.includes("Quận 1") ||
+      deliveryDistrict.includes("Quận 3") ||
+      deliveryDistrict.includes("Quận 5") ||
+      deliveryDistrict.includes("Quận 10") ||
+      deliveryDistrict.includes("Quận 4") ||
+      deliveryDistrict.includes("Quận Phú Nhuận") ||
+      deliveryDistrict.includes("Quận Bình Thạnh")
+    ) {
+      return new Date(estimatedDeliveryTime - 1 * 60 * 60 * 1000); // subtract 1 hour
+    } else if (
+      deliveryDistrict.includes("Quận Tân Bình") ||
+      deliveryDistrict.includes("Quận Tân Phú") ||
+      deliveryDistrict.includes("Quận Gò Vấp") ||
+      deliveryDistrict.includes("Quận 8") ||
+      deliveryDistrict.includes("Quận 11") ||
+      deliveryDistrict.includes("Quận 7")
+    ) {
+      return new Date(estimatedDeliveryTime + 1 * 60 * 60 * 1000); // add 1 hour
+    } else {
+      return new Date(estimatedDeliveryTime + 4 * 60 * 60 * 1000); // add 4 hours
+    }
+  };
+
+  console.log(calculateEstimatedDeliveryTime());
 
   // Tính phí vận chuyển dựa trên địa chỉ
   const calculateShippingFee = () => {
@@ -104,7 +137,7 @@ const CheckoutPage = () => {
           {item.batchprice * (1 - 0.01 * item.promotion)} VNĐ
         </p>
         <p className="w-1/4 text-lg font-semibold text-primary">
-          {item.quantity}
+          {item.quantity} kg
         </p>
       </div>
     ));
@@ -319,8 +352,17 @@ const CheckoutPage = () => {
                   Thời gian nhận hàng:
                 </p>
                 <p className="text-gray-900 w-7/12 justify-start text-left font-medium">
-                  {shippingInfo
-                    ? formatDate(shippingInfo.estimatedDeliveryTime)
+                  {shippingInfo && calculateEstimatedDeliveryTime()
+                    ? new Date(calculateEstimatedDeliveryTime()).toLocaleString(
+                        "vi-VN",
+                        {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )
                     : ""}
                 </p>
               </div>
