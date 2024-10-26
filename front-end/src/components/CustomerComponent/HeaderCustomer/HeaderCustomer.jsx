@@ -168,15 +168,13 @@ export default function HeaderCustomer() {
       );
       setNotifications(updatedNotifications);
 
-      if(notification.notificationtype === 'CreateNewOrder') {
-        navigate('/purchase-history');
+      if (notification.notificationtype === "CreateNewOrder") {
+        navigate("/purchase-history");
       }
-
+    } catch (error) {
+      console.error("Error updating notification");
     }
-    catch (error) {
-      console.error("Error updating notification")
-      }  
-  }
+  };
 
   return (
     <header className="p-4 bg-primary text-white px-2 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40 shadow-2xl">
@@ -208,7 +206,7 @@ export default function HeaderCustomer() {
               <p>Thông báo</p>
             </div>
             {isOpenNotification && (
-              <div className="z-50 origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+              <div className="z-50 origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 max-h-96 overflow-y-auto overflow-x-hidden">
                 <div
                   className="py-1"
                   style={{ zIndex: 9999 }}
@@ -216,29 +214,43 @@ export default function HeaderCustomer() {
                   aria-orientation="vertical"
                   aria-labelledby="options-menu"
                 >
-                  {notifications.map((notification) => (
-                    <div
-                      key={notification.notificationid}
-                      className="flex flex-col px-4 py-2 text-sm text-primary cursor-pointer min-w-80"
-                      onClick={handleNotificationClick(notification)}
-                    >
-                      <div
-                        className={`p-4 border rounded-lg shadow-md ${
-                          notification.is_read ? "bg-white" : "bg-fourth"
-                        }`}
-                      >
+                  {notifications.length === 0 ? (
+                    <div className="flex flex-col px-4 py-2 text-sm text-primary cursor-pointer min-w-80">
+                      <div className="p-4 border rounded-lg shadow-md bg-white">
                         <div className="flex justify-between items-center mb-2">
                           <p className="font-bold text-lg text-primary">
-                            {notification.title}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {formatDate(notification.created_at)}
+                            Không có thông báo nào
                           </p>
                         </div>
-                        <p className="text-gray-700">{notification.message}</p>
                       </div>
                     </div>
-                  ))}
+                  ) : (
+                    notifications.map((notification) => (
+                      <div
+                        key={notification.notificationid}
+                        className="flex flex-col px-4 py-2 text-sm text-primary cursor-pointer min-w-80"
+                        onClick={handleNotificationClick(notification)}
+                      >
+                        <div
+                          className={`p-4 border rounded-lg shadow-md ${
+                            notification.is_read ? "bg-white" : "bg-fourth"
+                          }`}
+                        >
+                          <div className="flex justify-between items-center mb-2">
+                            <p className="font-bold text-lg text-primary">
+                              {notification.title}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {formatDate(notification.created_at)}
+                            </p>
+                          </div>
+                          <p className="text-gray-700">
+                            {notification.message}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}

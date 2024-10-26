@@ -693,6 +693,108 @@ const getAllOrderToDistributor = async (req, res) => {
   }
 };
 
+// Distributor - Cập nhật trạng thái đơn hàng
+const updateStatusByDistributor = async (req, res) => {
+  const { orderId, status } = req.body;
+  const currentTime = new Date();
+
+  // Danh sách trạng thái hợp lệ
+  const validStatuses = ["Đã xác nhận", "Đang giao hàng", "Đã hủy", "Hoàn tất"];
+
+  // Kiểm tra xem status mới có hợp lệ không
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ error: "Trạng thái đơn hàng không hợp lệ" });
+  }
+
+  try {
+    // Lấy trạng thái hiện tại của đơn hàng
+    const orderQuery = `SELECT orderstatus FROM "Order" WHERE orderid = $1`;
+    const orderResult = await pool.query(orderQuery, [orderId]);
+
+    if (orderResult.rows.length === 0) {
+      return res.status(404).json({ error: "Đơn hàng không tồn tại" });
+    }
+
+    const currentStatus = orderResult.rows[0].orderstatus;
+
+    // Kiểm tra trạng thái chuyển tiếp hợp lệ
+    const validTransitions = {
+      "Đã tạo": ["Đã xác nhận", "Đã hủy"],
+      "Đã xác nhận": ["Đang giao hàng", "Đã hủy"],
+      "Đang giao hàng": ["Hoàn tất", "Đã hủy"],
+      "Hoàn tất": [],
+      "Đã hủy": [],
+    };
+
+    if (!validTransitions[currentStatus].includes(status)) {
+      return res.status(400).json({ error: "Không thể chuyển sang trạng thái này từ trạng thái hiện tại" });
+    }
+
+    // Cập nhật trạng thái đơn hàng
+    const sql = `UPDATE "Order" SET orderstatus = $1, orderupdatetime = $2 WHERE orderid = $3`;
+    await pool.query(sql, [status, currentTime, orderId]);
+
+     // Nếu trạng thái đơn hàng là "Hoàn tất", cập nhật trạng thái thanh toán trong bảng payment
+     // Nếu trạng thái đơn hàng là "Hoàn tất", cập nhật trạng thái thanh toán trong bảng payment
+    if (status === "Hoàn tất") {
+      const paymentUpdateQuery = `
+        UPDATE payment 
+        SET paymentstatus = 'Đã thanh toán', paymentupdatetime = $1 
+        WHERE orderid = $2
+      `;
+      await pool.query(paymentUpdateQuery, [currentTime, orderId]);
+    }
+
+    // Gửi thông báo cho user về việc cập nhật trạng thái đơn hàng
+    const orderDetails = await getOrderDetails(orderId);
+    notificationUtils.createNotification(orderDetails.userId, "User", "Cập nhật đơn hàng", `Đơn hàng ${orderId.slice(0, 8)} đã được cập nhật "${status}"`, "UpdateOrderStatus");
+
+    res.json({
+      message: "Cập nhật trạng thái đơn hàng thành công",
+      updateTime: currentTime,
+    });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// Customer - Hủy đơn hàng
+const cancelOrderByCustomer = async (req, res) => {
+  const { orderId } = req.body;
+  const currentTime = new Date();
+
+  try {
+    // Lấy trạng thái hiện tại của đơn hàng
+    const orderQuery = `SELECT orderstatus FROM "Order" WHERE orderid = $1`;
+    const orderResult = await pool.query(orderQuery, [orderId]);
+
+    if (orderResult.rows.length === 0) {
+      return res.status(404).json({ error: "Đơn hàng không tồn tại" });
+    }
+
+    const currentStatus = orderResult.rows[0].orderstatus;
+
+    // Kiểm tra trạng thái hiện tại
+    if (currentStatus !== "Đã tạo") {
+      return res.status(400).json({ error: "Chỉ có thể hủy đơn hàng khi đơn hàng ở trạng thái 'Đã tạo'" });
+    }
+
+    // Cập nhật trạng thái đơn hàng thành "Đã hủy"
+    const sql = `UPDATE "Order" SET orderstatus = $1, orderupdatetime = $2 WHERE orderid = $3`;
+    await pool.query(sql, ["Đã hủy", currentTime, orderId]);
+
+    res.json({
+      message: "Hủy đơn hàng thành công",
+      updateTime: currentTime,
+    });
+  } catch (error) {
+    console.error("Error canceling order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   addCheckOut,
   getShippingInfo,
@@ -706,4 +808,6 @@ module.exports = {
   confirmPaymentSession,
   savePaymentToDB,
   getAllOrderToDistributor,
+  updateStatusByDistributor,
+  cancelOrderByCustomer,
 };

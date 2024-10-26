@@ -188,75 +188,74 @@ export default function CartPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {cart.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary  font-medium border">
-                      {index + 1}
+                {cart.length === 0 ? (
+                  <tr>
+                    <td colSpan="8" className="px-3 py-2 text-lg text-center text-primary font-medium border">
+                      Giỏ hàng của bạn đang trống
                     </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary  font-medium border">
-                      {item.productname}
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary  font-medium border">
-                      <img
-                        src={item.productimage1}
-                        alt={item.productimage1}
-                        className="w-48 h-16 object-cover m-auto"
-                      />
-                    </td>
-
-                    <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary  font-medium border">
-                      {Number(item.batchprice)} VNĐ
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary  font-medium border">
-                      {item.quantity > 0 && (
+                  </tr>
+                ) : (
+                  cart.map((item, index) => (
+                    <tr key={index}>
+                      <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
+                        {index + 1}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
+                        {item.productname}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
+                        <img
+                          src={item.productimage1}
+                          alt={item.productimage1}
+                          className="w-48 h-16 object-cover m-auto"
+                        />
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
+                        {Number(item.batchprice)} VNĐ
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
+                        {item.quantity > 0 && (
+                          <button
+                            className="font-extrabold text-2xl mx-5 w-8 h-8 bg-primary text-white rounded-lg hover:opacity-80"
+                            onClick={() =>
+                              handleUpdateQuantity(item.productid, item.quantity - 1)
+                            }
+                          >
+                            -
+                          </button>
+                        )}
+                        {item.quantity}
                         <button
                           className="font-extrabold text-2xl mx-5 w-8 h-8 bg-primary text-white rounded-lg hover:opacity-80"
                           onClick={() =>
-                            handleUpdateQuantity(
-                              item.productid,
-                              item.quantity - 1
-                            )
+                            handleUpdateQuantity(item.productid, item.quantity + 1)
                           }
                         >
-                          -
+                          +
                         </button>
-                      )}
-                      {item.quantity}
-                      <button
-                        className="font-extrabold text-2xl mx-5 w-8 h-8 bg-primary text-white rounded-lg hover:opacity-80"
-                        onClick={() =>
-                          handleUpdateQuantity(
-                            item.productid,
-                            item.quantity + 1
-                          )
-                        }
-                      >
-                        +
-                      </button>
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary  font-medium border">
-                      {item.batchquantity > item.quantity
-                        ? "Còn hàng"
-                        : "Hết hàng"}
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary  font-medium border">
-                      <input
-                        type="checkbox"
-                        className="bg-primary text-white px-3 py-1 rounded-md m-2"
-                        onChange={() => handleCheckboxChange(item)}
-                      />
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary  font-medium border">
-                      <button
-                        className="bg-red-500 text-white px-4 py-1 rounded-lg m-2 hover:opacity-80"
-                        onClick={() => onDeleteCart(item.productid)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
+                        {item.batchquantity > item.quantity ? "Còn hàng" : "Hết hàng"}
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
+                        <input
+                          type="checkbox"
+                          className="bg-primary text-white px-3 py-1 rounded-md m-2"
+                          onChange={() => handleCheckboxChange(item)}
+                        />
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
+                        <button
+                          className="bg-red-500 text-white px-4 py-1 rounded-lg m-2 hover:opacity-80"
+                          onClick={() => onDeleteCart(item.productid)}
+                        >
+                          Xóa
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+            </tbody>
             </table>
             {/* <div className="flex justify-end p-3 ">
               <span className="text-lg font-bold">

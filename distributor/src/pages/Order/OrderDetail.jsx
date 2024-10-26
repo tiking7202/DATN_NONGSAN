@@ -13,8 +13,21 @@ export default function FarmerOrderDetail({
   refreshOrders,
 }) {
   const [orderDetail, setOrderDetail] = useState(null);
-  const [orderStatus, setOrderStatus] = useState(orderDetail?.orderStatus);
+  const [orderStatus, setOrderStatus] = useState(orderDetail?.orderStatus || '');
   const [updateTime, setUpdateTime] = useState(null);
+
+  const validStatuses = {
+    'Đã tạo': ['Đã tạo', 'Đã xác nhận', 'Đã hủy'],
+    'Đã xác nhận': ['Đã xác nhận', 'Đang giao hàng', 'Đã hủy'],
+    'Đang giao hàng': ['Đang giao hàng', 'Hoàn tất', 'Đã hủy'],
+    'Hoàn tất': ['Hoàn tất'],
+    'Đã hủy': ['Đã hủy'],
+  };
+
+  const getValidStatuses = (currentStatus) => {
+    return validStatuses[currentStatus] || [];
+  };
+
   useEffect(() => {
     const fetchOrderDetail = async () => {
       try {
@@ -34,7 +47,8 @@ export default function FarmerOrderDetail({
 
   const onChangeStatus = async (orderId, orderStatus) => {
     try {
-      const response = await axios.put(`${API_BASE_URL}/farmer/order-update`, {
+      
+      const response = await axios.put(`${API_BASE_URL}/distributor/order-update`, {
         orderId: orderId,
         status: orderStatus,
       });
@@ -44,9 +58,15 @@ export default function FarmerOrderDetail({
       refreshOrders();
     } catch (error) {
       console.log("Failed to update status: ", error);
+      toast.error(error.response.data.message);
     }
   };
 
+  const isDisabled = orderDetail?.orderStatus === orderStatus || 
+                      orderDetail?.orderStatus === 'Đã hủy' || 
+                      orderDetail?.orderStatus === 'Hoàn tất';
+  const selectDisabled = orderDetail?.orderStatus === 'Đã hủy' ||
+                        orderDetail?.orderStatus === 'Hoàn tất';
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center m-auto">
       <div className="bg-white p-6 rounded-lg w-5/12 m-auto text-primary h-3/4 overflow-auto shadow-xl border border-primary">
@@ -72,7 +92,7 @@ export default function FarmerOrderDetail({
               <p className="text-lg w-3/4">{orderDetail?.user.email}</p>
             </div>
             <div className="flex my-2">
-              <p className="font-bold text-xl w-1/4 mx-3">Email:</p>
+              <p className="font-bold text-xl w-1/4 mx-3">Số điện thoại:</p>
               <p className="text-lg w-3/4">{orderDetail?.user.phonenumber}</p>
             </div>
             <div className="flex my-2">
@@ -94,25 +114,26 @@ export default function FarmerOrderDetail({
                 Trạng thái đơn hàng:
               </p>
               <p className="text-lg w-3/4">
-                {/* {orderDetail?.orderStatus} */}
                 <select
                   value={orderStatus}
                   onChange={(e) => setOrderStatus(e.target.value)}
                   className="mr-1"
+                  disabled={selectDisabled}
                 >
-                  <option value="Đã tạo">Đã tạo</option>
-                  <option value="Đang đóng gói">Đã đóng gói</option>
-                  <option value="Đang giao hàng">Đang giao hàng</option>
-                  <option value="Đã giao hàng">Đã giao hàng</option>
-                  <option value="Đã hủy">Đã hủy</option>
+                  {getValidStatuses(orderDetail?.orderStatus).map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
                 </select>
 
-                <a
-                  className="font-bold cursor-pointer"
-                  onClick={() => onChangeStatus(orderIdDetail, orderStatus)}
+                <button
+                  className={`font-bold ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  onClick={() => !isDisabled && onChangeStatus(orderIdDetail, orderStatus)}
+                  disabled={isDisabled}
                 >
                   Thay đổi
-                </a>
+                </button>
               </p>
             </div>
             <div className="flex my-2">
@@ -134,13 +155,13 @@ export default function FarmerOrderDetail({
                     orderDetail.items.map((item, index) => (
                       <li
                         key={index}
-                        className="flex  text-center"
+                        className="flex text-center"
                       >
                         <p className="text-lg w-2/12 mx-3 font-medium">{item.productName}</p>
                         <img
                           src={item.productImage}
                           alt={item.productName}
-                          className="h-24 w-36 "
+                          className="h-24 w-36"
                         />
                         <p className="text-lg mx-3 font-medium">
                           {Number(item.price.toLocaleString())} đ

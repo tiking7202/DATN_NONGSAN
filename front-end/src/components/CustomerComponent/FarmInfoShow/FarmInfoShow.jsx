@@ -76,7 +76,7 @@ export default function FarmInfoShow() {
               to={`/farm/info/${farm?.farmid}`}
               className="text-2xl font-bold text-primary mx-7"
             >
-              Giới thiệu
+              Giới thiệu trang trại
             </Link>
 
             <Link
@@ -85,12 +85,12 @@ export default function FarmInfoShow() {
             >
               Sản phẩm
             </Link>
-            <Link
+            {/* <Link
               to={`/farm/season/${farm?.farmid}`}
               className="text-2xl font-bold text-primary mx-7"
             >
               Thông tin mùa vụ
-            </Link>
+            </Link> */}
           </div>
         </div>
       )}

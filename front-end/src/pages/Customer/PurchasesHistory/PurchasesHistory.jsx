@@ -81,14 +81,14 @@ export default function PurchasesHistory() {
   };
 
   return (
-    <div className="bg-fourth min-h-screen">
+    <div className="bg-fourth">
       <HeaderCustomer />
       <div className="w-9/12 mx-auto bg-white rounded-md p-6 mt-36 shadow-2xl">
         <h1 className="font-bold text-primary text-3xl">Lịch sử mua hàng</h1>
       </div>
 
-      <div className="w-9/12 mx-auto mb-7 bg-white rounded-md p-5 mt-5 shadow-2xl">
-        <table className="min-w-full divide-y divide-gray-300">
+      <div className="w-9/12 mx-auto mb-7 bg-white rounded-md p-5 mt-5 shadow-2xl min-h-screen">
+        <table className="min-w-full divide-y divide-gray-300 mt-7 ">
           <thead className="bg-secondary">
             <tr>
               <th className="px-6 py-4 text-xl font-bold text-gray-900 tracking-wider text-center">
@@ -118,34 +118,34 @@ export default function PurchasesHistory() {
             {purchasesHistory.length ? (
               purchasesHistory.map((purchase, index) => (
                 <tr key={purchase.orderId} className="hover:bg-gray-100">
-                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="p-5 text-lg text-center text-gray-900 bg-fourth ">
                     {index + 1}
                   </td>
 
-                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="p-5 text-lg text-center text-gray-900 bg-fourth ">
                     {purchase.orderId.slice(0, 8)}
                   </td>
 
-                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="p-5 text-lg text-center text-gray-900 bg-fourth ">
                     {purchase.orderStatus}
                   </td>
 
-                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="p-5 text-lg text-center text-gray-900 bg-fourth ">
                     {purchase.paymentStatus}
                   </td>
 
-                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="p-5 text-lg text-center text-gray-900 bg-fourth ">
                     {formatDate(purchase.purchaseDate)}
                   </td>
 
-                  <td className="px-6 py-3 text-lg text-center text-gray-900 bg-fourth ">
+                  <td className="p-5 text-lg text-center text-gray-900 bg-fourth ">
                     {Number(purchase.totalAmount)
                       .toFixed(0)
                       .toLocaleString("vi-VN")}{" "}
                     VNĐ
                   </td>
 
-                  <td className="px-6 py-3 text-lg text-center bg-fourth ">
+                  <td className="p-5 text-lg text-center bg-fourth ">
                     <button
                       className="text-primary hover:opacity-80 font-bold"
                       onClick={() => handleButtonClick(purchase.orderId)}
@@ -161,7 +161,7 @@ export default function PurchasesHistory() {
                   colSpan="7"
                   className="text-center text-lg text-gray-900 bg-fourth py-4"
                 >
-                  Chưa có thanh toán nào!
+                  Chưa có đơn hàng nào!
                 </td>
               </tr>
             )}
