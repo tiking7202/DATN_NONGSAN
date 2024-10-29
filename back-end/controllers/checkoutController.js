@@ -67,10 +67,37 @@ const addCheckOut = async (req, res) => {
     ]);
     const paymentId = resultPayment.rows[0].paymentid;
 
-    // Update product quantity
-    const updateProductPromises = items.map((item) =>
-      executeQuery(sqlUpdateProduct, [item.quantity, item.productid])
-    );
+    // Fetch current quantity and check if sufficient
+    const updateProductPromises = items.map(async (item) => {
+      const { rows: currentQuantityRows } = await executeQuery(
+        "SELECT batchquantity FROM product_batch WHERE batchid = $1",
+        [item.batchid]
+      );
+      
+      const currentQuantity = currentQuantityRows[0].batchquantity;
+      console.log("Current quantity:", currentQuantity);
+      console.log("Item quantity:", item.quantity);
+      const { rows: distributors } = await pool.query(
+        "SELECT distributorid FROM distributor LIMIT 1"
+      );
+      const distributorId = distributors[0].distributorid;
+      if (currentQuantity === item.quantity) {
+        notificationUtils.createNotification(
+          distributorId,
+          "Distributor",
+          "Hết hàng",
+          `Sản phẩm có mã lô hàng ${item.batchid.slice(0, 8)} đã hết hàng`,
+          "OutOfStock"
+        );
+        // set isvisible = false
+        await executeQuery(
+          "UPDATE product_batch SET isvisible = false WHERE batchid = $1",
+          [item.batchid]
+        );
+      }
+
+      return executeQuery(sqlUpdateProduct, [item.quantity, item.productid]);
+    });
     await Promise.all(updateProductPromises);
 
     // Insert into purchases history
@@ -464,7 +491,6 @@ const createPaymentSession = async (req, res) => {
       currentTime,
       finalTotalAmount, // Sử dụng tổng số tiền đã bao gồm phí vận chuyển
     ]);
-    console.log(finalTotalAmount);
 
     const orderId = resultOrder.rows[0].orderid;
 
@@ -644,10 +670,7 @@ const confirmPaymentSession = async (req, res) => {
 };
 
 const savePaymentToDB = async (req, res) => {
-  const { userId, orderId, amount, paymentMethod, paymentId, paymentStatus } =
-    req.body; // Bỏ paymentIntentId
-
-  console.log(paymentStatus);
+  const { userId, orderId, amount, paymentMethod, paymentStatus } = req.body;
 
   try {
     // Lưu thông tin thanh toán vào bảng "payment" (không cần paymentIntentId)
@@ -751,15 +774,17 @@ const updateStatusByDistributor = async (req, res) => {
     };
 
     if (!validTransitions[currentStatus].includes(status)) {
-      return res.status(400).json({ error: "Không thể chuyển sang trạng thái này từ trạng thái hiện tại" });
+      return res.status(400).json({
+        error: "Không thể chuyển sang trạng thái này từ trạng thái hiện tại",
+      });
     }
 
     // Cập nhật trạng thái đơn hàng
     const sql = `UPDATE "Order" SET orderstatus = $1, orderupdatetime = $2 WHERE orderid = $3`;
     await pool.query(sql, [status, currentTime, orderId]);
 
-     // Nếu trạng thái đơn hàng là "Hoàn tất", cập nhật trạng thái thanh toán trong bảng payment
-     // Nếu trạng thái đơn hàng là "Hoàn tất", cập nhật trạng thái thanh toán trong bảng payment
+    // Nếu trạng thái đơn hàng là "Hoàn tất", cập nhật trạng thái thanh toán trong bảng payment
+    // Nếu trạng thái đơn hàng là "Hoàn tất", cập nhật trạng thái thanh toán trong bảng payment
     if (status === "Hoàn tất") {
       const paymentUpdateQuery = `
         UPDATE payment 
@@ -771,7 +796,13 @@ const updateStatusByDistributor = async (req, res) => {
 
     // Gửi thông báo cho user về việc cập nhật trạng thái đơn hàng
     const orderDetails = await getOrderDetails(orderId);
-    notificationUtils.createNotification(orderDetails.userId, "User", "Cập nhật đơn hàng", `Đơn hàng ${orderId.slice(0, 8)} đã được cập nhật "${status}"`, "UpdateOrderStatus");
+    notificationUtils.createNotification(
+      orderDetails.userId,
+      "User",
+      "Cập nhật đơn hàng",
+      `Đơn hàng ${orderId.slice(0, 8)} đã được cập nhật "${status}"`,
+      "UpdateOrderStatus"
+    );
 
     res.json({
       message: "Cập nhật trạng thái đơn hàng thành công",
@@ -801,7 +832,9 @@ const cancelOrderByCustomer = async (req, res) => {
 
     // Kiểm tra trạng thái hiện tại
     if (currentStatus !== "Đã tạo") {
-      return res.status(400).json({ error: "Chỉ có thể hủy đơn hàng khi đơn hàng ở trạng thái 'Đã tạo'" });
+      return res.status(400).json({
+        error: "Chỉ có thể hủy đơn hàng khi đơn hàng ở trạng thái 'Đã tạo'",
+      });
     }
 
     // Cập nhật trạng thái đơn hàng thành "Đã hủy"
@@ -817,7 +850,6 @@ const cancelOrderByCustomer = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 module.exports = {
   addCheckOut,

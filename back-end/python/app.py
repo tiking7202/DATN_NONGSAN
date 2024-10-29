@@ -22,12 +22,10 @@ model = ResNet50(weights='imagenet', include_top=False, pooling='avg')
 
 # Function to load image and preprocess it for ResNet50
 def load_and_preprocess_image(img_path):
-    img = Image.open(img_path)
+    img = Image.open(img_path).convert("RGB")  # Chuyển đổi ảnh thành RGB
     img = img.resize((224, 224))  # ResNet50 expects images of size 224x224
     img_array = np.array(img)
-    if img_array.shape[-1] == 4:  # Check if image has an alpha channel
-        img_array = img_array[..., :3]  # Discard the alpha channel
-    img_array = np.expand_dims(img_array, axis=0)
+    img_array = np.expand_dims(img_array, axis=0)  # Thêm chiều batch
     img_array = preprocess_input(img_array)
     return img_array
 
@@ -40,6 +38,12 @@ def extract_features(img_path):
 # Load feature database từ file .npy
 base_dir = os.path.dirname(os.path.abspath(__file__))
 feature_database_path = os.path.join(base_dir, './feature_database.npy')
+
+# Kiểm tra xem file feature_database.npy có tồn tại không
+if not os.path.exists(feature_database_path):
+    logging.error(f"Feature database file not found at {feature_database_path}")
+    sys.exit(1)
+
 feature_database = np.load(feature_database_path, allow_pickle=True).item()
 
 # API để tìm kiếm hình ảnh
@@ -55,6 +59,7 @@ def search_image():
 
     # Tìm kiếm sản phẩm tương tự
     try:
+        logging.debug("Extracting features from the uploaded image")
         query_features = extract_features(image_path)
         similarities = []
         for product_id, data in feature_database.items():
@@ -66,6 +71,7 @@ def search_image():
         similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
         top_product_ids = [item[0] for item in similarities[:8]]  # Lấy top 8 sản phẩm tương tự
 
+        logging.debug(f"Top product IDs: {top_product_ids}")
         return jsonify({'product_ids': top_product_ids})
     except Exception as e:
         logging.error(f"Error during image search: {e}")

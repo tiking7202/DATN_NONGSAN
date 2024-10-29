@@ -104,7 +104,7 @@ export default function FarmerShowOrders() {
                       {/* <td className="">{formatDate(order.orderupdatetime)}</td> */}
                       <td className="">{order.shippingaddress}</td>
                       <td className="">
-                        {order.totalamount.toLocaleString()} VNĐ
+                        {order.totalamount.toLocaleString()} đ
                       </td>
                       <td className="py-3 flex justify-center items-center my-auto">
                         {/* <select

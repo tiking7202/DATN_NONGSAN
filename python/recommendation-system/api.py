@@ -154,7 +154,7 @@ def recommend():
             # Người dùng mới: Gợi ý các sản phẩm được người dùng tương tác nhiều nhất
             product_popularity = user_item_df.groupby('productid')['interaction_score'].sum().reset_index()
             product_popularity = product_popularity.sort_values(by='interaction_score', ascending=False)
-            top_n_popular = 32
+            top_n_popular = 33
             popular_products = product_popularity['productid'].head(top_n_popular).tolist()
             recommendations = product_content_df[product_content_df['productid'].isin(popular_products)].to_dict(orient='records')
     
@@ -162,6 +162,7 @@ def recommend():
         return jsonify({'error': str(e)}), 500
 
     return jsonify({'recommendations': recommendations, 'evaluation': evaluation})
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

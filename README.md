@@ -11,7 +11,7 @@ Dự án này nhằm xây dựng một website thương mại điện tử cho p
 - Frontend: React + Vite
 - Backend: Node.js, Express
 - Database: PostgresQL.
-- Recommendation system: Flask API
+- Recommendation system: Flask API, Hybrid Model(TF-TDF, SVD)
 
 ## Cài đặt: 
 1. Clone repository:
@@ -20,7 +20,7 @@ Dự án này nhằm xây dựng một website thương mại điện tử cho p
     ```
 2. Chạy front-end:
     ```sh
-    cd admin/front-end
+    cd front-end
     npm install
     npm run dev
     ```
@@ -32,9 +32,9 @@ Dự án này nhằm xây dựng một website thương mại điện tử cho p
     ```
 4. Chạy recommendation-system:
     ```sh
-    cd recommendation-system
-    python app.py
+    cd python/recommendation-system
+    python api.py
     ```
 
 ## Liên Hệ:
-Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ qua email: hung.nguyendachungbk@hcmut.edu.vn hoặc ha.luu070202@hcmut.edu.vn
+Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ qua email: hung.nguyendachungbk@hcmut.edu.vn hoặc ha.luu070202@hcmut.edu.vn 😙.

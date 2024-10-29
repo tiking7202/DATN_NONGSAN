@@ -211,7 +211,7 @@ export default function CartPage() {
                         />
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
-                        {Number(item.batchprice)} VNĐ
+                        {Number(item.batchprice)} đ
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
                         {item.quantity > 0 && (
@@ -220,6 +220,7 @@ export default function CartPage() {
                             onClick={() =>
                               handleUpdateQuantity(item.productid, item.quantity - 1)
                             }
+                            disabled={item.quantity - 1 === 0}
                           >
                             -
                           </button>
@@ -230,12 +231,13 @@ export default function CartPage() {
                           onClick={() =>
                             handleUpdateQuantity(item.productid, item.quantity + 1)
                           }
+                          disabled={item.quantity + 1 > item.batchquantity}
                         >
                           +
                         </button>
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
-                        {item.batchquantity > item.quantity ? "Còn hàng" : "Hết hàng"}
+                        {item.batchquantity >= item.quantity ? "Còn hàng" : "Hết hàng"}
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap text-lg text-center text-primary font-medium border">
                         <input

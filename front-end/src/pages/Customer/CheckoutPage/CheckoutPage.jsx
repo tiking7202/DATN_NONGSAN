@@ -47,7 +47,7 @@ const CheckoutPage = () => {
       totalPrice +=
         item.batchprice * (1 - 0.01 * item.promotion) * item.quantity;
     });
-    return totalPrice;
+    return Math.round(totalPrice);
   };
 
   const calculateEstimatedDeliveryTime = () => {
@@ -148,7 +148,7 @@ const CheckoutPage = () => {
           {item.productname}
         </h3>
         <p className="w-1/4 text-lg font-semibold text-primary">
-          {item.batchprice * (1 - 0.01 * item.promotion)} VNĐ
+        {Math.round(item.batchprice * (1 - 0.01 * item.promotion))} đ
         </p>
         <p className="w-1/4 text-lg font-semibold text-primary">
           {item.quantity} kg
@@ -363,10 +363,10 @@ const CheckoutPage = () => {
               </div>
               <div className="my-2 flex">
                 <p className="font-bold w-5/12 ml-5 text-left">
-                  Thời gian nhận hàng: {" "}
+                  Thời gian nhận hàng:{" "}
                 </p>
-                <p className="text-gray-900 w-7/12 justify-start text-left font-medium ml-1"> 
-                  Khoảng {' '}
+                <p className="text-gray-900 w-7/12 justify-start text-left font-medium ml-1">
+                  Khoảng{" "}
                   {estimatedDeliveryTime
                     ? `${estimatedDeliveryTime.start.toLocaleString("vi-VN", {
                         hour: "2-digit",
@@ -392,7 +392,7 @@ const CheckoutPage = () => {
                           month: "2-digit",
                           year: "numeric",
                         }
-                      )}` 
+                      )}`
                     : ""}
                 </p>
               </div>
@@ -402,21 +402,21 @@ const CheckoutPage = () => {
             <div className="">
               <h2 className="font-bold text-xl ml-3 flex">Tóm tắt đơn hàng</h2>
               <div className="flex items-center ml-5 my-3">
-                <p className="font-bold w-1/3 text-left">Tổng tiền:</p>
+                <p className="font-bold w-1/3 text-left">Tạm tính:</p>
                 <p className="text-gray-900 w-2/3 text-left font-bold">
-                  {calculateTotalPrice()} VNĐ
+                  {calculateTotalPrice()} đ
                 </p>
               </div>
               <div className="flex items-center ml-5 my-3">
                 <p className="font-bold w-1/3 text-left">Phí vận chuyển:</p>
                 <p className="text-gray-900 w-2/3 text-left font-bold">
-                  {calculateShippingFee()} VNĐ
+                  {calculateShippingFee()} đ
                 </p>
               </div>
               <div className="flex items-center ml-5 my-3">
                 <p className="font-bold  w-1/3 text-left">Tổng cộng:</p>
                 <p className="text-gray-900 w-2/3 text-left font-bold">
-                  {calculateTotalPrice() + calculateShippingFee()} VNĐ
+                  {calculateTotalPrice() + calculateShippingFee()} đ
                 </p>
               </div>
             </div>

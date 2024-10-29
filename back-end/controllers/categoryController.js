@@ -49,7 +49,7 @@ exports.deleteCategory = async (req, res) => {
 
 exports.createCategoryforDistributor = async (req, res) => {
   try {
-    const { categoryname, categorydes, standardexpiry  } = req.body;
+    const { categoryname, categorydes, standardexpiry } = req.body;
     const categoryimage = req.file;
 
     let categoryimageUrl = null;
@@ -185,7 +185,9 @@ exports.getCategoryCountByFarmerId = async (req, res) => {
     );
 
     if (farmResult.rows.length === 0) {
-      return res.status(404).json({ message: "Farm not found for this user ID" });
+      return res
+        .status(404)
+        .json({ message: "Farm not found for this user ID" });
     }
 
     const farmid = farmResult.rows[0].farmid;

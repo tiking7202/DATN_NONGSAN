@@ -416,12 +416,12 @@ export default function ProductDetail() {
             <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-2xl">
               <CommentShow />
             </div>
-            <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-2xl">
+            {/* <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-2xl">
               <h1 className="font-bold text-primary text-2xl">
                 Sản phẩm liên quan
               </h1>
             </div>
-            <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-2xl"></div>
+            <div className="w-4/5 mx-auto bg-white rounded-md p-5 mt-7 shadow-2xl"></div> */}
           </div>
         )
       )}

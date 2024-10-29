@@ -142,7 +142,7 @@ export default function PurchasesHistory() {
                     {Number(purchase.totalAmount)
                       .toFixed(0)
                       .toLocaleString("vi-VN")}{" "}
-                    VNĐ
+                    đ
                   </td>
 
                   <td className="p-5 text-lg text-center bg-fourth ">

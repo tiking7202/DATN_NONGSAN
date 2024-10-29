@@ -144,7 +144,7 @@ export default function FarmerOrderDetail({ onClose, orderIdDetail, refreshOrder
                           {truncateText(item.overviewdes, 150)}{" "}
                         </p>
                         <p className="text-lg ml-3 w-1/6">
-                          {item.price} VNĐ
+                          {item.price} đ
                           <br />
                           {item.quantity} {item.unitofmeasure}
                         </p>
@@ -159,7 +159,7 @@ export default function FarmerOrderDetail({ onClose, orderIdDetail, refreshOrder
             </div>
             <div className="flex my-2">
               <p className="font-medium text-xl w-1/4 mr-3">Tổng tiền:</p>
-              <p className="text-lg w-3/4">{orderDetail?.totalAmount} VNĐ</p>
+              <p className="text-lg w-3/4">{orderDetail?.totalAmount} đ</p>
             </div>
             <div className="flex my-2">
               <p className="font-medium text-xl w-1/4 mr-3">

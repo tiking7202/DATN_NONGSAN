@@ -4,7 +4,6 @@ const session = require("express-session");
 const app = express();
 const port = 3000;
 const cors = require("cors");
-const client = require('./config/dbConnect');
 const routes = require("./routes");
 const autoUpdateProductBatch = require('./utils/autoUpdateProductBatch');
 const productUtils = require('./utils/productUtils');

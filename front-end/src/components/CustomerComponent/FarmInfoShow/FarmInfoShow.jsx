@@ -15,6 +15,8 @@ export default function FarmInfoShow() {
   const location = useLocation();
   const resourceType = location.pathname.split("/")[1];
   const id = location.pathname.split("/").pop();
+  const isInfoPage = location.pathname.includes("/farm/info");
+  const isProductDetailPage = location.pathname.includes("/farm/productdetail");
 
   useEffect(() => {
     const fetchFarmData = async () => {
@@ -74,14 +76,18 @@ export default function FarmInfoShow() {
           <div className="w-4/5 bg-white rounded-md m-auto mt-5 flex p-5 shadow-2xl">
             <Link
               to={`/farm/info/${farm?.farmid}`}
-              className="text-2xl font-bold text-primary mx-7"
+              className={`text-2xl font-bold text-primary mx-7 ${
+                isInfoPage ? "underline" : ""
+              }`}
             >
               Giới thiệu trang trại
             </Link>
 
             <Link
               to={`/farm/productdetail/${farm?.farmid}`}
-              className="text-2xl font-bold text-primary mx-7"
+              className={`text-2xl font-bold text-primary mx-7 ${
+                isProductDetailPage ? "underline" : ""
+              }`}
             >
               Sản phẩm
             </Link>

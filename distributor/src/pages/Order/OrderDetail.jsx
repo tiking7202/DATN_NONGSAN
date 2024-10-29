@@ -185,7 +185,7 @@ export default function FarmerOrderDetail({
             </div>
             <div className="flex my-2">
               <p className="font-bold text-xl w-1/4 mx-3">Tổng tiền:</p>
-              <p className="text-lg w-3/4">{orderDetail?.totalAmount} VNĐ</p>
+              <p className="text-lg w-3/4">{orderDetail?.totalAmount} đ</p>
             </div>
             <div className="flex my-2">
               <p className="font-bold text-xl w-1/4 mx-3">

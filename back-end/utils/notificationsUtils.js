@@ -7,7 +7,8 @@ const pool = require("../config/dbConnect");
 // 4. Thông báo về việc đặt hàng của khách hàng cho distributor
 // 5. Thông báo đơn hang đã được xác nhận của distributor cho khách hàng
 // 6. Thông báo đơn hàng đã được giao cho khách hàng
-
+// 7. Thông báo khi lô hàng hết hạn sử dụng
+// 8. Thông báo khi lô hàng đc bán hết
 // Hàm dùng để tạo thông báo mới
 exports.createNotification = async (
   useridOrDistributorId, // Có thể là userid hoặc distributorid
