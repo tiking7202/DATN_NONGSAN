@@ -5,17 +5,17 @@ const fs = require("fs");
 
 // Function to search for product info by image
 const searchByImage = async (req, res) => {
-    try {
+  try {
     // Tạo đối tượng FormData
     const formData = new FormData();
     formData.append("image", req.file.buffer, req.file.originalname); // Đính kèm file ảnh
 
     // Gửi request đến Flask API
-    const flaskApiUrl = "http://192.168.2.6:12000/search-image";
+    const flaskApiUrl = "http://127.0.0.1:12000/search-image";
     const flaskResponse = await axios.post(flaskApiUrl, formData, {
-        headers: {
-            ...formData.getHeaders(), // Lấy headers từ form-data
-        },
+      headers: {
+        ...formData.getHeaders(), // Lấy headers từ form-data
+      },
     });
 
     // Lấy danh sách product_id từ response của Flask API
@@ -53,12 +53,12 @@ const searchByImage = async (req, res) => {
 
     // Trả về thông tin sản phẩm
     res.json({
-        products: result.rows,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error occurred during image search" });
-    }
+      products: result.rows,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error occurred during image search" });
+  }
 };
 
 module.exports = { searchByImage };

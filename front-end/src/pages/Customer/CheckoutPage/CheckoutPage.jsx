@@ -57,6 +57,7 @@ const CheckoutPage = () => {
     ).getTime();
     const deliveryDistrict = shippingInfo.districtDelivery;
 
+    let adjustedTime;
     if (
       deliveryDistrict.includes("Quận 1") ||
       deliveryDistrict.includes("Quận 3") ||
@@ -66,7 +67,7 @@ const CheckoutPage = () => {
       deliveryDistrict.includes("Quận Phú Nhuận") ||
       deliveryDistrict.includes("Quận Bình Thạnh")
     ) {
-      return new Date(estimatedDeliveryTime - 1 * 60 * 60 * 1000); // subtract 1 hour
+      adjustedTime = new Date(estimatedDeliveryTime - 1 * 60 * 60 * 1000); // subtract 1 hour
     } else if (
       deliveryDistrict.includes("Quận Tân Bình") ||
       deliveryDistrict.includes("Quận Tân Phú") ||
@@ -75,13 +76,26 @@ const CheckoutPage = () => {
       deliveryDistrict.includes("Quận 11") ||
       deliveryDistrict.includes("Quận 7")
     ) {
-      return new Date(estimatedDeliveryTime + 1 * 60 * 60 * 1000); // add 1 hour
+      adjustedTime = new Date(estimatedDeliveryTime + 1 * 60 * 60 * 1000); // add 1 hour
     } else {
-      return new Date(estimatedDeliveryTime + 4 * 60 * 60 * 1000); // add 4 hours
+      adjustedTime = new Date(estimatedDeliveryTime + 4 * 60 * 60 * 1000); // add 4 hours
     }
+
+    // Làm tròn thời gian theo giờ
+    const startOfHour = new Date(adjustedTime);
+    startOfHour.setMinutes(0, 0, 0);
+
+    const endOfHour = new Date(startOfHour);
+    endOfHour.setHours(startOfHour.getHours() + 1);
+
+    return {
+      start: startOfHour,
+      end: endOfHour,
+    };
   };
 
-  console.log(calculateEstimatedDeliveryTime());
+  const estimatedDeliveryTime =
+    shippingInfo && calculateEstimatedDeliveryTime();
 
   // Tính phí vận chuyển dựa trên địa chỉ
   const calculateShippingFee = () => {
@@ -349,20 +363,36 @@ const CheckoutPage = () => {
               </div>
               <div className="my-2 flex">
                 <p className="font-bold w-5/12 ml-5 text-left">
-                  Thời gian nhận hàng:
+                  Thời gian nhận hàng: {" "}
                 </p>
-                <p className="text-gray-900 w-7/12 justify-start text-left font-medium">
-                  {shippingInfo && calculateEstimatedDeliveryTime()
-                    ? new Date(calculateEstimatedDeliveryTime()).toLocaleString(
+                <p className="text-gray-900 w-7/12 justify-start text-left font-medium ml-1"> 
+                  Khoảng {' '}
+                  {estimatedDeliveryTime
+                    ? `${estimatedDeliveryTime.start.toLocaleString("vi-VN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        // day: "2-digit",
+                        // month: "2-digit",
+                        // year: "numeric",
+                      })} - ${estimatedDeliveryTime.end.toLocaleString(
                         "vi-VN",
                         {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          // day: "2-digit",
+                          // month: "2-digit",
+                          // year: "numeric",
+                        }
+                      )} ngày ${estimatedDeliveryTime.end.toLocaleString(
+                        "vi-VN",
+                        {
+                          // hour: "2-digit",
+                          // minute: "2-digit",
                           day: "2-digit",
                           month: "2-digit",
                           year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
                         }
-                      )
+                      )}` 
                     : ""}
                 </p>
               </div>

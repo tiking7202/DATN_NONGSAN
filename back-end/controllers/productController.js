@@ -552,8 +552,8 @@ exports.createProductBatch = async (req, res) => {
 
     // Thêm lô sản phẩm mới
     const newBatch = await pool.query(
-      `INSERT INTO product_batch (productid, unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `INSERT INTO product_batch (productid, unitofmeasure, batchquantity, batchquality, plantingdate, harvestdate, expirydate, batchprice, promotion, isvisible) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *`,
       [
         productid,
@@ -565,6 +565,7 @@ exports.createProductBatch = async (req, res) => {
         expirydate,
         batchprice,
         0,
+        true,
       ]
     );
 
@@ -595,6 +596,32 @@ exports.getProductBatchByProductId = async (req, res) => {
     // Lấy danh sách các lô hàng của sản phẩm
     const batches = await pool.query(
       "SELECT * FROM product_batch WHERE productid = $1",
+      [productid]
+    );
+
+    // Trả về danh sách các lô hàng
+    res.json(batches.rows);
+  } catch (error) {
+    console.error("Error fetching product batches:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Lấy danh sách lô hàng cho khách hàng
+exports.getProductBatchForCustomer = async (req, res) => {
+  const { productid } = req.params;
+  try {
+    // Kiểm tra sản phẩm có tồn tại không
+    const productQuery = await pool.query(
+      "SELECT * FROM product WHERE productid = $1",
+      [productid]
+    );
+    if (productQuery.rows.length === 0) {
+      return res.status(400).json({ message: "Không tìm thấy sản phẩm" });
+    }
+    // Lấy danh sách các lô hàng của sản phẩm
+    const batches = await pool.query(
+      "SELECT * FROM product_batch WHERE productid = $1 AND isvisible = true",
       [productid]
     );
 
@@ -660,6 +687,29 @@ exports.updateProductBatch = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching product batches:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.updateProductBatchVisibility = async (req, res) => {
+  const { batchid } = req.params;
+  const { isVisible } = req.body;
+
+  try {
+    // Cập nhật trạng thái ẩn hiện lô hàng và kiểm tra sự tồn tại của lô hàng trong một truy vấn duy nhất
+    const updateQuery = `UPDATE product_batch SET isvisible = $1 WHERE batchid = $2 RETURNING *;`;
+    const result = await pool.query(updateQuery, [isVisible, batchid]);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ message: "Không tìm thấy lô hàng" });
+    }
+
+    res.json({
+      message: "Cập nhật trạng thái ẩn hiện lô hàng thành công",
+      isVisible: result.rows[0].isvisible,
+    });
+  } catch (error) {
+    console.error("Error updating product batch visibility:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

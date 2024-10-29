@@ -127,6 +127,7 @@ export default function FarmerOrderDetail({ onClose, orderIdDetail, refreshOrder
               </div>
               <div className="">
                 <ul>
+                  
                   {orderDetail?.items?.length > 0 ? (
                     orderDetail.items.map((item, index) => (
                       <li

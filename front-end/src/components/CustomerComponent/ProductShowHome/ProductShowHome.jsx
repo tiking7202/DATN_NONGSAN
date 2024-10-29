@@ -31,6 +31,8 @@ export default function ProductShowHome() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
+        if(userId === "") return;
+        
         const response = await axios.get(
           `${API_BASE_URL}/recommendation/${userId}`
         );

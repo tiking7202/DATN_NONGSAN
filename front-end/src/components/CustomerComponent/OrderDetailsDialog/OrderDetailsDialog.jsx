@@ -25,30 +25,22 @@ const OrderDetailsDialog = ({ order, onClose }) => {
         </h2>
         <ul className="mb-4">
           {orderArray.map((product, index) => (
-            <li key={index} className="mb-2 p-1 flex  items-center">
+            <li key={index} className="mb-2 p-1 flex items-center">
               <img
                 src={product.productimage1}
                 alt={product.productname}
                 className="w-1/6"
               />
-
-              <p className="w-1/6 text-center font-bold ">
+              <p className="w-1/6 text-center font-bold">
                 {product.productname}
               </p>
-              <p className="w-1/2 text-left">{truncateText(product.overview, 200)}</p>
-
-              <p className="w-1/6  text-center text-2xl">{product.quantity}</p>
+              <p className="w-1/2 text-left">
+                {truncateText(product.overview, 200)}
+              </p>
+              <p className="w-1/6 text-center text-2xl">{product.quantity}</p>
             </li>
           ))}
         </ul>
-        {/* <div className="flex justify-end">
-          <button
-            className="bg-primary hover:bg-primary-700 text-white font-bold py-2 px-4 rounded"
-            onClick={onClose}
-          >
-            Đóng
-          </button>
-        </div> */}
       </div>
     </div>
   );
@@ -61,14 +53,14 @@ OrderDetailsDialog.propTypes = {
         productimage1: PropTypes.string.isRequired,
         productname: PropTypes.string.isRequired,
         overview: PropTypes.string.isRequired,
-        quantity: PropTypes.string.isRequired,
+        quantity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       })
     ),
     PropTypes.shape({
       productimage1: PropTypes.string.isRequired,
       productname: PropTypes.string.isRequired,
       overview: PropTypes.string.isRequired,
-      quantity: PropTypes.string.isRequired,
+      quantity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     }),
   ]).isRequired,
   onClose: PropTypes.func.isRequired,

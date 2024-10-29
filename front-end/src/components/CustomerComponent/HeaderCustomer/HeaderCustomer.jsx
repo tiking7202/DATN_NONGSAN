@@ -168,7 +168,7 @@ export default function HeaderCustomer() {
       );
       setNotifications(updatedNotifications);
 
-      if (notification.notificationtype === "CreateNewOrder") {
+      if (notification.notificationtype === "CreateNewOrder" || notification.notificationtype === "UpdateOrderStatus") {
         navigate("/purchase-history");
       }
     } catch (error) {

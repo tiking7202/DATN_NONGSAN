@@ -75,6 +75,32 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
     }
   };
 
+  const handleToggleVisibility = async (batchId) => {
+    try {
+      const batchIndex = productBatch.findIndex(
+        (batch) => batch.batchid === batchId
+      );
+      const updatedBatch = {
+        ...productBatch[batchIndex],
+        isvisible: !productBatch[batchIndex].isvisible,
+      };
+
+      const response = await axios.patch(
+        `${API_BASE_URL}/update/product-batch/isvisible/${batchId}`,
+        { isVisible: updatedBatch.isvisible }
+      );
+
+      const updatedProductBatch = [...productBatch];
+      updatedProductBatch[batchIndex] = updatedBatch;
+      setProductBatch(updatedProductBatch);
+
+      toast.success(response.data.message);
+    } catch (error) {
+      console.error("Error updating visibility:", error);
+      toast.error("Có lỗi xảy ra khi cập nhật trạng thái hiển thị!");
+    }
+  };
+
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center m-auto">
       <div className="bg-white p-6 rounded w-6/12 m-auto text-primary h-3/5 overflow-auto shadow-xl">
@@ -91,12 +117,12 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
         </h2>
         <div className="py-4 text-justify flex flex-wrap justify-around">
           {productBatch.length > 0 ? (
-            productBatch.map((productBatch) => (
+            productBatch.map((batch) => (
               <div
-                key={productBatch.batchid}
+                key={batch.batchid}
                 className="bg-fourth shadow-xl rounded-lg p-6 m-4 w-5/12 text-primary font-bold "
               >
-                {isEdit && editingBatchId === productBatch.batchid ? (
+                {isEdit && editingBatchId === batch.batchid ? (
                   <>
                     <label
                       htmlFor="batchid"
@@ -228,6 +254,7 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
                       <option value="Bình thường">Bình thường</option>
                       <option value="Sắp hết hạn">Sắp hết hạn</option>
                     </select>
+
                     <div className="flex justify-end mt-2">
                       <button
                         className="px-3 py-2 mx-2 bg-primary text-white rounded-lg hover:opacity-85"
@@ -251,61 +278,73 @@ export default function DetailProductBatch({ onClose, selectedProductBatch }) {
                     <p className="">
                       Mã lô hàng:{" "}
                       <span className="font-semibold">
-                        {productBatch.batchid.substring(0, 8)}
+                        {batch.batchid.substring(0, 8)}
                       </span>
                     </p>
                     <p className="mt-2">
                       Số lượng:{" "}
                       <span className="font-semibold">
-                        {productBatch.batchquantity}{" "}
-                          ({productBatch.unitofmeasure})
+                        {batch.batchquantity} ({batch.unitofmeasure})
                       </span>
                     </p>
                     <p className=" mt-2">
                       Giá:{" "}
                       <span className="font-semibold ">
-                        {Number(productBatch.batchprice).toLocaleString()} VNĐ
+                        {Number(batch.batchprice).toLocaleString()} đ
                       </span>
                     </p>
                     <p className=" mt-2">
                       Khuyến mãi:{" "}
-                      <span className="font-semibold ">
-                        {productBatch.promotion}%
-                      </span>
+                      <span className="font-semibold ">{batch.promotion}%</span>
                     </p>
                     <p className=" mt-2">
                       Ngày trồng:{" "}
                       <span className="font-semibold">
-                        {formatDate(productBatch.plantingdate)}
+                        {formatDate(batch.plantingdate)}
                       </span>
                     </p>
                     <p className=" mt-2">
                       Ngày thu hoạch:{" "}
                       <span className="font-semibold">
-                        {formatDate(productBatch.harvestdate)}
+                        {formatDate(batch.harvestdate)}
                       </span>
                     </p>
                     <p className=" mt-2">
                       Ngày hết hạn:{" "}
                       <span className="font-semibold">
-                        {formatDate(productBatch.expirydate)}
+                        {formatDate(batch.expirydate)}
                       </span>
                     </p>
                     <p className="mt-2">
                       Chất lượng:{" "}
                       <span className="font-semibold">
-                        {productBatch.batchquality}
+                        {batch.batchquality}
                       </span>
                     </p>
+                    <p className="mt-2">
+                      Trạng thái:{" "}
+                      <button
+                        className={`px-2 py-1 text-primary rounded-lg hover:bg-opacity-90 hover:text-white ${
+                          batch.isvisible
+                            ? "hover:bg-primary"
+                            : "hover:bg-red-500"
+                        }`}
+                        onClick={() => handleToggleVisibility(batch.batchid)}
+                      >
+                        {batch.isvisible ? "Hiển thị" : "Ẩn"}
+                      </button>
+                    </p>
+
                     <div className="flex justify-end mt-4 mr-4">
                       <button
                         className="px-7 py-2 mx-2 bg-primary text-white rounded-xl hover:opacity-85"
-                        onClick={() => handleEditClick(productBatch)}
+                        onClick={() => handleEditClick(batch)}
                       >
                         Sửa
                       </button>
-                      <button className="px-7 py-2 mx-2 bg-red-600 text-white rounded-xl hover:opacity-85"
-                      onClick={() => handleDeleteClick(productBatch.batchid)}
+                      <button
+                        className="px-7 py-2 mx-2 bg-red-600 text-white rounded-xl hover:opacity-85"
+                        onClick={() => handleDeleteClick(batch.batchid)}
                       >
                         Xóa
                       </button>

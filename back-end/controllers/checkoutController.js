@@ -697,6 +697,7 @@ const getAllOrderToDistributor = async (req, res) => {
       SELECT o.*, u.fullname
       FROM "Order" o
       JOIN "User" u ON o.userid = u.userid
+      ORDER BY o.orderupdatetime DESC
       LIMIT $1 OFFSET $2
     `;
     const ordersResult = await pool.query(ordersQuery, [limit, offset]);

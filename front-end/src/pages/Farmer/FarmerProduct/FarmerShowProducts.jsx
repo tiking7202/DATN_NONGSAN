@@ -124,7 +124,7 @@ export default function FarmerShowProducts() {
             <div className="my-4">
               <table className="w-full rounded-lg shadow-xl">
                 <thead className="">
-                  <tr className="bg-primary text-secondary border border-black">
+                  <tr className="bg-primary text-secondary border border-fourth">
                     <th className="py-3 w-2/12">Tên sản phẩm</th>
                     <th className="py-3 w-1/12">Hình ảnh</th>
                     <th className="py-3 w-1/12">Danh mục</th>
@@ -139,7 +139,7 @@ export default function FarmerShowProducts() {
                     products.map((product) => (
                       <tr
                         key={product.productid}
-                        className="font-medium border border-black"
+                        className="font-medium border border-fourth"
                       >
                         <td className="w-2/12 text-center">
                           {product.productname}
@@ -212,12 +212,12 @@ export default function FarmerShowProducts() {
               </table>
               {/* Pagination */}
               {totalPages > 1 && (
-              <Pagination
-                page={page}
-                totalPages={totalPages}
-                handlePageChange={handlePageChange}
-              />
-            )}
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  handlePageChange={handlePageChange}
+                />
+              )}
             </div>
           </div>
         </div>

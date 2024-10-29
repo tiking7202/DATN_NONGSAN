@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"nodemon index.js\" \"python ./python/app.py\"",
-    "dev": "concurrently \"nodemon index.js\" \"python ./python/app.py\""
+    "start": "concurrently \"python ./python/app.py\" \"nodemon index.js\"",
+    "dev": "concurrently \"python ./python/app.py\" \"nodemon index.js\""
   },
   "keywords": [],
   "author": "",
@@ -30,7 +30,8 @@
     "pg": "^8.13.0",
     "python-shell": "^5.0.0",
     "stripe": "^17.2.0",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "wait-on": "^8.0.1"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"

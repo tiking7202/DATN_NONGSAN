@@ -8,7 +8,7 @@ const FarmerNavBar = () => {
       <nav className="flex flex-col text-xl font-bold">
         <Link
           to="/farmer"
-          className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
+          className={`text-center text-black p-2 w-full border border-fourth ${
             location.pathname === "/farmer"
               ? "bg-primary font-bold text-secondary hover:opacity-85"
               : ""
@@ -28,7 +28,7 @@ const FarmerNavBar = () => {
         </Link> */}
         <Link
           to="/farmer/products"
-          className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
+          className={`text-center text-black p-2 w-full border border-fourth ${
             location.pathname === "/farmer/products"
               ? "bg-primary font-bold text-secondary hover:opacity-85"
               : ""
@@ -48,7 +48,7 @@ const FarmerNavBar = () => {
         </Link> */}
         <Link
           to="/farmer/farm/info"
-          className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
+          className={`text-center text-black p-2 w-full border border-fourth ${
             location.pathname === "/farmer/farm/info"
               ? "bg-primary font-bold text-secondary hover:opacity-85"
               : ""
@@ -58,7 +58,7 @@ const FarmerNavBar = () => {
         </Link>
         <Link
           to="/farmer/profile"
-          className={`text-center text-black p-2 w-full border-2 border-slate-700 ${
+          className={`text-center text-black p-2 w-full border border-fourth ${
             location.pathname === "/farmer/profile"
               ? "bg-primary font-bold text-secondary hover:opacity-85"
               : ""

@@ -8,13 +8,14 @@ exports.addToCart = async (req, res) => {
   }
 
   try {
+    // Kiểm tra xem sản phẩm đã có trong giỏ hàng hay chưa
     const existingProductQuery = `
       SELECT * FROM cart WHERE userid = $1 AND productid = $2 AND batchid = $3
     `;
     const existingProduct = await pool.query(existingProductQuery, [userId, productId, batchId]);
 
     if (existingProduct.rows.length > 0) {
-      // Update the quantity if the product already exists in the cart
+      // Cập nhật số lượng nếu sản phẩm đã tồn tại trong giỏ hàng
       const updateCartQuery = `
         UPDATE cart SET quantity = quantity + $1 
         WHERE userid = $2 AND productid = $3 AND batchid = $4 
@@ -24,6 +25,7 @@ exports.addToCart = async (req, res) => {
       return res.status(200).json(updatedCart.rows[0]);
     }
 
+    // Thêm sản phẩm mới vào giỏ hàng
     const insertCartQuery = `
       INSERT INTO cart (userid, productid, quantity, batchid) 
       VALUES ($1, $2, $3, $4) 

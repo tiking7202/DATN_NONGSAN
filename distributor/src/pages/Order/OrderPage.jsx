@@ -97,7 +97,7 @@ export default function OrderPage() {
                       </td>
                       <td className="py-2">{order.shippingaddress}</td>
                       <td className="py-2">
-                        {order.totalamount.toLocaleString()} VNĐ
+                        {order.totalamount.toLocaleString()} đ
                       </td>
                       <td className="py-2">{order.orderstatus}</td>
                       <td className="py-2">

@@ -10,7 +10,7 @@ const review = require("./review");
 const crop = require("./crop");
 const recommendation = require("./recommendation");
 const searchImg = require("./searchImg");
-const notification = require("./notifications")
+const notification = require("./notifications");
 
 router.use("/auth", auth);
 router.use("", user);

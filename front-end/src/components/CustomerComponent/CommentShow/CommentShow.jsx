@@ -18,16 +18,16 @@ import Loading from "../../Loading.jsx"; // Import the Loading component
 
 export default function CommentShow() {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [comments, setComments] = useState([]);
   const [amountOfReview, setAmountOfReview] = useState(0);
   const [newComment, setNewComment] = useState("");
   const [newRating, setNewRating] = useState(0);
-  const [userInfo, setUserInfo] = useState({});
   const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(true); // Add loading state
+  const [userInfo, setUserInfo] = useState({}); // Initialize userInfo state
 
-  const { id } = useParams();
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
@@ -55,6 +55,7 @@ export default function CommentShow() {
     fetchData();
   }, [id]);
 
+  // Fetch user info when comments change
   useEffect(() => {
     const fetchUserInfo = async () => {
       const userInfoMap = {};
@@ -110,7 +111,7 @@ export default function CommentShow() {
   return (
     <div>
       {loading ? (
-        <Loading /> // Display loading spinner when loading is true
+        <Loading />
       ) : (
         <>
           <div className="flex bg-fourth p-5 rounded-lg shadow-2xl">
@@ -123,87 +124,28 @@ export default function CommentShow() {
               </div>
               <div className="h-full bg-black w-0 p-0.5 m-2"></div>
               <div className="m-2 font-bold">
-                <div className="flex m-1 ">
-                  <Rating
-                    initialRating={5}
-                    readonly
-                    emptySymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
-                    }
-                    fullSymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
-                    }
-                  />
-                  <p className="text-lg ml-2 my-auto">
-                    {amountOfReview[4]}{" "}
-                    <span className="font-light ml-1">đánh giá</span>
-                  </p>
-                </div>
-                <div className="flex m-1">
-                  <Rating
-                    initialRating={4}
-                    readonly
-                    emptySymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
-                    }
-                    fullSymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
-                    }
-                  />
-                  <p className="text-lg ml-2 my-auto">
-                    {amountOfReview[3]}{" "}
-                    <span className="font-light ml-1">đánh giá</span>
-                  </p>
-                </div>
-
-                <div className="flex m-1">
-                  <Rating
-                    initialRating={3}
-                    readonly
-                    emptySymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
-                    }
-                    fullSymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
-                    }
-                  />
-                  <p className="text-lg ml-2 my-auto">
-                    {amountOfReview[2]}{" "}
-                    <span className="font-light ml-1">đánh giá</span>
-                  </p>
-                </div>
-                <div className="flex m-1">
-                  <Rating
-                    initialRating={2}
-                    readonly
-                    emptySymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
-                    }
-                    fullSymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
-                    }
-                  />
-                  <p className="text-lg ml-2 my-auto">
-                    {amountOfReview[1]}{" "}
-                    <span className="font-light ml-1">đánh giá</span>
-                  </p>
-                </div>
-                <div className="flex m-1">
-                  <Rating
-                    initialRating={1}
-                    readonly
-                    emptySymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
-                    }
-                    fullSymbol={
-                      <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
-                    }
-                  />
-                  <p className="text-lg ml-2 my-auto">
-                    {amountOfReview[0]}{" "}
-                    <span className="font-light ml-1">đánh giá</span>
-                  </p>
-                </div>
+                {[5, 4, 3, 2, 1].map((rating) => (
+                  <div className="flex m-1" key={rating}>
+                    <Rating
+                      initialRating={rating}
+                      readonly
+                      emptySymbol={
+                        <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
+                      }
+                      fullSymbol={
+                        <FontAwesomeIcon
+                          icon={faStar}
+                          color="#ffd700"
+                          size="2x"
+                        />
+                      }
+                    />
+                    <p className="text-lg ml-2 my-auto">
+                      {amountOfReview[rating - 1]}{" "}
+                      <span className="font-light ml-1">đánh giá</span>
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -212,7 +154,9 @@ export default function CommentShow() {
               <div className="flex flex-col w-11/12 m-auto">
                 <form onSubmit={handleSubmit}>
                   <div className="flex mb-3">
-                    <p className="text-2xl font-bold mx-3 text-primary">Đánh giá của bạn:</p>
+                    <p className="text-2xl font-bold mx-3 text-primary">
+                      Đánh giá của bạn:
+                    </p>
 
                     <Rating
                       initialRating={newRating}
@@ -220,7 +164,11 @@ export default function CommentShow() {
                         <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
                       }
                       fullSymbol={
-                        <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
+                        <FontAwesomeIcon
+                          icon={faStar}
+                          color="#ffd700"
+                          size="2x"
+                        />
                       }
                       onChange={(value) => setNewRating(value)}
                     />
@@ -246,13 +194,17 @@ export default function CommentShow() {
             {comments.length > 0 ? (
               comments.map((comment) => (
                 <div
-                  key={comment.reviewId}
+                  key={comment.reviewid} // Ensure the key is unique
                   className="w-full my-2 bg-white p-1 rounded-lg shadow-2xl"
                 >
                   <div className="flex my-auto">
-                    <img src={userInfo[comment.userid]?.avatar} alt="avatar" className="mx-3 my-auto w-8 h-8 rounded-full" />
+                    <img
+                      src={userInfo[comment.userid]?.avatar || ""}
+                      alt="avatar"
+                      className="mx-3 my-auto w-8 h-8 rounded-full"
+                    />
                     <p className="font-bold text-xl my-auto">
-                      {userInfo[comment.userid]?.fullname}
+                      {userInfo[comment.userid]?.fullname || "Ẩn danh"}
                     </p>
 
                     <p className="font-light my-auto mx-3">
@@ -267,11 +219,17 @@ export default function CommentShow() {
                         <FontAwesomeIcon icon={faStar} color="#ccc" size="2x" />
                       }
                       fullSymbol={
-                        <FontAwesomeIcon icon={faStar} color="#ffd700" size="2x" />
+                        <FontAwesomeIcon
+                          icon={faStar}
+                          color="#ffd700"
+                          size="2x"
+                        />
                       }
                       className="ml-5 my-2"
                     />
-                    <p className="text-lg ml-5 my-auto font-semibold">{comment.comment}</p>
+                    <p className="text-lg ml-5 my-auto font-semibold">
+                      {comment.comment}
+                    </p>
                   </div>
                 </div>
               ))

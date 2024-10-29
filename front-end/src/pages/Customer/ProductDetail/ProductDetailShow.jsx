@@ -17,7 +17,6 @@ import { API_BASE_URL } from "../../../config/config.js";
 import FarmInfoShow from "../../../components/CustomerComponent/FarmInfoShow/FarmInfoShow.jsx";
 import CommentShow from "../../../components/CustomerComponent/CommentShow/CommentShow.jsx";
 import { getAmountOfReview } from "../../../service/CustomerService/reviewService.js";
-import { formatDate } from "../../../utils/formatDate.js";
 import Loading from "../../../components/Loading.jsx";
 
 export default function ProductDetail() {
@@ -56,7 +55,7 @@ export default function ProductDetail() {
         setReviewCount(reviewResponse.data);
 
         const batchResponse = await axios.get(
-          `${API_BASE_URL}/product-batch/${id}`
+          `${API_BASE_URL}/product-batch/customer/${id}`
         );
         setBatchList(batchResponse.data);
       } catch (error) {
@@ -223,23 +222,19 @@ export default function ProductDetail() {
                       <span className="text-primary font-medium m-2 my-auto">
                         Các lô hàng:{" "}
                       </span>
-                      <div className="m-2 flex">
+                      <div className="m-2 flex flex-wrap justify-start">
                         {batchList.map((batch) => (
                           <div
                             key={batch.batchid}
-                            className={`p-2 rounded mr-2 my-2 shadow-2xl cursor-pointer border hover:opacity-80 ${
-                              batchId === batch.batchid
-                                ? "bg-primary text-white"
-                                : "bg-fourth"
+                            className={`p-4 rounded-lg mr-4 my-4 shadow-lg cursor-pointer border hover:opacity-80 transition duration-300 ease-in-out transform hover:scale-105 ${
+                              batchId === batch.batchid ? "bg-primary text-white" : "bg-fourth"
                             }`}
                             onClick={() => setBatchId(batchId === batch.batchid ? "" : batch.batchid)}
                           >
-                            <div>
+                            <div className="mb-2">
                               <span
                                 className={`font-medium mr-1 ${
-                                  batchId === batch.batchid
-                                    ? "text-white"
-                                    : "text-primary"
+                                  batchId === batch.batchid ? "text-white" : "text-primary"
                                 }`}
                               >
                                 Mã lô hàng:{" "}
@@ -252,12 +247,10 @@ export default function ProductDetail() {
                                 {batch.batchid.substring(0, 8)}
                               </span>
                             </div>
-                            <div>
+                            <div className="mb-2">
                               <span
                                 className={`font-medium mr-1 ${
-                                  batchId === batch.batchid
-                                    ? "text-white"
-                                    : "text-primary"
+                                  batchId === batch.batchid ? "text-white" : "text-primary"
                                 }`}
                               >
                                 Giá:{" "}
@@ -267,16 +260,13 @@ export default function ProductDetail() {
                                   batchId === batch.batchid ? "text-white" : ""
                                 }`}
                               >
-                                {Number(batch.batchprice).toLocaleString()} / (
-                                {batch.unitofmeasure})
+                                {Number(batch.batchprice).toLocaleString()} ({batch.unitofmeasure})
                               </span>
                             </div>
-                            <div>
+                            <div className="mb-2">
                               <span
                                 className={`font-medium mr-1 ${
-                                  batchId === batch.batchid
-                                    ? "text-white"
-                                    : "text-primary"
+                                  batchId === batch.batchid ? "text-white" : "text-primary"
                                 }`}
                               >
                                 Giảm giá:{" "}
@@ -289,12 +279,10 @@ export default function ProductDetail() {
                                 {batch.promotion} %
                               </span>
                             </div>
-                            <div>
+                            <div className="mb-2">
                               <span
                                 className={`font-medium mr-1 ${
-                                  batchId === batch.batchid
-                                    ? "text-white"
-                                    : "text-primary"
+                                  batchId === batch.batchid ? "text-white" : "text-primary"
                                 }`}
                               >
                                 Tình trạng:{" "}
@@ -307,12 +295,10 @@ export default function ProductDetail() {
                                 {batch.batchquality}
                               </span>
                             </div>
-                            <div>
+                            <div className="mb-2">
                               <span
                                 className={`font-medium mr-1 ${
-                                  batchId === batch.batchid
-                                    ? "text-white"
-                                    : "text-primary"
+                                  batchId === batch.batchid ? "text-white" : "text-primary"
                                 }`}
                               >
                                 Số lượng còn lại:{" "}
@@ -325,12 +311,10 @@ export default function ProductDetail() {
                                 {batch.batchquantity}
                               </span>
                             </div>
-                            <div>
+                            {/* <div className="mb-2">
                               <span
                                 className={`font-medium mr-1 ${
-                                  batchId === batch.batchid
-                                    ? "text-white"
-                                    : "text-primary"
+                                  batchId === batch.batchid ? "text-white" : "text-primary"
                                 }`}
                               >
                                 Ngày hết hạn:{" "}
@@ -342,43 +326,7 @@ export default function ProductDetail() {
                               >
                                 {formatDate(batch.expirydate)}
                               </span>
-                            </div>
-                            <div>
-                              <span
-                                className={`font-medium mr-1 ${
-                                  batchId === batch.batchid
-                                    ? "text-white"
-                                    : "text-primary"
-                                }`}
-                              >
-                                Ngày trồng:{" "}
-                              </span>
-                              <span
-                                className={`font-semibold ${
-                                  batchId === batch.batchid ? "text-white" : ""
-                                }`}
-                              >
-                                {formatDate(batch.plantingdate)}
-                              </span>
-                            </div>
-                            <div>
-                              <span
-                                className={`font-medium mr-1 ${
-                                  batchId === batch.batchid
-                                    ? "text-white"
-                                    : "text-primary"
-                                }`}
-                              >
-                                Ngày thu hoạch:{" "}
-                              </span>
-                              <span
-                                className={`font-semibold ${
-                                  batchId === batch.batchid ? "text-white" : ""
-                                }`}
-                              >
-                                {formatDate(batch.harvestdate)}
-                              </span>
-                            </div>
+                            </div> */}
                           </div>
                         ))}
                       </div>
@@ -388,9 +336,7 @@ export default function ProductDetail() {
                           onClick={handleAddToCart}
                           disabled={isAddingToCart} 
                         >
-                          {isAddingToCart ? (
-                            <Loading />
-                          ) : (
+                          
                             <>
                               Thêm vào giỏ hàng
                               <FontAwesomeIcon
@@ -398,7 +344,7 @@ export default function ProductDetail() {
                                 className="ml-2"
                               />
                             </>
-                          )}
+                          
                         </button>
                         <button
                           className="bg-primary text-white font-bold px-4 py-3 rounded-md mt-4 w-1/2 shadow-xl hover:opacity-90 ml-7"

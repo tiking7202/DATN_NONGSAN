@@ -13,15 +13,17 @@ export default function FarmerOrderDetail({
   refreshOrders,
 }) {
   const [orderDetail, setOrderDetail] = useState(null);
-  const [orderStatus, setOrderStatus] = useState(orderDetail?.orderStatus || '');
+  const [orderStatus, setOrderStatus] = useState(
+    orderDetail?.orderStatus || ""
+  );
   const [updateTime, setUpdateTime] = useState(null);
 
   const validStatuses = {
-    'Đã tạo': ['Đã tạo', 'Đã xác nhận', 'Đã hủy'],
-    'Đã xác nhận': ['Đã xác nhận', 'Đang giao hàng', 'Đã hủy'],
-    'Đang giao hàng': ['Đang giao hàng', 'Hoàn tất', 'Đã hủy'],
-    'Hoàn tất': ['Hoàn tất'],
-    'Đã hủy': ['Đã hủy'],
+    "Đã tạo": ["Đã tạo", "Đã xác nhận", "Đã hủy"],
+    "Đã xác nhận": ["Đã xác nhận", "Đang giao hàng", "Đã hủy"],
+    "Đang giao hàng": ["Đang giao hàng", "Hoàn tất", "Đã hủy"],
+    "Hoàn tất": ["Hoàn tất"],
+    "Đã hủy": ["Đã hủy"],
   };
 
   const getValidStatuses = (currentStatus) => {
@@ -47,11 +49,13 @@ export default function FarmerOrderDetail({
 
   const onChangeStatus = async (orderId, orderStatus) => {
     try {
-      
-      const response = await axios.put(`${API_BASE_URL}/distributor/order-update`, {
-        orderId: orderId,
-        status: orderStatus,
-      });
+      const response = await axios.put(
+        `${API_BASE_URL}/distributor/order-update`,
+        {
+          orderId: orderId,
+          status: orderStatus,
+        }
+      );
       setUpdateTime(response.data.updateTime);
       onClose();
       toast.success(response.data.message);
@@ -62,11 +66,13 @@ export default function FarmerOrderDetail({
     }
   };
 
-  const isDisabled = orderDetail?.orderStatus === orderStatus || 
-                      orderDetail?.orderStatus === 'Đã hủy' || 
-                      orderDetail?.orderStatus === 'Hoàn tất';
-  const selectDisabled = orderDetail?.orderStatus === 'Đã hủy' ||
-                        orderDetail?.orderStatus === 'Hoàn tất';
+  const isDisabled =
+    orderDetail?.orderStatus === orderStatus ||
+    orderDetail?.orderStatus === "Đã hủy" ||
+    orderDetail?.orderStatus === "Hoàn tất";
+  const selectDisabled =
+    orderDetail?.orderStatus === "Đã hủy" ||
+    orderDetail?.orderStatus === "Hoàn tất";
   return (
     <div className="z-50 fixed top-0 left-0 inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center m-auto">
       <div className="bg-white p-6 rounded-lg w-5/12 m-auto text-primary h-3/4 overflow-auto shadow-xl border border-primary">
@@ -96,15 +102,11 @@ export default function FarmerOrderDetail({
               <p className="text-lg w-3/4">{orderDetail?.user.phonenumber}</p>
             </div>
             <div className="flex my-2">
-              <p className="font-bold text-xl w-1/4 mx-3">
-                Địa chỉ giao hàng:
-              </p>
+              <p className="font-bold text-xl w-1/4 mx-3">Địa chỉ giao hàng:</p>
               <p className="text-lg w-3/4">{orderDetail?.deliveryAddress}</p>
             </div>
             <div className="flex my-2">
-              <p className="font-bold text-xl w-1/4 mx-3">
-                Ngày tạo đơn hàng:
-              </p>
+              <p className="font-bold text-xl w-1/4 mx-3">Ngày tạo đơn hàng:</p>
               <p className="text-lg w-3/4">
                 {formatDate(orderDetail?.orderCreateTime)}
               </p>
@@ -128,8 +130,12 @@ export default function FarmerOrderDetail({
                 </select>
 
                 <button
-                  className={`font-bold ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                  onClick={() => !isDisabled && onChangeStatus(orderIdDetail, orderStatus)}
+                  className={`font-bold ${
+                    isDisabled ? "cursor-not-allowed" : "cursor-pointer"
+                  }`}
+                  onClick={() =>
+                    !isDisabled && onChangeStatus(orderIdDetail, orderStatus)
+                  }
                   disabled={isDisabled}
                 >
                   Thay đổi
@@ -153,21 +159,20 @@ export default function FarmerOrderDetail({
                 <ul>
                   {orderDetail?.items?.length > 0 ? (
                     orderDetail.items.map((item, index) => (
-                      <li
-                        key={index}
-                        className="flex text-center"
-                      >
-                        <p className="text-lg w-2/12 mx-3 font-medium">{item.productName}</p>
+                      <li key={index} className="flex items-center text-center">
+                        <p className="text-lg w-3/12 mx-5 font-medium">
+                          {item.productName}
+                        </p>
                         <img
                           src={item.productImage}
                           alt={item.productName}
-                          className="h-24 w-36"
+                          className="h-28 w-40"
                         />
-                        <p className="text-lg mx-3 font-medium">
-                          {Number(item.price.toLocaleString())} đ
+                        <p className="text-xl mx-5 font-medium">
+                          {Number(item.price.toLocaleString("vi-VN"))}đ
                         </p>
-                        <p className="text-lg mx-3 font-medium">
-                          {item.quantity} {item.unitofmeasure}
+                        <p className="text-xl mx-5 font-medium">
+                          {item.quantity}
                         </p>
                       </li>
                     ))

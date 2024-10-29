@@ -4,18 +4,52 @@ import {
   faTractor,
   faCartPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import ProductBatchDialog from "../ProductBatchDialog/ProductBatchDialog";
+import axios from "axios";
+import { API_BASE_URL } from "../../../config/config";
+import { toast } from "react-toastify";
+import { addToCart } from "../../../service/CustomerService/cartService";
+import { jwtDecode } from "jwt-decode";
 
 const ProductList = ({ products }) => {
-  const [isOpenProductBatchDialog, setIsOpenProductBatchDialog] = useState(false);
+  const navigate = useNavigate();
+  const [isOpenProductBatchDialog, setIsOpenProductBatchDialog] =
+    useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const onAddToCart = (product) => {
-    setIsOpenProductBatchDialog(true);
-    setSelectedProduct(product);
-  }
+
+  const onAddToCart = async (product) => {
+    try {
+      // Lấy danh sách các lô hàng của sản phẩm đó
+      const response = await axios.get(
+        `${API_BASE_URL}/product-batch/${product.productid}`
+      );
+      const productBatchs = response.data;
+
+      // Nếu chỉ có 1 lô hàng thì thêm luôn vào giỏ hàng
+      if (productBatchs.length === 1) {
+        const batchId = productBatchs[0].batchid;
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          toast.error("Đăng nhập để thêm vào giỏ hàng!");
+          navigate("/login");
+          return;
+        }
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userid;
+        await addToCart(product.productid, userId, 1, batchId);
+        toast.success("Thêm vào giỏ hàng thành công!");
+      } else {
+        setIsOpenProductBatchDialog(true);
+        setSelectedProduct(product);
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng!");
+    }
+  };
 
   return (
     <div className="bg-secondary m-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 py-6 px-3 rounded-lg">
@@ -49,9 +83,11 @@ const ProductList = ({ products }) => {
                   </span>
                 </p>
                 <div className="flex justify-between m-3">
-                  <del className="text-xl italic text-green-500">
-                    {Number(product.batchprice).toLocaleString("vi-VN")}đ
-                  </del>
+                  {product.promotion > 0 && (
+                    <del className="text-xl italic text-green-500">
+                      {Number(product.batchprice).toLocaleString("vi-VN")}đ
+                    </del>
+                  )}
                   <p className="text-3xl text-left font-bold">
                     {(
                       product.batchprice -
@@ -77,10 +113,7 @@ const ProductList = ({ products }) => {
 
                 <button
                   className="p-4 bg-white text-primary rounded-full hover:bg-primary hover:text-white hover:scale-125 transform transition duration-300 ease-in-out hover:shadow-md"
-                  onClick={() =>
-                    
-                    onAddToCart(product)
-                  }
+                  onClick={() => onAddToCart(product)}
                 >
                   <FontAwesomeIcon icon={faCartPlus} size="2x" />
                 </button>
@@ -91,7 +124,7 @@ const ProductList = ({ products }) => {
       })}
 
       {isOpenProductBatchDialog && (
-        <ProductBatchDialog 
+        <ProductBatchDialog
           onClose={() => setIsOpenProductBatchDialog(false)}
           selectedProduct={selectedProduct}
         />

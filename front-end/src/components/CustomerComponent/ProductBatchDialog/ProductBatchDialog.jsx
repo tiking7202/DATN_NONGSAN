@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../../config/config";
 import axios from "axios";
-import { formatDate } from "../../../utils/formatDate";
 import { addToCart } from "../../../service/CustomerService/cartService";
 import { jwtDecode } from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
@@ -19,7 +18,7 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/product-batch/${selectedProduct.productid}`
+          `${API_BASE_URL}/product-batch/customer/${selectedProduct.productid}`
         );
         setProductBatchs(response.data);
       } catch (err) {
@@ -50,7 +49,7 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
         }, 500);
       } catch (error) {
         toast.error(error.response.data.message);
-      } 
+      }
     }
   };
 
@@ -67,11 +66,11 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
           </button>
         </div>
         <h2 className="text-3xl text-center font-bold">Chọn lô hàng để mua</h2>
-        <div className="m-2 flex justify-around">
+        <div className="m-2 flex flex-wrap justify-center">
           {productBatchs.map((batch) => (
             <div
               key={batch.batchid}
-              className={`p-2 rounded mr-2 my-2 shadow-xl cursor-pointer border hover:opacity-80 ${
+              className={`p-4 rounded-lg mr-4 my-4 shadow-lg cursor-pointer border hover:opacity-80 transition duration-300 ease-in-out transform hover:scale-105 ${
                 batchId === batch.batchid
                   ? "bg-primary text-white"
                   : "bg-fourth"
@@ -80,7 +79,7 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
                 setBatchId(batchId === batch.batchid ? "" : batch.batchid)
               }
             >
-              <div>
+              <div className="mb-2">
                 <span
                   className={`font-medium mr-1 ${
                     batchId === batch.batchid ? "text-white" : "text-primary"
@@ -96,7 +95,7 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
                   {batch.batchid.substring(0, 8)}
                 </span>
               </div>
-              <div>
+              <div className="mb-2">
                 <span
                   className={`font-medium mr-1 ${
                     batchId === batch.batchid ? "text-white" : "text-primary"
@@ -109,11 +108,11 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
                     batchId === batch.batchid ? "text-white" : ""
                   }`}
                 >
-                  {Number(batch.batchprice).toLocaleString()} / (
+                  {Number(batch.batchprice).toLocaleString()} (
                   {batch.unitofmeasure})
                 </span>
               </div>
-              <div>
+              <div className="mb-2">
                 <span
                   className={`font-medium mr-1 ${
                     batchId === batch.batchid ? "text-white" : "text-primary"
@@ -129,7 +128,7 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
                   {batch.promotion} %
                 </span>
               </div>
-              <div>
+              <div className="mb-2">
                 <span
                   className={`font-medium mr-1 ${
                     batchId === batch.batchid ? "text-white" : "text-primary"
@@ -145,7 +144,7 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
                   {batch.batchquality}
                 </span>
               </div>
-              <div>
+              <div className="mb-2">
                 <span
                   className={`font-medium mr-1 ${
                     batchId === batch.batchid ? "text-white" : "text-primary"
@@ -161,54 +160,22 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
                   {batch.batchquantity}
                 </span>
               </div>
-              <div>
-                <span
-                  className={`font-medium mr-1 ${
-                    batchId === batch.batchid ? "text-white" : "text-primary"
-                  }`}
-                >
-                  Ngày hết hạn:{" "}
-                </span>
-                <span
-                  className={`font-semibold ${
-                    batchId === batch.batchid ? "text-white" : ""
-                  }`}
-                >
-                  {formatDate(batch.expirydate)}
-                </span>
-              </div>
-              <div>
-                <span
-                  className={`font-medium mr-1 ${
-                    batchId === batch.batchid ? "text-white" : "text-primary"
-                  }`}
-                >
-                  Ngày trồng:{" "}
-                </span>
-                <span
-                  className={`font-semibold ${
-                    batchId === batch.batchid ? "text-white" : ""
-                  }`}
-                >
-                  {formatDate(batch.plantingdate)}
-                </span>
-              </div>
-              <div>
-                <span
-                  className={`font-medium mr-1 ${
-                    batchId === batch.batchid ? "text-white" : "text-primary"
-                  }`}
-                >
-                  Ngày thu hoạch:{" "}
-                </span>
-                <span
-                  className={`font-semibold ${
-                    batchId === batch.batchid ? "text-white" : ""
-                  }`}
-                >
-                  {formatDate(batch.harvestdate)}
-                </span>
-              </div>
+              {/* <div className="mb-2">
+            <span
+              className={`font-medium mr-1 ${
+                batchId === batch.batchid ? "text-white" : "text-primary"
+              }`}
+            >
+              Ngày hết hạn:{" "}
+            </span>
+            <span
+              className={`font-semibold ${
+                batchId === batch.batchid ? "text-white" : ""
+              }`}
+            >
+              {formatDate(batch.expirydate)}
+            </span>
+          </div> */}
             </div>
           ))}
         </div>
@@ -220,7 +187,7 @@ export default function ProductBatchDialog({ onClose, selectedProduct }) {
           >
             Thêm vào giỏ hàng
           </button>
-          </div>
+        </div>
       </div>
     </div>
   );
