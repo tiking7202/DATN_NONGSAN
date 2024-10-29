@@ -39,7 +39,7 @@ def extract_features(img_path):
 
 # Load feature database từ file .npy
 base_dir = os.path.dirname(os.path.abspath(__file__))
-feature_database_path = os.path.join(base_dir, '../feature_database.npy')
+feature_database_path = os.path.join(base_dir, './feature_database.npy')
 feature_database = np.load(feature_database_path, allow_pickle=True).item()
 
 # API để tìm kiếm hình ảnh
@@ -50,7 +50,7 @@ def search_image():
 
     # Lưu ảnh tạm thời
     image_file = request.files['image']
-    image_path = os.path.join(base_dir, "temp_image.jpg")
+    image_path = os.path.join(base_dir, "tempImage.jpg")
     image_file.save(image_path)
 
     # Tìm kiếm sản phẩm tương tự
@@ -64,7 +64,7 @@ def search_image():
 
         # Sắp xếp kết quả theo độ tương tự và chỉ lấy productid
         similarities = sorted(similarities, key=lambda x: x[1], reverse=True)
-        top_product_ids = [item[0] for item in similarities[:12]]  # Lấy top 5 sản phẩm tương tự
+        top_product_ids = [item[0] for item in similarities[:8]]  # Lấy top 8 sản phẩm tương tự
 
         return jsonify({'product_ids': top_product_ids})
     except Exception as e:

@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the CSV file
-df = pd.read_csv('./image_product.csv')
+df = pd.read_csv('./productImage.csv')
 
 # Function to clean the product name
 def clean_product_name(name):
@@ -13,4 +13,4 @@ df['imagepath'] = df.apply(lambda row: f"productImage/{row['productid']}_{clean_
 df.drop(columns=['productimage1'], inplace=True)
 
 # Save the updated DataFrame back to CSV
-df.to_csv('new_image_product.csv', index=False)
+df.to_csv('./src/newImageProduct.csv', index=False)

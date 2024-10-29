@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder
 model = ResNet50(weights='imagenet', include_top=False, pooling='avg')
 
 # Load CSV
-data = pd.read_csv('../new_image_product.csv')
+data = pd.read_csv('../newImageProduct.csv')
 
 # Label Encoding for products (in case needed for further fine-tuning)
 le = LabelEncoder()
