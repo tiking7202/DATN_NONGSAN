@@ -20,7 +20,12 @@ router.get(
 router.post("/checkout/save-payment", checkoutController.savePaymentToDB);
 
 router.get("/distributor/orders", checkoutController.getAllOrderToDistributor);
-router.put("/distributor/order-update", checkoutController.updateStatusByDistributor);
+router.put(
+  "/distributor/order-update",
+  checkoutController.updateStatusByDistributor
+);
 router.put("/cancel-order", checkoutController.cancelOrderByCustomer);
+
+router.get("/shipper/area", checkoutController.getShipperForArea);
 
 module.exports = router;

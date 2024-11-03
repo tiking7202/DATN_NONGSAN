@@ -73,7 +73,7 @@ const addCheckOut = async (req, res) => {
         "SELECT batchquantity FROM product_batch WHERE batchid = $1",
         [item.batchid]
       );
-      
+
       const currentQuantity = currentQuantityRows[0].batchquantity;
       console.log("Current quantity:", currentQuantity);
       console.log("Item quantity:", item.quantity);
@@ -851,6 +851,76 @@ const cancelOrderByCustomer = async (req, res) => {
   }
 };
 
+// Lấy shipper trong khu vực
+const getShipperForArea = async (req, res) => {
+  try {
+    // Lấy thông tin khu vực từ request
+    const { district } = req.query;
+
+    // Xác định khu vực dựa trên district
+    let area = null;
+    const area1 = [
+      "Quận 1",
+      "Quận 3",
+      "Quận 5",
+      "Quận 10",
+      "Quận 4",
+      "Quận Phú Nhuận",
+      "Quận Bình Thạnh",
+    ];
+    const area2 = [
+      "Quận Tân Bình",
+      "Tân Phú",
+      "Gò Vấp",
+      "Quận 8",
+      "Quận 11",
+      "Quận 7",
+      "Quận 2",
+    ];
+    const area3 = [
+      "Thủ Đức",
+      "Quận 9",
+      "Quận 12",
+      "Củ Chi",
+      "Hóc Môn",
+      "Bình Chánh",
+      "Cần Giờ",
+      "Nhà Bè",
+    ];
+
+    if (area1.includes(district)) {
+      area = area1;
+    } else if (area2.includes(district)) {
+      area = area2;
+    } else if (area3.includes(district)) {
+      area = area3;
+    }
+
+    // Nếu không tìm thấy khu vực, trả về lỗi
+    if (!area) {
+      return res.status(400).json({ message: "Khu vực không hợp lệ." });
+    }
+
+    // Tìm kiếm các shipper trong khu vực với trạng thái đang chờ
+    const shippers = await db.User.findAll({
+      where: {
+        role: "shipper",
+        shipperstatus: "Đang chờ",
+        deliveryarea: {
+          [Op.in]: area,
+        },
+      },
+      attributes: ["id", "name", "deliveryarea", "shipperstatus"], // Các trường bạn muốn lấy
+    });
+
+    // Trả về danh sách shipper
+    return res.status(200).json(shippers);
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách shipper:", error);
+    return res.status(500).json({ message: "Đã xảy ra lỗi hệ thống." });
+  }
+};
+
 module.exports = {
   addCheckOut,
   getShippingInfo,
@@ -866,4 +936,5 @@ module.exports = {
   getAllOrderToDistributor,
   updateStatusByDistributor,
   cancelOrderByCustomer,
+  getShipperForArea,
 };

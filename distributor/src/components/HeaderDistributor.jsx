@@ -4,7 +4,7 @@ import { useToast } from "../context/ToastContext";
 
 export default function HeaderDistributor() {
   const navigate = useNavigate();
-  const {setToastMessage} = useToast();
+  const { setToastMessage } = useToast();
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -17,7 +17,6 @@ export default function HeaderDistributor() {
     navigate("/login");
     setToastMessage("Đăng xuất thành công");
   };
-
 
   return (
     <header className="py-5 bg-primary text-white px-3 sm:px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 fixed top-0 w-full z-40">
@@ -40,6 +39,12 @@ export default function HeaderDistributor() {
             className="btn btn-primary font-medium hover:text-fourth m-2"
           >
             Nông dân
+          </Link>
+          <Link
+            to="/shipper"
+            className="btn btn-primary font-medium hover:text-fourth m-2"
+          >
+            Người giao hàng
           </Link>
           <Link
             to="/category"
