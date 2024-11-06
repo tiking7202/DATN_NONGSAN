@@ -6,7 +6,7 @@ import { API_BASE_URL } from "../../../config/config";
 import ChangePasswordDialog from "../../../components/ChangePasswordDialog";
 import ChangeInfoDialog from "../../../components/ChangeInfoDialog";
 import ChangeAvatarDialog from "../../../components/DialogShipper/ChangeAvatarDialog";
-
+import { ToastContainer, toast } from "react-toastify";
 export default function ShipperProfile() {
   const token = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(token);
@@ -47,6 +47,7 @@ export default function ShipperProfile() {
       setIsEditingStatus(false);
       const response = await axios.get(`${API_BASE_URL}/user/${userId}`);
       setShipper(response.data);
+      toast.success("Cập nhật trạng thái thành công!");
     } catch (error) {
       console.error("Lỗi cập nhật trạng thái:", error);
     }
@@ -55,6 +56,7 @@ export default function ShipperProfile() {
   return (
     <div>
       <HeaderShipper />
+      <ToastContainer />
       <div className="flex">
         <div className="bg-fourth w-full h-screen fixed right-0 top-0 mt-20">
           <div className="bg-secondary w-11/12 m-auto mt-3 rounded-lg shadow-2xl">

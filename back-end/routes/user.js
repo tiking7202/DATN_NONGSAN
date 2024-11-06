@@ -19,6 +19,10 @@ router.get("/farmer/detail/:userId", userController.getFarmerDetails);
 router.put("/farmer/update/status/:userId", userController.updateFarmerStatus);
 
 router.put("/shipper/updatestatus/:userId", userController.updateShipperStatus);
+router.put(
+  "/shipper/updateregisterstatus/:userId",
+  userController.updateShipperRegisterStatus
+);
 router.get("/shipper", userController.getAllShippers);
 router.get("/shipper/:userid", userController.getShipperDetail);
 

@@ -617,6 +617,25 @@ const shipperRegister = async (req, res) => {
       ]
     );
 
+    //Lấy thông tin nhà phân phối
+    const distributor = await pool.query(
+      `SELECT distributorid FROM distributor`
+    );
+
+    const shipperName = await pool.query(
+      `SELECT fullname FROM "User" WHERE userid = $1`,
+      [userId]
+    );
+    const distributorid = distributor.rows[0];
+    // Gọi hàm để gửi thông báo cho nhà phân phối
+    notificationUtils.createNotification(
+      distributorid.distributorid,
+      "Distributor",
+      "Đăng ký tài khoản người giao hàng mới",
+      `Có người giao hàng ${shipperName.rows[0].fullname} mới đăng ký tài khoản, hãy xét duyệt để người giao hàng hoàn tất thủ tục đăng ký`,
+      "CreateNewShipper"
+    );
+
     // Trả về kết quả
     res.json({ message: "Đăng ký thành công", user: updatedUser.rows[0] });
   } catch (error) {

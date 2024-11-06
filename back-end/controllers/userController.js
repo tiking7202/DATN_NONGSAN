@@ -250,6 +250,30 @@ const updateFarmerStatus = async (req, res) => {
   }
 };
 
+const updateShipperRegisterStatus = async (req, res) => {
+  const { userId } = req.params;
+  const { status } = req.body;
+  try {
+    const result = await pool.query(
+      `
+      UPDATE "User"
+      SET status = $1
+      WHERE userid = $2
+      RETURNING *
+    `,
+      [status, userId]
+    );
+
+    res.status(200).json({
+      data: result.rows[0],
+      message: "Cập nhật trạng thái người giao hàng thành công",
+    });
+  } catch (error) {
+    console.error("Error updating farmer status:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 const updateShipperStatus = async (req, res) => {
   const { userId } = req.params;
   const { shipperstatus } = req.body;
@@ -354,4 +378,5 @@ module.exports = {
   updateShipperStatus,
   getAllShippers,
   getShipperDetail,
+  updateShipperRegisterStatus,
 };

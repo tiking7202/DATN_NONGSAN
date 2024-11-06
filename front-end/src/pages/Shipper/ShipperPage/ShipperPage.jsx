@@ -5,6 +5,7 @@ import { API_BASE_URL } from "../../../config/config";
 import ShipperDetail from "./ShipperDetail";
 import { Pagination } from "../../../components/Pagination";
 import { ToastContainer } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 export default function ShipperPage() {
   const [orders, setOrders] = useState([]);
@@ -12,15 +13,22 @@ export default function ShipperPage() {
   const pageSize = 10;
   const [totalPages, setTotalPages] = useState(1);
 
+  const token = localStorage.getItem("accessToken");
+  const decodedToken = jwtDecode(token);
+  const shipperId = decodedToken.userid;
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/shipper/orders`, {
-          params: {
-            page,
-            pageSize,
-          },
-        });
+        const response = await axios.get(
+          `${API_BASE_URL}/shipper/orders/${shipperId}`,
+          {
+            params: {
+              page,
+              pageSize,
+            },
+          }
+        );
         setOrders(response.data.orders);
         setTotalPages(response.data.pagination.totalPages);
       } catch (error) {
@@ -45,12 +53,15 @@ export default function ShipperPage() {
   const refreshOrders = () => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/shipper/orders`, {
-          params: {
-            page,
-            pageSize,
-          },
-        });
+        const response = await axios.get(
+          `${API_BASE_URL}/shipper/orders/${shipperId}`,
+          {
+            params: {
+              page,
+              pageSize,
+            },
+          }
+        );
         setOrders(response.data.orders);
         setTotalPages(response.data.pagination.totalPages);
       } catch (error) {
@@ -76,10 +87,10 @@ export default function ShipperPage() {
                   <tr className="bg-primary text-white">
                     <th className="w-1/12 py-2">Mã đơn hàng</th>
                     <th className="w-2/12 py-2">Tên khách hàng</th>
-                    <th className="w-2/12 py-2">Số điện thoại</th>
-                    <th className="w-3/12 py-2">Địa chỉ nhận hàng</th>
+                    <th className="w-1/12 py-2">Số điện thoại</th>
+                    <th className="w-2/12 py-2">Địa chỉ nhận hàng</th>
                     <th className="w-1/12 py-2">Tổng tiền</th>
-                    <th className="w-1/12 py-2">Trạng thái</th>
+                    <th className="w-2/12 py-2">Trạng thái đơn hàng</th>
                     <th className="w-2/12 py-2"></th>
                   </tr>
                 </thead>
@@ -90,8 +101,8 @@ export default function ShipperPage() {
                       className="text-center font-medium border"
                     >
                       <td className="py-2">{order.orderid.slice(0, 8)}</td>
-                      <td className="py-2">{order.fullname}</td>
-                      <td className="py-2">{order.phone}</td>{" "}
+                      <td className="py-2">{order.customer_name}</td>
+                      <td className="py-2">{order.phonenumber}</td>{" "}
                       {/* Assuming phone number is included in the API response */}
                       <td className="py-2">{order.shippingaddress}</td>
                       <td className="py-2">

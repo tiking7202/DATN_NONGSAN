@@ -561,15 +561,18 @@ const ShipperRegister = () => {
                 >
                   Khu vực giao hàng (Quận/Huyện)
                 </label>
-                <input
+                <select
                   id="deliveryarea"
                   name="deliveryarea"
-                  type="text"
-                  placeholder="Khu vực giao hàng (Quận/Huyện)"
                   value={deliveryarea}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary"
-                />
+                >
+                  <option value="">Chọn khu vực giao hàng</option>
+                  <option value="Khu vực 1">Khu vực 1</option>
+                  <option value="Khu vực 2">Khu vực 2</option>
+                  <option value="Khu vực 3">Khu vực 3</option>
+                </select>
                 {deliveryareaError && (
                   <p className="text-red-500 text-sm">{deliveryareaError}</p>
                 )}

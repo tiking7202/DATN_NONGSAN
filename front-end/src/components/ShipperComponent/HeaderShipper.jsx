@@ -104,6 +104,13 @@ export default function HeaderShipper() {
                       Thông tin cá nhân
                     </a>
                     <a
+                      href="/shipper"
+                      className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
+                      role="menuitem"
+                    >
+                      Danh sách đơn hàng
+                    </a>
+                    <a
                       href="#"
                       className="block px-4 py-2 text-lg text-primary hover:bg-fourth hover:font-bold"
                       role="menuitem"

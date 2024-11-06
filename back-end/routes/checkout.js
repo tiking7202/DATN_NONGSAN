@@ -26,6 +26,20 @@ router.put(
 );
 router.put("/cancel-order", checkoutController.cancelOrderByCustomer);
 
-router.get("/shipper/area", checkoutController.getShipperForArea);
+router.get(
+  "/shipper/deliveryArea/:orderId",
+  checkoutController.getAllShipperOfDeliveryarea
+);
 
+router.put("/order/shipper-update", checkoutController.updateShipperForOrder);
+
+router.get(
+  "/shipper/orders/:shipperid",
+  checkoutController.getAllOrderToShipper
+);
+
+router.get(
+  "/shipper/orderdetail/:orderIdDetail",
+  checkoutController.getOrderDetailShipper
+);
 module.exports = router;

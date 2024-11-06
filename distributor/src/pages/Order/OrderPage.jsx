@@ -92,12 +92,15 @@ export default function OrderPage() {
                       className="text-center font-medium border"
                     >
                       <td className="py-2">{order.orderid.slice(0, 8)}</td>
-                      <td className="py-2">{order.fullname}</td>
+                      <td className="py-2">{order.user_fullname}</td>
                       <td className="py-2">
                         {formatDate(order.ordercreatetime)}
                       </td>
                       <td className="py-2">{order.shippingaddress}</td>
-                      <td className="py-2">Chưa Có</td>
+                      <td className="py-2">
+                        {order.shipper_fullname || "Chưa có"}
+                      </td>{" "}
+                      {/* Hiển thị shipper riêng cho từng order */}
                       <td className="py-2">
                         {order.totalamount.toLocaleString()} đ
                       </td>
